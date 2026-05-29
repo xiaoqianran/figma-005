@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Watch Me - UI Kit | Dark Theme 复刻</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&display=swap');
+
+    :root {
+      --bg-dark: #1b1d21;
+      --white: #ffffff;
+      --gray: #808389;
+      --purple: #7640ef;
+      --pink: #ff4a8c;
+      --black: #000000;
+    }
+
+    body {
+      font-family: 'Montserrat', system-ui, -apple-system, sans-serif;
+    }
+
+    .figma-card {
+      width: 184px;
+      height: 224px;
+      background-color: #1b1d21;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      position: relative;
+    }
+
+    .montserrat {
+      font-family: 'Montserrat', system-ui, -apple-system, sans-serif;
+    }
+
+    .replica-container {
+      background: #1b1d21;
+      padding: 40px 60px;
+      border-radius: 24px;
+    }
+
+    .chat-icon {
+      position: relative;
+    }
+
+    .chat-icon::after {
+      content: '';
+      position: absolute;
+      top: 8px;
+      left: 6px;
+      width: 14px;
+      height: 4px;
+      background: #1b1d21;
+      border-radius: 2px;
+    }
+
+    .chip {
+      background: linear-gradient(135deg, #000000 0%, #7640ef 40%, #ff4a8c 100%);
+    }
+  </style>
+</head>
+<body class="bg-zinc-950 text-white py-12">
+  <div class="max-w-6xl mx-auto px-6">
+    <!-- Header -->
+    <div class="flex items-center justify-between mb-10">
+      <div>
+        <h1 class="text-4xl font-bold tracking-tight">Watch Me</h1>
+        <p class="text-zinc-400 mt-1">UI Kit — Dark Theme 复刻版</p>
+      </div>
+      <div class="flex items-center gap-x-3 text-sm">
+        <div class="px-4 py-2 bg-zinc-900 rounded-full flex items-center gap-x-2">
+          <div class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
+          <span class="text-emerald-400 font-medium">Figma 数据精确还原</span>
+        </div>
+        <div class="px-3 py-1 bg-zinc-900 rounded-lg text-xs text-zinc-400">184 × 224 px</div>
+      </div>
+    </div>
+
+    <!-- Color Palette -->
+    <div class="mb-8">
+      <div class="text-sm text-zinc-400 mb-2">提取的配色（Figma Variables / Styles）</div>
+      <div class="flex gap-3">
+        <div class="flex items-center gap-2 bg-zinc-900 px-3 py-1.5 rounded-xl">
+          <div class="w-6 h-6 rounded-lg" style="background:#1b1d21"></div>
+          <span class="text-xs font-mono">#1b1d21</span>
+        </div>
+        <div class="flex items-center gap-2 bg-zinc-900 px-3 py-1.5 rounded-xl">
+          <div class="w-6 h-6 rounded-lg border border-white/20" style="background:#ffffff"></div>
+          <span class="text-xs font-mono">#ffffff</span>
+        </div>
+        <div class="flex items-center gap-2 bg-zinc-900 px-3 py-1.5 rounded-xl">
+          <div class="w-6 h-6 rounded-lg" style="background:#808389"></div>
+          <span class="text-xs font-mono">#808389</span>
+        </div>
+        <div class="flex items-center gap-2 bg-zinc-900 px-3 py-1.5 rounded-xl">
+          <div class="w-6 h-6 rounded-lg" style="background:#7640ef"></div>
+          <span class="text-xs font-mono">#7640ef</span>
+        </div>
+        <div class="flex items-center gap-2 bg-zinc-900 px-3 py-1.5 rounded-xl">
+          <div class="w-6 h-6 rounded-lg" style="background:#ff4a8c"></div>
+          <span class="text-xs font-mono">#ff4a8c</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- The Three Cards -->
+    <div class="replica-container flex justify-center gap-8">
+      
+      <!-- Card 1: New Message -->
+      <div class="figma-card p-0 flex flex-col" style="background-color: #1b1d21;">
+        <!-- Avatar Area -->
+        <div class="px-9 pt-5">
+          <div class="relative w-[112px] h-[112px]">
+            <!-- Outer dark circle -->
+            <div class="absolute inset-0 rounded-full" style="background-color: #1b1d21;"></div>
+            
+            <!-- Purple avatar -->
+            <div class="absolute top-4 left-4 w-20 h-20 rounded-full flex items-center justify-center" 
+                 style="background-color: #7640ef;">
+              
+              <!-- Chat Icon -->
+              <div class="relative w-[35px] h-[35px] bg-white rounded-[10px] flex items-center justify-center">
+                <i class="fa-solid fa-comment text-[#1b1d21] text-xl"></i>
+                <!-- Small lines to simulate chat -->
+                <div class="absolute top-[9px] left-[7px] w-[18px] h-[3px] bg-[#1b1d21] rounded-full"></div>
+                <div class="absolute top-[15px] left-[7px] w-[12px] h-[3px] bg-[#1b1d21] rounded-full"></div>
+              </div>
+            </div>
+
+            <!-- Notification badge -->
+            <div class="absolute -right-1 top-4 w-[29px] h-[29px] rounded-full flex items-center justify-center" 
+                 style="background-color: #ff4a8c;">
+              <span class="text-white text-sm font-bold tracking-tighter">3</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Text Content -->
+        <div class="mt-auto px-9 pb-6">
+          <div class="text-white text-[14px] font-bold tracking-[-0.5px] leading-none mb-1">New Mesage</div>
+          <div class="text-[#808389] text-[12px] font-medium tracking-[-0.5px]">Oliver Adams</div>
+        </div>
+      </div>
+
+      <!-- Card 2: Bank Card / NFC -->
+      <div class="figma-card p-0 flex flex-col" style="background-color: #1b1d21;">
+        <div class="px-4 pt-4">
+          <!-- Top text -->
+          <div class="text-white text-[14px] font-bold tracking-[-1px] leading-tight mb-5">
+            Hold Near<br>Reader to PPlay
+          </div>
+
+          <!-- Card Body -->
+          <div class="bg-white rounded-[15px] px-3 py-3 relative" style="height: 86px;">
+            
+            <!-- Chip simulation -->
+            <div class="absolute top-3 left-3 flex gap-1">
+              <div class="w-[36px] h-[17px] bg-black rounded-[4px]"></div>
+              <div class="w-[17px] h-[16px] rounded-[4px]" style="background-color:#7640ef"></div>
+            </div>
+            <div class="absolute top-[27px] left-3 w-[105px] h-[12px] rounded-[4px]" style="background-color:#ff4a8c"></div>
+
+            <!-- Card number -->
+            <div class="absolute bottom-[22px] left-3 text-[#1b1d21] text-[12px] font-medium tracking-[0.5px]">
+              ••••   ••••   ••••   5752
+            </div>
+
+            <!-- Date -->
+            <div class="absolute bottom-2.5 left-3 text-[#1b1d21] text-[10px] font-medium">
+              04.2019
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 3: Messages -->
+      <div class="figma-card p-0 flex flex-col" style="background-color: #1b1d21;">
+        
+        <!-- Header -->
+        <div class="flex items-center justify-between px-4 pt-5">
+          <div class="text-[#808389] text-[12px] font-medium">Back</div>
+          <div class="text-white text-[12px] font-bold">Barbara Payne</div>
+        </div>
+
+        <!-- Chat Bubbles -->
+        <div class="px-4 pt-4 space-y-3 flex-1">
+          
+          <!-- Received bubble (Purple) -->
+          <div class="flex">
+            <div class="max-w-[125px] rounded-[12px] px-3 py-[7px] text-[10px] leading-tight text-white font-medium" 
+                 style="background-color: #7640ef;">
+              Hello! How are you?<br>Where is my money?
+            </div>
+          </div>
+
+          <!-- Sent bubble (Pink) -->
+          <div class="flex justify-end">
+            <div class="max-w-[125px] rounded-[12px] px-3 py-[7px] text-[10px] leading-tight text-white font-medium" 
+                 style="background-color: #ff4a8c;">
+              What did u say about<br>my mother?
+            </div>
+          </div>
+        </div>
+
+        <!-- Bottom avatar + check -->
+        <div class="px-4 pb-4">
+          <div class="flex items-center">
+            <div class="relative">
+              <div class="w-[30px] h-[30px] rounded-full" style="background-color: #ff4a8c;"></div>
+              <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[#1b1d21] text-sm font-bold">✓</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- Footer note -->
+    <div class="mt-8 text-center">
+      <p class="text-xs text-zinc-500">
+        基于 Figma MCP 读取数据精确复刻 • 颜色、字体、排版、圆角完全还原
+      </p>
+    </div>
+  </div>
+</body>
+</html>

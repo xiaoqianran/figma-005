@@ -1,0 +1,30 @@
+{
+  "name": "figma101-005-watch-me-dark",
+  "version": "0.2.0",
+  "description": "Figma 101 Lesson 005: High-fidelity replication of Watch Me UI Kit Dark Theme cards. Self-contained interactive prototypes and modular HTML components.",
+  "private": true,
+  "scripts": {
+    "start": "npx http-server -p 8080 -o -c-1",
+    "serve": "npx http-server -p 3000 -c-1 --cors",
+    "preview": "npx live-server --port=8080 --open=/index.html --watch=.,prototypes,components 2>nul || npx http-server -p 8080 -o index.html -c-1"
+  },
+  "keywords": [
+    "figma",
+    "replica",
+    "ui-kit",
+    "dark-theme",
+    "prototype",
+    "html",
+    "tailwind",
+    "watch-me"
+  ],
+  "author": "Figma 101",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://example.local/figma101/005.git"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

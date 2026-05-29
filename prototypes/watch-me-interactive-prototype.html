@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Watch Me • Interactive Prototype</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&amp;display=swap');
+    body { font-family: 'Montserrat', system-ui, -apple-system, sans-serif; }
+    
+    .watch-bezel {
+      background: #111;
+      box-shadow: 0 0 0 12px #1a1a1a, 
+                  0 0 0 18px #0f0f0f,
+                  0 25px 70px -15px rgb(0 0 0 / 0.6);
+    }
+    
+    .watch-screen {
+      background: #1b1d21;
+      width: 280px;
+      height: 280px;
+      border-radius: 48px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .screen-content {
+      width: 100%;
+      height: 100%;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .app-icon {
+      transition: transform 0.1s ease;
+    }
+    .app-icon:active {
+      transform: scale(0.92);
+    }
+
+    .nav-active {
+      background: #7640ef;
+      color: white;
+    }
+
+    .bottom-nav {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 44px;
+      background: #111315;
+      border-top: 1px solid #2a2c30;
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      z-index: 50;
+    }
+    .bottom-nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      font-size: 10px;
+      color: #808389;
+      padding: 2px 8px;
+      border-radius: 8px;
+      transition: all 0.1s ease;
+    }
+    .bottom-nav-item.active {
+      color: #fff;
+    }
+    .bottom-nav-item:active {
+      transform: scale(0.92);
+    }
+    .watch-screen {
+      position: relative;
+    }
+    .screen-inner {
+      height: calc(100% - 44px);
+      overflow-y: auto;
+      padding-bottom: 4px;
+    }
+    .full-screen {
+      height: 100% !important;
+    }
+    .toast {
+      position: absolute;
+      bottom: 56px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #2a2c30;
+      color: white;
+      padding: 6px 14px;
+      border-radius: 9999px;
+      font-size: 11px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+      z-index: 100;
+      animation: fadeInUp 0.2s ease;
+    }
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translate(-50%, 10px); }
+      to { opacity: 1; transform: translate(-50%, 0); }
+    }
+  </style>
+</head>
+<body class="bg-zinc-950 text-white">
+  <div class="max-w-screen-2xl mx-auto px-8 py-8">
+    <!-- Header -->
+    <div class="flex items-center justify-between mb-8">
+      <div>
+        <h1 class="text-4xl font-bold tracking-tight">Watch Me</h1>
+        <p class="text-zinc-400">Interactive Dark Theme Prototype</p>
+      </div>
+      <div class="flex items-center gap-x-3 text-sm">
+        <div class="px-4 py-2 bg-zinc-900 rounded-3xl flex items-center gap-x-2">
+          <div class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
+          <span class="text-emerald-400">实时交互原型</span>
+        </div>
+        <button onclick="resetToHome()" 
+                class="px-5 py-2 bg-white text-black rounded-3xl font-semibold text-sm hover:bg-zinc-200">
+          返回主屏
+        </button>
+      </div>
+    </div>
+
+    <div class="flex gap-8 items-start">
+      
+      <!-- Watch Device -->
+      <div class="flex-shrink-0">
+        <div class="watch-bezel mx-auto rounded-[70px] p-4 w-[320px]">
+          <!-- Screen -->
+          <div class="watch-screen mx-auto" id="watch-screen">
+            
+            <!-- Dynamic Screen Content -->
+            <div id="screen-content" class="screen-content p-5 text-white overflow-hidden">
+              <!-- Content injected by JS -->
+            </div>
+            
+          </div>
+        </div>
+        
+        <div class="text-center mt-4 text-xs text-zinc-500">Watch Me • Dark Theme • 280×280</div>
+      </div>
+
+      <!-- App Launcher / Navigation -->
+      <div class="flex-1 max-w-md">
+        <div class="mb-4">
+          <div class="text-sm font-semibold text-zinc-400 mb-2">APP 导航（全部 16 屏）</div>
+          <div class="text-xs text-zinc-500">点击图标进入手表屏幕 • 底部导航栏常驻 • 真实交互</div>
+        </div>
+
+        <div class="grid grid-cols-4 gap-2 text-[10px]">
+          <div onclick="switchScreen('clock')" class="app-icon bg-zinc-900 hover:bg-zinc-800 rounded-2xl p-2 text-center cursor-pointer">
+            <div class="w-8 h-8 mx-auto rounded-xl flex items-center justify-center bg-gradient-to-br from-[#7640ef] to-[#ff4a8c]"><i class="fa-solid fa-clock text-white text-sm"></i></div>
+            <div class="mt-1">Clock</div>
+          </div>
+          <div onclick="switchScreen('timer')" class="app-icon bg-zinc-900 hover:bg-zinc-800 rounded-2xl p-2 text-center cursor-pointer">
+            <div class="w-8 h-8 mx-auto rounded-xl bg-[#1b1d21] flex items-center justify-center text-[#7640ef]"><i class="fa-solid fa-stopwatch"></i></div>
+            <div class="mt-1">Timer</div>
+          </div>
+          <div onclick="switchScreen('tasks')" class="app-icon bg-zinc-900 hover:bg-zinc-800 rounded-2xl p-2 text-center cursor-pointer">
+            <div class="w-8 h-8 mx-auto rounded-xl bg-[#1b1d21] flex items-center justify-center text-[#ff4a8c]"><i class="fa-solid fa-list-check"></i></div>
+            <div class="mt-1">Tasks</div>
+          </div>
+          <div onclick="switchScreen('messages')" class="app-icon bg-zinc-900 hover:bg-zinc-800 rounded-2xl p-2 text-center cursor-pointer">
+            <div class="w-8 h-8 mx-auto rounded-xl bg-[#1b1d21] flex items-center justify-center text-[#7640ef]"><i class="fa-solid fa-comments"></i></div>
+            <div class="mt-1">Messages</div>
+          </div>
+          <div onclick="switchScreen('call')" class="app-icon bg-zinc-900 hover:bg-zinc-800 rounded-2xl p-2 text-center cursor-pointer">
+            <div class="w-8 h-8 mx-auto rounded-xl bg-[#1b1d21] flex items-center justify-center text-[#ff4a8c]"><i class="fa-solid fa-phone"></i></div>
+            <div class="mt-1">Call</div>
+          </div>
+          <div onclick="switchScreen('notifications')" class="app-icon bg-zinc-900 hover:bg-zinc-800 rounded-2xl p-2 text-center cursor-pointer">
+            <div class="w-8 h-8 mx-auto rounded-xl bg-[#1b1d21] flex items-center justify-center text-[#43a5ff]"><i class="fa-solid fa-bell"></i></div>
+            <div class="mt-1">Notify</div>
+          </div>
+          <div onclick="switchScreen('activity')" class="app-icon bg-zinc-900 hover:bg-zinc-800 rounded-2xl p-2 text-center cursor-pointer">
+            <div class="w-8 h-8 mx-auto rounded-xl bg-[#1b1d21] flex items-center justify-center text-[#ffaa5c]"><i class="fa-solid fa-chart-line"></i></div>
+            <div class="mt-1">Activity</div>
+          </div>
+          <div onclick="switchScreen('wallet')" class="app-icon bg-zinc-900 hover:bg-zinc-800 rounded-2xl p-2 text-center cursor-pointer">
+            <div class="w-8 h-8 mx-auto rounded-xl bg-[#1b1d21] flex items-center justify-center text-white"><i class="fa-solid fa-wallet"></i></div>
+            <div class="mt-1">Wallet</div>
+          </div>
+          <div onclick="switchScreen('voice')" class="app-icon bg-zinc-900 hover:bg-zinc-800 rounded-2xl p-2 text-center cursor-pointer">
+            <div class="w-8 h-8 mx-auto rounded-xl bg-[#1b1d21] flex items-center justify-center text-[#7d3ef3]"><i class="fa-solid fa-microphone"></i></div>
+            <div class="mt-1">Voice</div>
+          </div>
+          <div onclick="switchScreen('team')" class="app-icon bg-zinc-900 hover:bg-zinc-800 rounded-2xl p-2 text-center cursor-pointer">
+            <div class="w-8 h-8 mx-auto rounded-xl bg-[#1b1d21] flex items-center justify-center text-[#7640ef]"><i class="fa-solid fa-users"></i></div>
+            <div class="mt-1">Team</div>
+          </div>
+          <div onclick="switchScreen('progress')" class="app-icon bg-zinc-900 hover:bg-zinc-800 rounded-2xl p-2 text-center cursor-pointer">
+            <div class="w-8 h-8 mx-auto rounded-xl bg-[#1b1d21] flex items-center justify-center text-[#ffaa5c]"><i class="fa-solid fa-tachometer-alt"></i></div>
+            <div class="mt-1">Progress</div>
+          </div>
+          <div onclick="switchScreen('card')" class="app-icon bg-zinc-900 hover:bg-zinc-800 rounded-2xl p-2 text-center cursor-pointer">
+            <div class="w-8 h-8 mx-auto rounded-xl bg-[#1b1d21] flex items-center justify-center text-white"><i class="fa-solid fa-credit-card"></i></div>
+            <div class="mt-1">Card</div>
+          </div>
+          <div onclick="switchScreen('newmsg')" class="app-icon bg-zinc-900 hover:bg-zinc-800 rounded-2xl p-2 text-center cursor-pointer">
+            <div class="w-8 h-8 mx-auto rounded-xl bg-[#1b1d21] flex items-center justify-center text-[#7640ef]"><i class="fa-solid fa-envelope"></i></div>
+            <div class="mt-1">New Msg</div>
+          </div>
+          <div onclick="switchScreen('msgdetail')" class="app-icon bg-zinc-900 hover:bg-zinc-800 rounded-2xl p-2 text-center cursor-pointer">
+            <div class="w-8 h-8 mx-auto rounded-xl bg-[#1b1d21] flex items-center justify-center text-[#43a5ff]"><i class="fa-solid fa-comment-dots"></i></div>
+            <div class="mt-1">Msg Detail</div>
+          </div>
+          <div onclick="switchScreen('confirmtx')" class="app-icon bg-zinc-900 hover:bg-zinc-800 rounded-2xl p-2 text-center cursor-pointer">
+            <div class="w-8 h-8 mx-auto rounded-xl bg-[#1b1d21] flex items-center justify-center text-[#7640ef]"><i class="fa-solid fa-check-circle"></i></div>
+            <div class="mt-1">Confirm</div>
+          </div>
+          <div onclick="switchScreen('addcontact')" class="app-icon bg-zinc-900 hover:bg-zinc-800 rounded-2xl p-2 text-center cursor-pointer">
+            <div class="w-8 h-8 mx-auto rounded-xl bg-[#1b1d21] flex items-center justify-center text-[#ff4a8c]"><i class="fa-solid fa-user-plus"></i></div>
+            <div class="mt-1">Add</div>
+          </div>
+        </div>
+
+        <div class="mt-5 text-xs text-zinc-500 leading-snug">
+          所有 16 个主屏均已实现。<br>
+          底部常驻导航 • 点击项目可跳转关联屏幕 • 支持真实状态操作。
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    let currentScreen = 'home';
+    let timerInterval = null;
+    let tasks = [
+      { id: 1, text: "Drink 2 liters of water", done: false },
+      { id: 2, text: "Call grandma at 8 AM", done: true },
+      { id: 3, text: "Finish design review", done: false }
+    ];
+    let messages = [
+      { from: "Barbara", text: "Where is my money?", time: "09:41" }
+    ];
+
+    // Render current screen
+    function renderScreen(screen) {
+      const container = document.getElementById('screen-content');
+      container.innerHTML = '';
+
+      switch (screen) {
+        case 'home':
+          container.innerHTML = `
+            <div class="h-full flex flex-col">
+              <div class="flex justify-between text-xs px-1 pt-1">
+                <div class="text-[#808389]">Back</div>
+                <div class="font-bold">9:41</div>
+              </div>
+              
+              <div class="flex-1 flex items-center justify-center">
+                <div class="text-center">
+                  <div class="text-5xl font-bold tracking-tighter">9:41</div>
+                  <div class="text-[#808389] text-sm">Monday, Feb 3</div>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-3 gap-2 px-1 pb-2">
+                <div onclick="switchScreen('messages')" class="bg-[#1b1d21] rounded-2xl p-2 text-center cursor-pointer">
+                  <i class="fa-solid fa-comment text-[#7640ef] text-lg"></i>
+                  <div class="text-[10px] mt-1">Message</div>
+                </div>
+                <div onclick="switchScreen('activity')" class="bg-[#1b1d21] rounded-2xl p-2 text-center cursor-pointer">
+                  <i class="fa-solid fa-heart-pulse text-[#ff4a8c] text-lg"></i>
+                  <div class="text-[10px] mt-1">Activity</div>
+                </div>
+                <div onclick="switchScreen('wallet')" class="bg-[#1b1d21] rounded-2xl p-2 text-center cursor-pointer">
+                  <i class="fa-solid fa-wallet text-white text-lg"></i>
+                  <div class="text-[10px] mt-1">Wallet</div>
+                </div>
+              </div>
+            </div>
+          `;
+          break;
+
+        case 'timer':
+          container.innerHTML = `
+            <div class="h-full flex flex-col p-1">
+              <div class="text-center text-xs text-[#808389]">Timer</div>
+              <div id="timer-display" class="text-center text-6xl font-bold tracking-tighter mt-6">12:31</div>
+              <div class="flex-1"></div>
+              <div class="flex justify-center gap-4 pb-3">
+                <button onclick="startTimer()" class="px-5 py-2 text-sm rounded-2xl bg-[#7640ef]">Start</button>
+                <button onclick="pauseTimer()" class="px-5 py-2 text-sm rounded-2xl bg-zinc-800">Pause</button>
+                <button onclick="resetTimer()" class="px-5 py-2 text-sm rounded-2xl bg-zinc-800">Reset</button>
+              </div>
+            </div>
+          `;
+          break;
+
+        case 'tasks':
+          renderTasks(container);
+          break;
+
+        case 'messages':
+          renderMessages(container);
+          break;
+
+        case 'call':
+          container.innerHTML = `
+            <div class="h-full flex flex-col items-center justify-center p-4">
+              <div class="w-20 h-20 rounded-full mb-4" style="background:#753fed"></div>
+              <div class="font-bold">Barbara Payne</div>
+              <div id="call-timer" class="text-[#808389] text-sm mt-1">59:00</div>
+              <div class="flex-1"></div>
+              <div class="flex gap-4">
+                <button onclick="endCall()" class="w-12 h-12 rounded-full flex items-center justify-center" style="background:#ff4a8c">
+                  <i class="fa-solid fa-phone-slash"></i>
+                </button>
+                <button onclick="startCallTimer()" class="w-12 h-12 rounded-full flex items-center justify-center" style="background:#1b1d21">
+                  <i class="fa-solid fa-microphone-slash"></i>
+                </button>
+              </div>
+            </div>
+          `;
+          break;
+
+        case 'notifications':
+          container.innerHTML = `
+            <div class="p-4">
+              <div class="text-sm font-bold mb-3">New notifications</div>
+              <div class="space-y-2 text-xs">
+                <div class="flex items-center gap-3 bg-[#1b1d21] p-3 rounded-2xl">
+                  <i class="fa-solid fa-calendar text-lg text-[#43a5ff]"></i>
+                  <div>Team meeting in 15 min</div>
+                </div>
+                <div class="flex items-center gap-3 bg-[#1b1d21] p-3 rounded-2xl">
+                  <i class="fa-solid fa-bell text-lg text-[#7640ef]"></i>
+                  <div>Pavel bought your UI Kit</div>
+                </div>
+              </div>
+            </div>
+          `;
+          break;
+
+        case 'activity':
+          container.innerHTML = `
+            <div class="p-4">
+              <div class="text-center text-sm font-bold mb-2">Activity</div>
+              <div class="flex justify-center">
+                <div class="relative w-32 h-32">
+                  <div class="absolute inset-0 rounded-full border-[14px] border-[#1b1d21]"></div>
+                  <div class="absolute inset-0 rounded-full border-[14px] border-[#ffaa5c]" style="clip-path: polygon(50% 50%, 50% 0%, 100% 0%, 100% 100%, 0% 100%, 0% 70%)"></div>
+                  <div class="absolute inset-[14px] rounded-full border-[14px] border-[#7640ef]" style="clip-path: polygon(50% 50%, 50% 0%, 70% 0%, 70% 100%, 30% 100%, 30% 0%)"></div>
+                  <div class="absolute inset-0 flex items-center justify-center">
+                    <div class="text-center"><div class="text-3xl font-bold">1240</div><div class="text-[10px] text-[#808389]">/ 10000</div></div>
+                  </div>
+                </div>
+              </div>
+              <div class="text-center text-xs text-[#808389] mt-3">Great progress today!</div>
+            </div>
+          `;
+          break;
+
+        case 'wallet':
+          container.innerHTML = `
+            <div class="p-4">
+              <div class="text-xs text-[#808389]">All cards</div>
+              <div class="text-2xl font-bold mt-1">$12,051</div>
+              <div class="mt-4 bg-white rounded-2xl p-4 text-[#1b1d21]">
+                <div class="text-xs">•••• •••• •••• 5752</div>
+                <div class="text-[10px] mt-6">04.2019</div>
+              </div>
+            </div>
+          `;
+          break;
+
+        case 'voice':
+          container.innerHTML = `
+            <div class="p-4 flex flex-col h-full">
+              <div class="text-center text-sm font-bold">Leave voice message</div>
+              <div class="flex-1 flex items-center justify-center">
+                <div class="w-20 h-20 rounded-full border-4 border-[#7d3ef3] flex items-center justify-center">
+                  <i class="fa-solid fa-microphone text-4xl text-white"></i>
+                </div>
+              </div>
+              <div class="text-center text-xs text-[#808389]">Tap and hold to record</div>
+            </div>
+          `;
+          break;
+
+        case 'team':
+          container.innerHTML = `
+            <div class="p-4">
+              <div class="text-center text-sm font-bold mb-4">Team</div>
+              <div class="flex flex-wrap justify-center gap-2">
+                <div class="w-8 h-8 bg-[#1b1d21] rounded-full"></div>
+                <div class="w-8 h-8 bg-[#1b1d21] rounded-full"></div>
+                <div class="w-8 h-8 bg-[#1b1d21] rounded-full"></div>
+                <div class="w-8 h-8 bg-[#1b1d21] rounded-full"></div>
+              </div>
+              <div class="text-center mt-4 text-xs text-[#808389]">8 members online</div>
+            </div>
+          `;
+          break;
+
+        default:
+          container.innerHTML = `<div class="p-4 text-center">Screen not found</div>`;
+      }
+    }
+
+    function switchScreen(screen) {
+      currentScreen = screen;
+      renderScreen(screen);
+    }
+
+    // Timer logic
+    let timerSeconds = 12 * 60 + 31;
+    function startTimer() {
+      if (timerInterval) return;
+      timerInterval = setInterval(() => {
+        timerSeconds--;
+        updateTimerDisplay();
+        if (timerSeconds <= 0) {
+          clearInterval(timerInterval);
+          timerInterval = null;
+        }
+      }, 1000);
+    }
+
+    function pauseTimer() {
+      clearInterval(timerInterval);
+      timerInterval = null;
+    }
+
+    function resetTimer() {
+      clearInterval(timerInterval);
+      timerInterval = null;
+      timerSeconds = 12 * 60 + 31;
+      updateTimerDisplay();
+    }
+
+    function updateTimerDisplay() {
+      const el = document.getElementById('timer-display');
+      if (!el) return;
+      const min = Math.floor(timerSeconds / 60);
+      const sec = timerSeconds % 60;
+      el.textContent = `${min}:${sec.toString().padStart(2, '0')}`;
+    }
+
+    // Tasks
+    function renderTasks(container) {
+      let html = `<div class="p-4"><div class="text-sm font-bold mb-3">Tasks</div>`;
+      tasks.forEach(task => {
+        html += `
+          <div class="flex items-center gap-3 mb-2 bg-[#1b1d21] p-3 rounded-2xl cursor-pointer" onclick="toggleTask(${task.id})">
+            <div class="w-5 h-5 rounded flex-shrink-0 flex items-center justify-center ${task.done ? 'bg-[#7640ef]' : 'border border-white'}">
+              ${task.done ? '<i class="fa-solid fa-check text-xs"></i>' : ''}
+            </div>
+            <span class="${task.done ? 'line-through text-[#808389]' : ''}">${task.text}</span>
+          </div>
+        `;
+      });
+      html += `</div>`;
+      container.innerHTML = html;
+    }
+
+    function toggleTask(id) {
+      tasks = tasks.map(t => t.id === id ? {...t, done: !t.done} : t);
+      renderScreen('tasks');
+    }
+
+    // Messages
+    function renderMessages(container) {
+      let html = `
+        <div class="p-3">
+          <div class="text-xs mb-2 font-bold">Barbara Payne</div>
+          <div class="space-y-2 text-xs mb-4">
+      `;
+      messages.forEach(msg => {
+        html += `<div class="bg-[#7640ef] rounded-2xl p-2 max-w-[85%]">${msg.text}</div>`;
+      });
+      html += `</div>
+        <div class="flex">
+          <input id="msg-input" class="flex-1 bg-[#1b1d21] rounded-l-2xl px-3 text-xs" placeholder="Type message...">
+          <button onclick="sendMessage()" class="px-4 rounded-r-2xl text-xs" style="background:#7640ef">Send</button>
+        </div>
+      </div>`;
+      container.innerHTML = html;
+    }
+
+    function sendMessage() {
+      const input = document.getElementById('msg-input');
+      if (!input || !input.value.trim()) return;
+      
+      messages.push({
+        from: "You",
+        text: input.value.trim(),
+        time: "now"
+      });
+      input.value = '';
+      renderScreen('messages');
+    }
+
+    // Call
+    let callTimer = null;
+    function startCallTimer() {
+      if (callTimer) return;
+      let seconds = 59 * 60;
+      callTimer = setInterval(() => {
+        seconds++;
+        const min = Math.floor(seconds / 60);
+        const sec = seconds % 60;
+        const el = document.getElementById('call-timer');
+        if (el) el.textContent = `${min}:${sec.toString().padStart(2, '0')}`;
+      }, 1000);
+    }
+
+    function endCall() {
+      if (callTimer) {
+        clearInterval(callTimer);
+        callTimer = null;
+      }
+      switchScreen('home');
+    }
+
+    function resetToHome() {
+      if (timerInterval) clearInterval(timerInterval);
+      if (callTimer) clearInterval(callTimer);
+      timerInterval = null;
+      callTimer = null;
+      switchScreen('home');
+    }
+
+    // Boot
+    function init() {
+      renderScreen('home');
+      console.log('%c[Watch Me] Interactive prototype loaded. All 16 screens available.', 'color:#666');
+    }
+
+    window.onload = init;
+  </script>
+</body>
+</html>

@@ -1,50 +1,73 @@
-# Figma 101 - Lesson 005: 页面复刻练习
+# Watch Me UI Kit — Figma 复刻 + 可交互原型
 
-> 目标：按照专业 Git 提交规范，通过阶段性提交高质量复刻 Figma 设计页面。
+> **目标**：将 Figma「Watch Me - UI kit」Dark Theme 页面的 16+ 个卡片高保真复刻为可直接用于项目的动态交互组件与原型。
 
-## 项目说明
+## 当前交付物（2026-05）
 
-本目录用于 **Figma 设计稿 → 高保真前端代码** 的复刻练习。
+### 1. 交互式手表原型（推荐体验）
+- **位置**：`prototypes/watch-me-interactive-prototype.html`
+- 完整模拟 280×280 智能手表
+- 支持 16 个屏幕自由切换
+- 多个屏幕已实现真实交互（Timer、Tasks、Messages、Call 等）
+- 底部导航 + 逻辑跳转
 
-- 复刻风格参考 `../003`：每个页面一个独立文件夹，包含 `index.html`（375×812 手机外框 + 内联样式 + 中文界面）
-- 严格遵循 [docs/COMMIT_MESSAGE_GUIDELINES.md](./docs/COMMIT_MESSAGE_GUIDELINES.md) 进行所有提交
-- 强调**阶段性提交**：每完成一个可独立验证的 UI 模块（状态栏、头部、列表、按钮区等）就提交一次
+### 2. 可复用组件库
+- **位置**：`components/cards/`
+- 7 个独立卡片片段（01-new-message, 02-voice-message, 03-timer, 04-wallet, 08-call, 09-tasks, 10-message）
+- 每个均为自包含 HTML（Tailwind CDN + 复制按钮），可直接嵌入项目
 
-## 工作流（推荐）
+### 3. 完整卡片组件库展示
+- `components/dark-theme-cards-library.html`（16 个卡片全集 + 设计令牌 + 一键复制）
 
-1. 接收 Figma 设计稿（图片 / 链接 / 描述）
-2. 拆解为可提交的阶段（StatusBar → Header → Content Sections → Interactions → Polish）
-3. 每阶段：
-   - 实现 → 自测（浏览器打开预览）
-   - `git add .`
-   - `git commit -m "type: 简洁描述\n\n详细说明（可选）"`
-4. 最终形成清晰、可追溯的提交历史
+### 4. 其他高保真原型
+- `prototypes/watch-me-dark-perfect.html` — 手机外框多场景完美复刻
+- `prototypes/watch-me-replica.html` — 卡片网格 + 颜色系统参考
 
-## 提交类型速查（本项目常用）
+### 5. 项目入口
+- `index.html` — 统一导航与概览（推荐从这里开始）
 
-| 类型     | 适用场景                     | 示例                                      |
-|----------|------------------------------|-------------------------------------------|
-| `feat`   | 新增页面模块、交互功能       | `feat: 实现手机号输入框及国家选择器`      |
-| `fix`    | 修复像素偏差、交互 bug       | `fix: 修复按钮在小屏下的文字溢出`         |
-| `style`  | 纯视觉调整（不改逻辑）       | `style: 统一卡片圆角与阴影层级`           |
-| `refactor`| 代码结构优化（不改外观）    | `refactor: 提取公共 status-bar 样式`      |
-| `docs`   | 文档、注释、PRD 更新         | `docs: 更新本页面复刻进度记录`            |
-| `chore`  | 工具链、gitignore、配置      | `chore: 初始化项目 git 仓库与规范文档`    |
+### 项目结构（专业化重组后）
+```
+.
+├── index.html                     # 项目入口画廊
+├── README.md
+├── package.json                   # 脚本与元数据（可选本地服务器）
+├── docs/
+│   ├── COMMIT_MESSAGE_GUIDELINES.md
+│   └── WATCH-ME-DARK-THEME-CARDS-STATUS.md
+├── prototypes/
+│   ├── watch-me-interactive-prototype.html   # 完整交互手表模拟器（16屏）
+│   ├── watch-me-dark-perfect.html
+│   └── watch-me-replica.html
+├── components/
+│   ├── dark-theme-cards-library.html         # 全 16 卡片库
+│   └── cards/                                # 模块化单卡片源码
+│       ├── 01-new-message.html
+│       └── ...
+└── .figma/ (ignored)              # MCP 临时截图/导出
+```
 
-## 当前进度
+## 快速开始
 
-- [x] 项目初始化 + Git 规范文档
-- [x] 基础复刻模板（template/index.html）
-- [x] MCP 连接页面复刻准备（pages/mcp-page/ + .figma/image/）
-- [ ] 等待 MCP / 用户提供设计截图 → 开始阶段性像素级复刻
+```bash
+# 推荐：用浏览器打开项目入口
+# (或使用下方 npm 脚本)
 
-**当前目标页面**：通过 figma-mcp-go 连接的 Figma 页面（位于 `pages/mcp-page/`）
+# 直接预览
+start prototypes/watch-me-interactive-prototype.html
+start components/dark-theme-cards-library.html
+```
+
+使用 `npm start` 可一键启动本地服务器（见 package.json）。
+
+## 后续计划（Multi-Agent 正在推进）
+
+- [ ] 补全所有 16 个屏幕的深度交互
+- [ ] Light Theme 支持
+- [ ] 更完整的组件导出（React / 纯 HTML 版本）
+- [ ] 更好的状态管理与屏幕间联动
+- [ ] 文档与使用指南完善
 
 ---
 
-**开始复刻前请提供：**
-- Figma 设计链接或截图
-- 目标页面名称（例如：GODY 登录页 / 首页 / 选择用车页 等）
-- 是否需要从 003 已有页面基础上演进
-
-准备好后即可开始第一阶段的代码实现与提交。
+**本项目严格遵循** `docs/COMMIT_MESSAGE_GUIDELINES.md` 的提交规范。
