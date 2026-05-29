@@ -5,19 +5,20 @@ on:
     branches: ["main"]
   workflow_dispatch:
 
-# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+# Required permissions for GitHub Pages deployment via Actions (official 2026 best practice)
 permissions:
   contents: read
   pages: write
   id-token: write
 
-# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
+# Prevent concurrent deployments
 concurrency:
   group: "pages"
   cancel-in-progress: false
 
 jobs:
-  # Single deploy job
+  # Single job is acceptable for pure static sites with no build step.
+  # For projects with build steps, split into separate "build" and "deploy" jobs.
   deploy:
     environment:
       name: github-pages
@@ -25,17 +26,22 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Setup Pages
-        uses: actions/configure-pages@v5
+        uses: actions/configure-pages@v6
+        with:
+          # Attempt to auto-enable Pages + set source to GitHub Actions if not already configured.
+          # Note: Manual setup in Settings → Pages is still the most reliable method.
+          enablement: true
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v4
         with:
-          # Upload entire repository (static site)
+          # Deploy the entire repository root as static content
           path: "."
 
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
