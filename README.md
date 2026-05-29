@@ -35,7 +35,10 @@
 
 - [x] 项目初始化 + Git 规范文档
 - [x] 基础复刻模板（template/index.html）
-- [ ] 等待设计稿 → 开始第一个实际页面复刻（在 pages/ 下创建）
+- [x] MCP 连接页面复刻准备（pages/mcp-page/ + .figma/image/）
+- [ ] 等待 MCP / 用户提供设计截图 → 开始阶段性像素级复刻
+
+**当前目标页面**：通过 figma-mcp-go 连接的 Figma 页面（位于 `pages/mcp-page/`）
 
 ---
 
