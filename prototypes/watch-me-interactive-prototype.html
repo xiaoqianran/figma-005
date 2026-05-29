@@ -3,12 +3,30 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Watch Me • Interactive Prototype</title>
+  <title>Watch Me • Dark Theme — Instrument</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Syne:wght@700&amp;family=IBM+Plex+Sans:wght@400;500&amp;display=swap">
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&amp;display=swap');
-    body { font-family: 'Montserrat', system-ui, -apple-system, sans-serif; }
+    :root {
+      --bg: #0a0a0a;
+      --surface: #111111;
+      --card: #1b1d21;
+      --accent: #7640ef;
+      --highlight: #ff4a8c;
+      --text: #f2f2f2;
+      --text-secondary: #808389;
+    }
+    
+    body {
+      font-family: 'IBM Plex Sans', system-ui, -apple-system, sans-serif;
+    }
+    
+    .display-font {
+      font-family: 'Syne', system-ui, -apple-system, sans-serif;
+      font-weight: 700;
+      letter-spacing: -0.025em;
+    }
     
     .watch-bezel {
       background: #111;
@@ -26,17 +44,31 @@
       position: relative;
     }
 
-    .screen-content {
+    .screen-content,
+    #screen-content {
       width: 100%;
       height: 100%;
+      min-height: 100%;
+      background: #1b1d21;
+      color: #f2f2f2;
+      box-sizing: border-box;
+      overflow: hidden;
+      display: block;
       transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     .app-icon {
-      transition: transform 0.1s ease;
+      transition: all 0.1s cubic-bezier(0.23, 1, 0.32, 1);
+      border: 1px solid transparent;
+    }
+    .app-icon:hover {
+      background-color: #1a1c20;
+      border-color: rgba(255,255,255,0.08);
+      transform: translateY(-1px);
     }
     .app-icon:active {
-      transform: scale(0.92);
+      transform: scale(0.96);
+      transition-duration: 0.05s;
     }
 
     .nav-active {
@@ -102,55 +134,113 @@
       from { opacity: 0; transform: translate(-50%, 10px); }
       to { opacity: 1; transform: translate(-50%, 0); }
     }
+
+    /* Timer visual feedback */
+    .timer-display {
+      transition: color 0.2s ease, text-shadow 0.2s ease;
+    }
+    .timer-running {
+      animation: timerPulse 1.8s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+      text-shadow: 0 0 12px rgba(118, 64, 239, 0.35);
+    }
+    .timer-low {
+      color: #ffaa5c !important;
+      text-shadow: 0 0 10px rgba(255, 170, 92, 0.4);
+    }
+    .timer-finished {
+      animation: timerFlash 0.6s ease 3;
+      color: #ff4a8c !important;
+    }
+    @keyframes timerPulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.75; }
+    }
+    @keyframes timerFlash {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+    .timer-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 10px;
+      color: #22c55e;
+      background: rgba(34, 197, 94, 0.1);
+      padding: 1px 8px;
+      border-radius: 999px;
+      margin-bottom: 4px;
+    }
+    .timer-status-dot {
+      width: 6px;
+      height: 6px;
+      background: #22c55e;
+      border-radius: 50%;
+      box-shadow: 0 0 6px #22c55e;
+      animation: statusBlink 1.2s ease infinite;
+    }
+    @keyframes statusBlink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
   </style>
 </head>
-<body class="bg-zinc-950 text-white">
-  <div class="max-w-screen-2xl mx-auto px-8 py-8">
+<body class="bg-zinc-950 text-white min-h-screen">
+  <div class="max-w-[1320px] mx-auto px-5 md:px-8 py-8">
     <!-- Header -->
-    <div class="flex items-center justify-between mb-8">
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-y-3 mb-6">
       <div>
         <h1 class="text-4xl font-bold tracking-tight">Watch Me</h1>
-        <p class="text-zinc-400">Interactive Dark Theme Prototype</p>
+        <p class="text-zinc-400 mt-0.5">Interactive Dark Theme Prototype — 16 fully functional screens</p>
       </div>
-      <div class="flex items-center gap-x-3 text-sm">
-        <div class="px-4 py-2 bg-zinc-900 rounded-3xl flex items-center gap-x-2">
-          <div class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
-          <span class="text-emerald-400">实时交互原型</span>
-        </div>
+      <div>
         <button onclick="resetToHome()" 
-                class="px-5 py-2 bg-white text-black rounded-3xl font-semibold text-sm hover:bg-zinc-200">
-          返回主屏
+                class="px-5 py-2 bg-white text-black rounded-3xl font-semibold text-sm hover:bg-zinc-200 active:scale-[0.985] transition">
+          重置原型
         </button>
       </div>
     </div>
 
-    <div class="flex gap-8 items-start">
-      
-      <!-- Watch Device -->
-      <div class="flex-shrink-0">
-        <div class="watch-bezel mx-auto rounded-[70px] p-4 w-[320px]">
-          <!-- Screen -->
-          <div class="watch-screen mx-auto" id="watch-screen">
-            
-            <!-- Dynamic Screen Content -->
-            <div id="screen-content" class="screen-content p-5 text-white overflow-hidden">
-              <!-- Content injected by JS -->
-            </div>
-            
-          </div>
-        </div>
+    <!-- Main Workbench Layout: Precision Instrument Aesthetic -->
+    <div class="bg-[#111111] border border-white/10 rounded-3xl p-7 md:p-9">
+      <div class="flex flex-col xl:flex-row gap-10 items-start">
         
-        <div class="text-center mt-4 text-xs text-zinc-500">Watch Me • Dark Theme • 280×280</div>
-      </div>
-
-      <!-- App Launcher / Navigation -->
-      <div class="flex-1 max-w-md">
-        <div class="mb-4">
-          <div class="text-sm font-semibold text-zinc-400 mb-2">APP 导航（全部 16 屏）</div>
-          <div class="text-xs text-zinc-500">点击图标进入手表屏幕 • 底部导航栏常驻 • 真实交互</div>
+        <!-- The Watch — The Physical Instrument (now much larger and dominant) -->
+        <div class="flex-shrink-0 w-full xl:w-[520px] flex flex-col items-center">
+          <div class="text-[10px] tracking-[2.5px] text-white/50 mb-2 pl-1">PRECISION INSTRUMENT</div>
+          
+          <div class="watch-bezel mx-auto rounded-[82px] p-7 w-[420px] md:w-[440px] bg-[#0c0c0c]" 
+               style="box-shadow: 
+                 0 0 0 1px #1f1f1f, 
+                 0 70px 140px -30px rgb(0 0 0 / 0.9), 
+                 inset 0 0 90px rgb(255 255 255 / 0.012),
+                 inset 0 3px 0 rgba(255,255,255,0.035);">
+            
+            <div class="watch-screen mx-auto" id="watch-screen" 
+                 style="width: 380px; height: 380px; box-shadow: 
+                   inset 0 0 0 1px rgba(255,255,255,0.03), 
+                   inset 0 35px 70px rgba(0,0,0,0.75);">
+              
+              <div id="screen-content" class="screen-content p-7 text-white overflow-hidden h-full">
+                <!-- JS injected content -->
+              </div>
+            </div>
+          </div>
+          
+          <div class="mt-4 text-[10px] tracking-[1.5px] text-white/40 font-medium">380 × 380 • DARK THEME • PRECISION INSTRUMENT</div>
         </div>
 
-        <div class="grid grid-cols-4 gap-2 text-[10px]">
+        <!-- Control Deck — Compact side panel (now secondary to the large watch) -->
+        <div class="flex-1 w-full xl:max-w-[420px] border-l border-white/10 pl-8 xl:pl-10">
+          <div class="flex items-end justify-between mb-4">
+            <div>
+              <div class="text-[10px] tracking-[2.5px] text-white/50">COMPLICATION DECK</div>
+              <div class="display-font text-2xl tracking-[-0.75px] mt-1">所有屏幕</div>
+            </div>
+            <div class="text-xs text-white/40 mb-1 tabular-nums">16 / 16</div>
+          </div>
+
+          <!-- More compact but still clear grid -->
+          <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-6 2xl:grid-cols-7 gap-2 text-[10px]">
           <div onclick="switchScreen('clock')" class="app-icon bg-zinc-900 hover:bg-zinc-800 rounded-2xl p-2 text-center cursor-pointer">
             <div class="w-8 h-8 mx-auto rounded-xl flex items-center justify-center bg-gradient-to-br from-[#7640ef] to-[#ff4a8c]"><i class="fa-solid fa-clock text-white text-sm"></i></div>
             <div class="mt-1">Clock</div>
@@ -219,7 +309,7 @@
 
         <div class="mt-5 text-xs text-zinc-500 leading-snug">
           所有 16 个主屏均已实现。<br>
-          底部常驻导航 • 点击项目可跳转关联屏幕 • 支持真实状态操作。
+          共享 appState + 真实跨屏交互（Call完成任务、发消息建通知、支付改余额、添加联系人同步Team+消息、点击Team联系人呼叫等）。
         </div>
       </div>
 
@@ -229,24 +319,45 @@
   <script>
     let currentScreen = 'home';
     let timerInterval = null;
-    let tasks = [
-      { id: 1, text: "Drink 2 liters of water", done: false },
-      { id: 2, text: "Call grandma at 8 AM", done: true },
-      { id: 3, text: "Finish design review", done: false }
-    ];
-    let messages = [
-      { from: "Barbara", text: "Where is my money?", time: "09:41" }
-    ];
+    let callTimer = null;
+
+    // Central App State - this is what makes the 16 components actually interact
+    const appState = {
+      tasks: [
+        { id: 1, text: "Drink 2 liters of water", done: false },
+        { id: 2, text: "Call grandma at 8 AM", done: true },
+        { id: 3, text: "Finish design review", done: false }
+      ],
+      messages: [
+        { from: "Barbara", text: "Where is my money?", time: "09:41" }
+      ],
+      contacts: [
+        { id: 1, name: "Barbara Payne", online: true },
+        { id: 2, name: "Oliver Adams", online: false }
+      ],
+      walletBalance: 12051,
+      notifications: [
+        { id: 1, type: 'message', title: 'New message from Barbara', target: 'messages' },
+        { id: 2, type: 'team', title: 'Team meeting in 15 min', target: 'team' }
+      ],
+      timerSeconds: 12 * 60 + 31,
+      callSeconds: 59 * 60,
+      currentCallContact: "Barbara Payne"
+    };
 
     // Render current screen
     function renderScreen(screen) {
       const container = document.getElementById('screen-content');
+      if (!container) return;
+
+      // Always start by clearing; defensive blank-prevention happens at end of fn
       container.innerHTML = '';
 
+      try {
       switch (screen) {
         case 'home':
           container.innerHTML = `
-            <div class="h-full flex flex-col">
+            <div class="h-full flex flex-col p-2">
               <div class="flex justify-between text-xs px-1 pt-1">
                 <div class="text-[#808389]">Back</div>
                 <div class="font-bold">9:41</div>
@@ -254,42 +365,22 @@
               
               <div class="flex-1 flex items-center justify-center">
                 <div class="text-center">
-                  <div class="text-5xl font-bold tracking-tighter">9:41</div>
-                  <div class="text-[#808389] text-sm">Monday, Feb 3</div>
+                  <div class="text-6xl font-bold tracking-tighter">9:41</div>
+                  <div class="text-[#808389] text-sm mt-1">Monday, Feb 3</div>
                 </div>
               </div>
 
-              <div class="grid grid-cols-3 gap-2 px-1 pb-2">
-                <div onclick="switchScreen('messages')" class="bg-[#1b1d21] rounded-2xl p-2 text-center cursor-pointer">
-                  <i class="fa-solid fa-comment text-[#7640ef] text-lg"></i>
-                  <div class="text-[10px] mt-1">Message</div>
-                </div>
-                <div onclick="switchScreen('activity')" class="bg-[#1b1d21] rounded-2xl p-2 text-center cursor-pointer">
-                  <i class="fa-solid fa-heart-pulse text-[#ff4a8c] text-lg"></i>
-                  <div class="text-[10px] mt-1">Activity</div>
-                </div>
-                <div onclick="switchScreen('wallet')" class="bg-[#1b1d21] rounded-2xl p-2 text-center cursor-pointer">
-                  <i class="fa-solid fa-wallet text-white text-lg"></i>
-                  <div class="text-[10px] mt-1">Wallet</div>
-                </div>
+              <div class="grid grid-cols-3 gap-2 px-1 pb-2 text-[10px]">
+                <div onclick="switchScreen('messages')" class="bg-[#1b1d21] rounded-2xl p-2 text-center cursor-pointer active:bg-[#25272d]">Messages</div>
+                <div onclick="switchScreen('activity')" class="bg-[#1b1d21] rounded-2xl p-2 text-center cursor-pointer active:bg-[#25272d]">Activity</div>
+                <div onclick="switchScreen('wallet')" class="bg-[#1b1d21] rounded-2xl p-2 text-center cursor-pointer active:bg-[#25272d]">Wallet</div>
               </div>
             </div>
           `;
           break;
 
         case 'timer':
-          container.innerHTML = `
-            <div class="h-full flex flex-col p-1">
-              <div class="text-center text-xs text-[#808389]">Timer</div>
-              <div id="timer-display" class="text-center text-6xl font-bold tracking-tighter mt-6">12:31</div>
-              <div class="flex-1"></div>
-              <div class="flex justify-center gap-4 pb-3">
-                <button onclick="startTimer()" class="px-5 py-2 text-sm rounded-2xl bg-[#7640ef]">Start</button>
-                <button onclick="pauseTimer()" class="px-5 py-2 text-sm rounded-2xl bg-zinc-800">Pause</button>
-                <button onclick="resetTimer()" class="px-5 py-2 text-sm rounded-2xl bg-zinc-800">Reset</button>
-              </div>
-            </div>
-          `;
+          renderTimer(container);
           break;
 
         case 'tasks':
@@ -304,7 +395,7 @@
           container.innerHTML = `
             <div class="h-full flex flex-col items-center justify-center p-4">
               <div class="w-20 h-20 rounded-full mb-4" style="background:#753fed"></div>
-              <div class="font-bold">Barbara Payne</div>
+              <div class="font-bold">${appState.currentCallContact}</div>
               <div id="call-timer" class="text-[#808389] text-sm mt-1">59:00</div>
               <div class="flex-1"></div>
               <div class="flex gap-4">
@@ -320,18 +411,20 @@
           break;
 
         case 'notifications':
+          const notifHtml = appState.notifications.length > 0 
+            ? appState.notifications.map(n => `
+                <div onclick="openNotification(${n.id})" class="flex items-center gap-3 bg-[#1b1d21] p-3 rounded-2xl cursor-pointer active:bg-[#25272d]">
+                  <i class="fa-solid ${n.type === 'message' ? 'fa-envelope' : 'fa-users'} text-lg ${n.type === 'message' ? 'text-[#43a5ff]' : 'text-[#7640ef]'}"></i>
+                  <div class="flex-1">${n.title}</div>
+                </div>
+              `).join('')
+            : `<div class="text-xs text-center py-6 text-[#808389]">No new notifications</div>`;
+
           container.innerHTML = `
             <div class="p-4">
               <div class="text-sm font-bold mb-3">New notifications</div>
               <div class="space-y-2 text-xs">
-                <div class="flex items-center gap-3 bg-[#1b1d21] p-3 rounded-2xl">
-                  <i class="fa-solid fa-calendar text-lg text-[#43a5ff]"></i>
-                  <div>Team meeting in 15 min</div>
-                </div>
-                <div class="flex items-center gap-3 bg-[#1b1d21] p-3 rounded-2xl">
-                  <i class="fa-solid fa-bell text-lg text-[#7640ef]"></i>
-                  <div>Pavel bought your UI Kit</div>
-                </div>
+                ${notifHtml}
               </div>
             </div>
           `;
@@ -360,11 +453,14 @@
           container.innerHTML = `
             <div class="p-4">
               <div class="text-xs text-[#808389]">All cards</div>
-              <div class="text-2xl font-bold mt-1">$12,051</div>
-              <div class="mt-4 bg-white rounded-2xl p-4 text-[#1b1d21]">
+              <div class="text-2xl font-bold mt-1">$${appState.walletBalance.toLocaleString()}</div>
+              <div onclick="switchScreen('card')" class="mt-4 bg-white rounded-2xl p-4 text-[#1b1d21] cursor-pointer active:scale-[0.985] transition">
                 <div class="text-xs">•••• •••• •••• 5752</div>
                 <div class="text-[10px] mt-6">04.2019</div>
+                <div class="text-[9px] mt-2 text-[#7640ef]">Tap for NFC payment →</div>
               </div>
+              <!-- Cross-nav: Payment history lives in Notifications (live tx logs from Confirm) -->
+              <div onclick="switchScreen('notifications')" class="mt-3 text-center text-xs py-1.5 text-[#43a5ff] cursor-pointer">View recent transactions →</div>
             </div>
           `;
           break;
@@ -384,22 +480,184 @@
           break;
 
         case 'team':
+          const teamHtml = appState.contacts.map(c => `
+            <div onclick="startCallWithContact('${c.name.replace(/'/g, "\\'")}')" class="flex items-center gap-3 bg-[#1b1d21] rounded-2xl px-3 py-2 cursor-pointer active:bg-[#25272d]">
+              <div class="w-8 h-8 rounded-full bg-[#7640ef]"></div>
+              <div class="flex-1">
+                <div class="text-sm">${c.name}</div>
+                <div class="text-[10px] ${c.online ? 'text-emerald-400' : 'text-white/40'}">${c.online ? 'Online' : 'Offline'}</div>
+              </div>
+              <div class="text-[10px] text-[#7640ef]">Call →</div>
+            </div>
+          `).join('');
+
           container.innerHTML = `
             <div class="p-4">
-              <div class="text-center text-sm font-bold mb-4">Team</div>
-              <div class="flex flex-wrap justify-center gap-2">
-                <div class="w-8 h-8 bg-[#1b1d21] rounded-full"></div>
-                <div class="w-8 h-8 bg-[#1b1d21] rounded-full"></div>
-                <div class="w-8 h-8 bg-[#1b1d21] rounded-full"></div>
-                <div class="w-8 h-8 bg-[#1b1d21] rounded-full"></div>
+              <div class="text-center text-sm font-bold mb-3">Team</div>
+              <div class="space-y-2 mb-3">
+                ${teamHtml}
               </div>
-              <div class="text-center mt-4 text-xs text-[#808389]">8 members online</div>
+              <div onclick="switchScreen('addcontact')" class="text-center text-xs py-2 border border-[#7640ef] text-[#7640ef] rounded-2xl cursor-pointer">
+                + Add Contact
+              </div>
+            </div>
+          `;
+          break;
+
+        case 'clock':
+          container.innerHTML = `
+            <div class="h-full flex flex-col items-center justify-center p-3">
+              <div class="text-xs text-[#808389] mb-1">Clock</div>
+              <div class="text-6xl font-bold tracking-tighter">9:41</div>
+              <div class="text-[#808389] text-sm">Monday, Feb 3</div>
+              <div class="mt-6 w-28 h-28 rounded-full border-[8px] border-[#1b1d21] relative">
+                <div class="absolute inset-0 flex items-center justify-center">
+                  <div class="w-0.5 h-6 bg-white absolute" style="transform: rotate(110deg); top: 18px;"></div>
+                  <div class="w-0.5 h-4 bg-[#7640ef] absolute" style="transform: rotate(45deg); top: 28px;"></div>
+                </div>
+              </div>
+              <div class="text-[10px] text-[#808389] mt-2">UTC-8 • Sunny 14°</div>
+            </div>
+          `;
+          break;
+
+        case 'progress':
+          container.innerHTML = `
+            <div class="p-4">
+              <div class="text-center text-sm font-bold mb-2">Overall Progress</div>
+              <div class="mt-2 flex justify-center">
+                <div class="w-24 h-24 rounded-full border-[10px] border-[#1b1d21] relative flex items-center justify-center">
+                  <div class="absolute inset-0 rounded-full border-[10px] border-[#ffaa5c]" style="clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 100%, 0 100%, 0 30%)"></div>
+                  <div class="text-center"><div class="text-2xl font-bold">68</div><div class="text-[9px] -mt-1 text-[#808389]">%</div></div>
+                </div>
+              </div>
+              <div class="mt-4 text-center text-xs">Weekly goals nearly complete</div>
+              <div onclick="switchScreen('activity')" class="mt-3 mx-auto text-center text-[#7640ef] text-xs cursor-pointer">View Activity →</div>
+            </div>
+          `;
+          break;
+
+        case 'card':
+          container.innerHTML = `
+            <div class="p-4 flex flex-col h-full">
+              <div class="text-xs text-[#808389]">Active Card</div>
+              <div class="mt-2 bg-gradient-to-br from-zinc-800 to-black rounded-2xl p-4 text-white flex-1 flex flex-col">
+                <div class="flex-1">
+                  <div class="text-[10px]">VISA</div>
+                  <div class="font-mono text-xl tracking-[3px] mt-4">5752</div>
+                </div>
+                <div class="flex justify-between text-xs">
+                  <div>04.19</div>
+                  <div>OLIVER</div>
+                </div>
+              </div>
+              <div onclick="switchScreen('confirmtx')" class="text-center mt-3 text-xs py-2 bg-[#7640ef] rounded-xl cursor-pointer font-medium">Tap to Pay (NFC)</div>
+            </div>
+          `;
+          break;
+
+        case 'newmsg':
+          container.innerHTML = `
+            <div class="p-4 flex flex-col items-center">
+              <div class="w-16 h-16 rounded-full bg-[#7640ef] flex items-center justify-center mt-2">
+                <i class="fa-solid fa-comment text-3xl text-white"></i>
+              </div>
+              <div class="font-bold mt-3">New Message</div>
+              <div class="text-xs text-[#808389]">to Oliver Adams</div>
+              <div class="mt-6 w-full">
+                <div onclick="switchScreen('messages')" class="bg-[#7640ef] text-center py-2 rounded-2xl text-sm font-medium cursor-pointer">Start Chat</div>
+              </div>
+              <div onclick="switchScreen('addcontact')" class="text-xs text-[#808389] mt-4 cursor-pointer">+ Add recipient</div>
+            </div>
+          `;
+          break;
+
+        case 'msgdetail':
+          container.innerHTML = `
+            <div class="p-3 h-full flex flex-col">
+              <div class="text-xs font-bold mb-2 flex items-center gap-2"><span>Barbara Payne</span> <span class="text-emerald-400">●</span></div>
+              <div class="flex-1 space-y-2 text-xs overflow-auto">
+                <div class="bg-[#1b1d21] rounded-2xl p-2 max-w-[80%]">Hey, the design files are ready.</div>
+                <div class="bg-[#7640ef] rounded-2xl p-2 max-w-[80%] ml-auto">Thanks! Sending over now.</div>
+              </div>
+              <div class="flex mt-2">
+                <input class="flex-1 bg-[#1b1d21] rounded-l-2xl px-3 text-xs" placeholder="Reply...">
+                <button onclick="showToast('Reply sent (demo)'); switchScreen('messages')" class="px-3 bg-[#7640ef] rounded-r-2xl text-xs">Send</button>
+              </div>
+            </div>
+          `;
+          break;
+
+        case 'confirmtx':
+          container.innerHTML = `
+            <div class="p-4 text-center">
+              <div class="text-xs text-[#808389]">Confirm Transaction</div>
+              <div class="text-3xl font-bold mt-2">$129.00</div>
+              <div class="text-xs mt-1">to DesignCo • Wallet</div>
+              <div class="my-6 text-left bg-[#1b1d21] p-3 rounded-2xl text-xs">
+                <div class="flex justify-between"><span>Fee</span><span>0.5%</span></div>
+                <div class="flex justify-between mt-1"><span>Total</span><span class="font-medium">$129.65</span></div>
+              </div>
+              <div onclick="confirmPayment()" class="bg-[#7640ef] py-2 rounded-2xl text-sm font-medium cursor-pointer">Confirm & Pay</div>
+              <div onclick="switchScreen('wallet')" class="text-xs mt-3 text-[#808389] cursor-pointer">Cancel</div>
+            </div>
+          `;
+          break;
+
+        case 'addcontact':
+          container.innerHTML = `
+            <div class="p-4">
+              <div class="text-sm font-bold mb-3">Add Contact</div>
+              <div class="bg-[#1b1d21] rounded-2xl p-3">
+                <div class="text-xs text-[#808389]">Name</div>
+                <input id="new-contact-name" value="Sam Rivera" class="bg-transparent w-full text-sm border-b border-white/20 pb-1 outline-none">
+                <div class="text-xs text-[#808389] mt-3">Phone / ID</div>
+                <input id="new-contact-phone" value="+1 (555) 0192" class="bg-transparent w-full text-sm border-b border-white/20 pb-1 outline-none">
+              </div>
+              <div onclick="addNewContact()" class="mt-4 bg-white text-black text-center py-2 rounded-2xl text-sm font-medium cursor-pointer">Add to Contacts</div>
             </div>
           `;
           break;
 
         default:
           container.innerHTML = `<div class="p-4 text-center">Screen not found</div>`;
+      }
+      } catch (e) {
+        console.error('renderScreen case error for', screen, e);
+        // fall through to defensive below
+      }
+
+      // DEFENSIVE CHECK: never allow blank screen even if any case block is broken
+      const afterRender = container.innerHTML.trim();
+      if (!afterRender || afterRender === '' || afterRender.includes('Screen not found')) {
+        // Force minimal robust always-working home (big clear clock + basic nav)
+        container.innerHTML = `
+          <div class="h-full flex flex-col" style="background:#1b1d21; color:#fff; padding:12px; font-family:system-ui,-apple-system,sans-serif;">
+            <div style="display:flex; justify-content:space-between; font-size:10px; opacity:0.6; padding:0 4px 4px;">
+              <div>Back</div>
+              <div style="font-weight:700;">9:41</div>
+            </div>
+            <div style="flex:1; display:flex; align-items:center; justify-content:center;">
+              <div style="text-align:center;">
+                <div style="font-size:62px; font-weight:700; letter-spacing:-3px; line-height:1;">9:41</div>
+                <div style="font-size:11px; opacity:0.65; margin-top:2px;">Monday, Feb 3</div>
+              </div>
+            </div>
+            <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:6px; padding:0 4px 6px; font-size:9px;">
+              <div onclick="switchScreen('messages')" style="background:#25272d; border-radius:10px; padding:6px 4px; text-align:center; cursor:pointer; user-select:none;">Messages</div>
+              <div onclick="switchScreen('activity')" style="background:#25272d; border-radius:10px; padding:6px 4px; text-align:center; cursor:pointer; user-select:none;">Activity</div>
+              <div onclick="switchScreen('wallet')" style="background:#25272d; border-radius:10px; padding:6px 4px; text-align:center; cursor:pointer; user-select:none;">Wallet</div>
+            </div>
+          </div>
+        `;
+      }
+
+      // Post-render sync for live stateful displays (fixes re-entry bugs)
+      if (screen === 'timer') {
+        // renderTimer already drew the correct state; just make sure classes are fresh
+        updateTimerDisplay();
+      } else if (screen === 'call') {
+        updateCallDisplay();
       }
     }
 
@@ -408,44 +666,149 @@
       renderScreen(screen);
     }
 
-    // Timer logic
-    let timerSeconds = 12 * 60 + 31;
+    // Timer logic (fully driven by appState for cross-screen consistency)
     function startTimer() {
       if (timerInterval) return;
+
       timerInterval = setInterval(() => {
-        timerSeconds--;
+        appState.timerSeconds--;
         updateTimerDisplay();
-        if (timerSeconds <= 0) {
+
+        if (appState.timerSeconds <= 0) {
           clearInterval(timerInterval);
           timerInterval = null;
+
+          // Strong visual + toast feedback when timer ends
+          const display = document.getElementById('timer-display');
+          if (display) {
+            display.classList.add('timer-finished');
+          }
+          showToast('Timer finished!');
+
+          // Refresh UI so buttons go back to idle state
+          setTimeout(() => {
+            const c = document.getElementById('screen-content');
+            if (c && currentScreen === 'timer') {
+              renderTimer(c);
+            }
+          }, 1200);
         }
       }, 1000);
+
+      // Immediately refresh the whole timer view so Start becomes disabled + status appears
+      const c = document.getElementById('screen-content');
+      if (c && currentScreen === 'timer') {
+        renderTimer(c);
+      }
     }
 
     function pauseTimer() {
       clearInterval(timerInterval);
       timerInterval = null;
+
+      // Refresh UI so the big Start button becomes active again + running indicator disappears
+      const container = document.getElementById('screen-content');
+      if (container && currentScreen === 'timer') {
+        renderTimer(container);
+      } else {
+        // If user is on another screen, just make sure display is clean next time they open Timer
+        updateTimerDisplay();
+      }
     }
 
     function resetTimer() {
       clearInterval(timerInterval);
       timerInterval = null;
-      timerSeconds = 12 * 60 + 31;
-      updateTimerDisplay();
+      appState.timerSeconds = 12 * 60 + 31;
+
+      const container = document.getElementById('screen-content');
+      if (container && currentScreen === 'timer') {
+        renderTimer(container);
+      } else {
+        updateTimerDisplay();
+      }
     }
 
     function updateTimerDisplay() {
       const el = document.getElementById('timer-display');
       if (!el) return;
-      const min = Math.floor(timerSeconds / 60);
-      const sec = timerSeconds % 60;
-      el.textContent = `${min}:${sec.toString().padStart(2, '0')}`;
+
+      const min = Math.floor(appState.timerSeconds / 60);
+      const sec = appState.timerSeconds % 60;
+      const timeStr = `${min}:${sec.toString().padStart(2, '0')}`;
+      el.textContent = timeStr;
+
+      // Visual state: running pulse + low time warning + finished flash
+      el.classList.remove('timer-running', 'timer-low', 'timer-finished');
+
+      const isRunning = !!timerInterval;
+
+      if (isRunning) {
+        el.classList.add('timer-running');
+      }
+
+      if (appState.timerSeconds <= 60 && appState.timerSeconds > 0) {
+        el.classList.add('timer-low');
+      }
+
+      if (appState.timerSeconds <= 0) {
+        el.classList.add('timer-finished');
+      }
+    }
+
+    // Beautiful, state-aware Timer renderer (gives clear feedback after Start)
+    function renderTimer(container) {
+      if (!container) {
+        container = document.getElementById('screen-content');
+      }
+      if (!container) return;
+
+      const isRunning = !!timerInterval;
+      const remaining = appState.timerSeconds;
+      const min = Math.floor(remaining / 60);
+      const sec = remaining % 60;
+      const timeStr = `${min}:${sec.toString().padStart(2, '0')}`;
+
+      const statusHtml = isRunning 
+        ? `<div class="timer-status"><div class="timer-status-dot"></div>RUNNING</div>` 
+        : '';
+
+      const startBtn = isRunning
+        ? `<button onclick="pauseTimer()" class="px-5 py-2 text-sm rounded-2xl bg-zinc-700 text-white/60 cursor-default">Start</button>`
+        : `<button onclick="startTimer()" class="px-5 py-2 text-sm rounded-2xl bg-[#7640ef] active:scale-[0.985] transition">Start</button>`;
+
+      const pauseBtn = isRunning
+        ? `<button onclick="pauseTimer()" class="px-5 py-2 text-sm rounded-2xl bg-[#ff4a8c] active:scale-[0.985] transition">Pause</button>`
+        : `<button onclick="pauseTimer()" class="px-5 py-2 text-sm rounded-2xl bg-zinc-800">Pause</button>`;
+
+      const resetBtn = `<button onclick="resetTimer()" class="px-5 py-2 text-sm rounded-2xl bg-zinc-800">Reset</button>`;
+
+      container.innerHTML = `
+        <div class="h-full flex flex-col p-1">
+          <div class="text-center text-xs text-[#808389]">Timer</div>
+
+          <div class="flex-1 flex flex-col items-center justify-center -mt-2">
+            ${statusHtml}
+            <div id="timer-display" 
+                 class="timer-display text-center text-6xl font-bold tracking-tighter ${isRunning ? 'timer-running' : ''} ${remaining <= 60 && remaining > 0 ? 'timer-low' : ''}">
+              ${timeStr}
+            </div>
+            <div class="text-[10px] text-[#808389] mt-1 tracking-[1px]">MIN : SEC</div>
+          </div>
+
+          <div class="flex justify-center gap-3 pb-4">
+            ${startBtn}
+            ${pauseBtn}
+            ${resetBtn}
+          </div>
+        </div>
+      `;
     }
 
     // Tasks
     function renderTasks(container) {
       let html = `<div class="p-4"><div class="text-sm font-bold mb-3">Tasks</div>`;
-      tasks.forEach(task => {
+      appState.tasks.forEach(task => {
         html += `
           <div class="flex items-center gap-3 mb-2 bg-[#1b1d21] p-3 rounded-2xl cursor-pointer" onclick="toggleTask(${task.id})">
             <div class="w-5 h-5 rounded flex-shrink-0 flex items-center justify-center ${task.done ? 'bg-[#7640ef]' : 'border border-white'}">
@@ -455,12 +818,26 @@
           </div>
         `;
       });
-      html += `</div>`;
+      html += `
+        <div onclick="switchScreen('timer')" class="mt-2 text-center text-[#7640ef] text-xs cursor-pointer py-1">Start Timer →</div>
+      </div>`;
       container.innerHTML = html;
     }
 
     function toggleTask(id) {
-      tasks = tasks.map(t => t.id === id ? {...t, done: !t.done} : t);
+      const wasDone = appState.tasks.find(t => t.id === id)?.done || false;
+      appState.tasks = appState.tasks.map(t => t.id === id ? {...t, done: !t.done} : t);
+      const task = appState.tasks.find(t => t.id === id);
+      // Cross-interaction: Completing a task logs a notification (Tasks → Notifications)
+      if (task && !wasDone && task.done) {
+        appState.notifications.unshift({
+          id: Date.now(),
+          type: 'team',
+          title: `Task done: ${task.text.substring(0, 22)}${task.text.length > 22 ? '...' : ''}`,
+          target: 'tasks'
+        });
+        showToast('Task marked done • Logged');
+      }
       renderScreen('tasks');
     }
 
@@ -468,16 +845,24 @@
     function renderMessages(container) {
       let html = `
         <div class="p-3">
-          <div class="text-xs mb-2 font-bold">Barbara Payne</div>
+          <div class="text-xs mb-2 font-bold flex items-center justify-between">Barbara Payne <span class="text-[10px] text-emerald-400">online</span></div>
           <div class="space-y-2 text-xs mb-4">
       `;
-      messages.forEach(msg => {
-        html += `<div class="bg-[#7640ef] rounded-2xl p-2 max-w-[85%]">${msg.text}</div>`;
+      appState.messages.forEach(msg => {
+        const isYou = msg.from === 'You';
+        html += `<div class="${isYou ? 'bg-[#7640ef] ml-auto' : 'bg-[#1b1d21]'} rounded-2xl p-2 max-w-[82%] ${isYou ? 'text-right' : ''}">
+          ${msg.text}
+          <div class="text-[9px] opacity-60 mt-0.5">${msg.time || ''}</div>
+        </div>`;
       });
       html += `</div>
         <div class="flex">
           <input id="msg-input" class="flex-1 bg-[#1b1d21] rounded-l-2xl px-3 text-xs" placeholder="Type message...">
           <button onclick="sendMessage()" class="px-4 rounded-r-2xl text-xs" style="background:#7640ef">Send</button>
+        </div>
+
+        <div onclick="startCallFromMessages()" class="mt-3 text-center text-xs py-2 bg-[#ff4a8c] rounded-2xl cursor-pointer font-medium">
+          Call Barbara
         </div>
       </div>`;
       container.innerHTML = html;
@@ -487,27 +872,49 @@
       const input = document.getElementById('msg-input');
       if (!input || !input.value.trim()) return;
       
-      messages.push({
+      const msgText = input.value.trim();
+      appState.messages.push({
         from: "You",
-        text: input.value.trim(),
+        text: msgText,
         time: "now"
       });
+      // Cross-interaction: Sending message creates a live notification entry (Messages → Notifications)
+      appState.notifications.unshift({
+        id: Date.now(),
+        type: 'message',
+        title: `Message sent: "${msgText.substring(0, 18)}${msgText.length > 18 ? '...' : ''}"`,
+        target: 'messages'
+      });
       input.value = '';
+      showToast('Message sent + notif logged');
       renderScreen('messages');
     }
 
-    // Call
-    let callTimer = null;
+    // Call (timer var declared at top-level for consistency with appState)
     function startCallTimer() {
       if (callTimer) return;
-      let seconds = 59 * 60;
       callTimer = setInterval(() => {
-        seconds++;
-        const min = Math.floor(seconds / 60);
-        const sec = seconds % 60;
-        const el = document.getElementById('call-timer');
-        if (el) el.textContent = `${min}:${sec.toString().padStart(2, '0')}`;
+        appState.callSeconds++;
+        updateCallDisplay();
       }, 1000);
+    }
+
+    function updateCallDisplay() {
+      const el = document.getElementById('call-timer');
+      if (!el) return;
+      const min = Math.floor(appState.callSeconds / 60);
+      const sec = appState.callSeconds % 60;
+      el.textContent = `${min}:${sec.toString().padStart(2, '0')}`;
+    }
+
+    function showToast(msg) {
+      const screen = document.getElementById('watch-screen');
+      if (!screen) return;
+      const t = document.createElement('div');
+      t.className = 'toast';
+      t.textContent = msg;
+      screen.appendChild(t);
+      setTimeout(() => t.remove(), 1600);
     }
 
     function endCall() {
@@ -515,7 +922,97 @@
         clearInterval(callTimer);
         callTimer = null;
       }
+      appState.callSeconds = 59 * 60;
+      // Cross-interaction: Ending call with Barbara auto-completes the related task (Call → Tasks)
+      if (appState.currentCallContact && appState.currentCallContact.includes("Barbara")) {
+        appState.tasks = appState.tasks.map(t => 
+          t.text.includes("Call grandma") ? {...t, done: true} : t
+        );
+        showToast('Call logged • Task completed');
+      }
       switchScreen('home');
+    }
+
+    // Cross-component: Wallet → Card → Confirm Tx (with real balance mutation visible on return to Wallet + notif)
+    function confirmPayment() {
+      if (appState.walletBalance >= 130) {
+        appState.walletBalance -= 130;
+        // Cross-interaction: Successful payment adds transaction notification (ConfirmTx → Notifications)
+        appState.notifications.unshift({
+          id: Date.now(),
+          type: 'message',
+          title: 'Payment of $130 sent to DesignCo',
+          target: 'wallet'
+        });
+        showToast('Payment successful • Balance updated');
+        setTimeout(() => {
+          switchScreen('wallet');
+        }, 1200);
+      } else {
+        showToast('Insufficient balance');
+      }
+    }
+
+    function startCallFromMessages() {
+      appState.currentCallContact = "Barbara Payne";
+      switchScreen('call');
+      setTimeout(() => {
+        if (currentScreen === 'call') {
+          startCallTimer();
+        }
+      }, 400);
+    }
+
+    // New cross-interaction: Team → Call (tap any contact in Team to start live call with them)
+    function startCallWithContact(name) {
+      appState.currentCallContact = name;
+      switchScreen('call');
+      setTimeout(() => {
+        if (currentScreen === 'call') {
+          startCallTimer();
+          showToast('Calling ' + name + '...');
+        }
+      }, 300);
+    }
+
+    function addNewContact() {
+      const nameInput = document.getElementById('new-contact-name');
+      const phoneInput = document.getElementById('new-contact-phone');
+      
+      if (!nameInput || !nameInput.value.trim()) return;
+
+      const newName = nameInput.value.trim();
+      appState.contacts.push({
+        id: Date.now(),
+        name: newName,
+        online: true
+      });
+
+      // Cross-interaction: Add Contact also seeds a welcome message (AddContact → Messages) + updates Team
+      appState.messages.unshift({
+        from: newName,
+        text: "Hi! Thanks for adding me.",
+        time: "now"
+      });
+
+      // Remove the notification that led here if any
+      appState.notifications = appState.notifications.filter(n => n.target !== 'team');
+
+      showToast('New contact + welcome msg added');
+      setTimeout(() => {
+        switchScreen('team');
+      }, 600);
+    }
+
+    function openNotification(id) {
+      const notif = appState.notifications.find(n => n.id === id);
+      if (!notif) return;
+
+      // Remove the notification
+      appState.notifications = appState.notifications.filter(n => n.id !== id);
+
+      // Navigate to the relevant screen
+      switchScreen(notif.target);
     }
 
     function resetToHome() {
@@ -523,16 +1020,97 @@
       if (callTimer) clearInterval(callTimer);
       timerInterval = null;
       callTimer = null;
+      appState.callSeconds = 59 * 60;
+      appState.timerSeconds = 12 * 60 + 31;
       switchScreen('home');
     }
 
-    // Boot
+    // Ultra-safe boot - guarantees the watch always shows something
     function init() {
-      renderScreen('home');
-      console.log('%c[Watch Me] Interactive prototype loaded. All 16 screens available.', 'color:#666');
+      const container = document.getElementById('screen-content');
+      if (!container) {
+        console.error('Fatal: #screen-content not found');
+        return;
+      }
+
+      // ============================================================
+      // FORCE a minimal, robust, always-working home screen render
+      // as the VERY FIRST thing in init(). This guarantees visible
+      // content (big clear clock + basic navigation) on load no matter
+      // what else is broken in renderScreen or other cases.
+      // ============================================================
+      container.innerHTML = `
+        <div class="h-full flex flex-col" style="background:#1b1d21; color:#fff; padding:14px; font-family:system-ui,-apple-system,sans-serif; box-sizing:border-box;">
+          <div style="display:flex; justify-content:space-between; font-size:10px; opacity:0.6; padding:0 2px 2px;">
+            <div>Back</div>
+            <div style="font-weight:700;">9:41</div>
+          </div>
+          <div style="flex:1; display:flex; align-items:center; justify-content:center;">
+            <div style="text-align:center;">
+              <div style="font-size:64px; font-weight:700; letter-spacing:-3.5px; line-height:0.95;">9:41</div>
+              <div style="font-size:11px; opacity:0.65; margin-top:3px;">Monday, Feb 3</div>
+            </div>
+          </div>
+          <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:6px; padding:0 2px 4px; font-size:9px; text-align:center;">
+            <div onclick="switchScreen('messages')" style="background:#25272d; border-radius:10px; padding:7px 2px; cursor:pointer; user-select:none;">Messages</div>
+            <div onclick="switchScreen('activity')" style="background:#25272d; border-radius:10px; padding:7px 2px; cursor:pointer; user-select:none;">Activity</div>
+            <div onclick="switchScreen('wallet')" style="background:#25272d; border-radius:10px; padding:7px 2px; cursor:pointer; user-select:none;">Wallet</div>
+          </div>
+        </div>
+      `;
+
+      // Global error catcher - shows error inside the watch itself
+      window.onerror = function(msg, url, line) {
+        container.innerHTML = `
+          <div class="h-full flex flex-col items-center justify-center p-4 text-center bg-red-950 text-red-400 text-xs">
+            <div class="font-bold mb-2">JS ERROR</div>
+            <div>${msg}</div>
+            <div class="mt-2 opacity-70">Line ${line}</div>
+            <div class="mt-3 text-[10px] opacity-50">Hard refresh (Ctrl+Shift+R) recommended</div>
+          </div>
+        `;
+        return true;
+      };
+
+      try {
+        // Now attempt the full renderScreen (which itself has defensive fallbacks)
+        renderScreen('home');
+      } catch (e) {
+        console.error('Render failed:', e);
+        // The forced content above remains visible - never blank
+      }
+
+      console.log('%c[Watch Me] Prototype ready (with heavy safety nets)', 'color:#10b981');
     }
 
-    window.onload = init;
+    window.onload = function() {
+      const container = document.getElementById('screen-content');
+      if (container) {
+        // Emergency immediate render - this will ALWAYS show something (big clock + nav)
+        // Uses inline styles for absolute robustness independent of CSS/JS state
+        container.innerHTML = `
+          <div style="height:100%; display:flex; flex-direction:column; background:#1b1d21; color:#fff; padding:14px; font-family:system-ui,-apple-system,sans-serif; box-sizing:border-box;">
+            <div style="display:flex; justify-content:space-between; font-size:10px; opacity:0.6; padding:0 2px 2px;">
+              <div>Back</div>
+              <div style="font-weight:700;">9:41</div>
+            </div>
+            <div style="flex:1; display:flex; align-items:center; justify-content:center;">
+              <div style="text-align:center;">
+                <div style="font-size:64px; font-weight:700; letter-spacing:-3.5px; line-height:0.95;">9:41</div>
+                <div style="font-size:11px; opacity:0.65; margin-top:3px;">Monday, Feb 3</div>
+              </div>
+            </div>
+            <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:6px; padding:0 2px 4px; font-size:9px; text-align:center;">
+              <div onclick="switchScreen('messages')" style="background:#25272d; border-radius:10px; padding:7px 2px; cursor:pointer; user-select:none;">Messages</div>
+              <div onclick="switchScreen('activity')" style="background:#25272d; border-radius:10px; padding:7px 2px; cursor:pointer; user-select:none;">Activity</div>
+              <div onclick="switchScreen('wallet')" style="background:#25272d; border-radius:10px; padding:7px 2px; cursor:pointer; user-select:none;">Wallet</div>
+            </div>
+          </div>
+        `;
+      }
+      // Then try the real init
+      setTimeout(init, 50);
+    };
   </script>
 </body>
 </html>

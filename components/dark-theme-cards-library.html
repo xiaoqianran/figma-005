@@ -14,6 +14,40 @@
     .phone-mock .screen { background: #1b1d21; border-radius: 40px; overflow: hidden; }
     .card-item { transition: all 0.2s ease; }
     .card-item:hover { transform: translateY(-2px); }
+
+    /* Size controls for better readability of text & labels */
+    .phone-mock {
+      transition: transform 0.25s cubic-bezier(0.23, 1, 0.32, 1);
+      transform-origin: top center;
+    }
+    .scale-1   .phone-mock { transform: scale(1); }
+    .scale-1_35 .phone-mock { transform: scale(1.35); }
+    .scale-1_7  .phone-mock { transform: scale(1.7); }
+    .scale-2_2  .phone-mock { transform: scale(2.2); }
+
+    .scale-label {
+      font-size: 12px;
+      transition: font-size 0.2s ease;
+    }
+    .scale-1_35 .scale-label { font-size: 13px; }
+    .scale-1_7  .scale-label { font-size: 14px; font-weight: 600; }
+    .scale-2_2  .scale-label { font-size: 15px; font-weight: 600; }
+
+    .scale-btn {
+      font-size: 12px;
+      padding: 4px 14px;
+      border-radius: 9999px;
+      background: #181a1f;
+      border: 1px solid #272a31;
+      color: #a1a1aa;
+      transition: all 0.1s ease;
+    }
+    .scale-btn:hover { background: #272a31; color: #fff; }
+    .scale-btn.active {
+      background: #7640ef;
+      color: white;
+      border-color: #7640ef;
+    }
   </style>
 </head>
 <body class="bg-zinc-950 text-white">
@@ -41,8 +75,22 @@
       </div>
     </div>
 
+    <!-- Preview Size Controls -->
+    <div class="flex items-center justify-between mb-5">
+      <div>
+        <div class="text-xs uppercase tracking-[1.5px] text-zinc-500 mb-1">预览大小</div>
+        <div class="text-[11px] text-zinc-500">文字太小？点击放大查看标签和内容</div>
+      </div>
+      <div class="flex gap-1.5" id="size-controls">
+        <button data-scale="1" class="scale-btn active">小 (默认)</button>
+        <button data-scale="1.35" class="scale-btn">中</button>
+        <button data-scale="1.7" class="scale-btn">大</button>
+        <button data-scale="2.2" class="scale-btn">超大</button>
+      </div>
+    </div>
+
     <!-- All Cards Grid -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-x-5 gap-y-9">
+    <div id="cards-grid" class="scale-1 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-x-5 gap-y-9">
 
       <!-- 1. New Message -->
       <div class="card-item">
@@ -50,7 +98,7 @@
           <div class="flex justify-center pt-2"><div class="relative"><div class="w-20 h-20 rounded-full flex items-center justify-center" style="background:#7640ef"><div class="w-9 h-9 bg-white rounded-2xl flex items-center justify-center"><i class="fa-solid fa-comment text-[#1b1d21]"></i></div></div><div class="absolute -top-1 -right-1 w-7 h-7 rounded-full flex items-center justify-center" style="background:#ff4a8c"><span class="text-white text-xs font-bold">3</span></div></div></div>
           <div class="flex-1"></div><div class="text-center pb-4"><div class="text-white text-sm font-bold">New Mesage</div><div class="text-[#808389] text-xs">Oliver Adams</div></div>
         </div></div>
-        <div class="text-center mt-3"><div class="font-semibold text-sm">New Message</div><button onclick="copyComponent(1)" class="mt-1.5 text-xs px-4 py-1 bg-zinc-800 hover:bg-zinc-700 rounded-3xl">复制 HTML</button></div>
+        <div class="text-center mt-3"><div class="font-semibold text-sm scale-label">New Message</div><button onclick="copyComponent(1)" class="mt-1.5 text-xs px-4 py-1 bg-zinc-800 hover:bg-zinc-700 rounded-3xl">复制 HTML</button></div>
       </div>
 
       <!-- 2. Voice Message -->
@@ -60,7 +108,7 @@
           <div class="flex-1 flex items-center justify-center"><div class="relative w-20 h-20"><div class="absolute inset-0 rounded-full border-2 border-[#7d3ef3]"></div><div class="absolute inset-[8px] rounded-full" style="background:#16171a"></div></div></div>
           <div class="text-center pb-3"><div class="text-[#808389] text-xs">Tap and talk</div></div>
         </div></div>
-        <div class="text-center mt-3"><div class="font-semibold text-sm">Voice Message</div><button onclick="copyComponent(2)" class="mt-1.5 text-xs px-4 py-1 bg-zinc-800 hover:bg-zinc-700 rounded-3xl">复制 HTML</button></div>
+        <div class="text-center mt-3"><div class="font-semibold text-sm scale-label">Voice Message</div><button onclick="copyComponent(2)" class="mt-1.5 text-xs px-4 py-1 bg-zinc-800 hover:bg-zinc-700 rounded-3xl">复制 HTML</button></div>
       </div>
 
       <!-- 3. Timer -->
@@ -70,7 +118,7 @@
           <div class="grid grid-cols-2 gap-1 text-center mt-4 font-bold text-sm px-2"><div>10:29</div><div>11:30</div><div>12:31</div><div>13:32</div><div class="col-span-2">14:33</div></div>
           <div class="mt-8 mx-3"><div class="h-8 rounded-xl flex items-center justify-center text-xs font-medium" style="background:#7640ef">Next</div></div>
         </div></div>
-        <div class="text-center mt-3"><div class="font-semibold text-sm">Timer</div><button onclick="copyComponent(3)" class="mt-1.5 text-xs px-4 py-1 bg-zinc-800 hover:bg-zinc-700 rounded-3xl">复制 HTML</button></div>
+        <div class="text-center mt-3"><div class="font-semibold text-sm scale-label">Timer</div><button onclick="copyComponent(3)" class="mt-1.5 text-xs px-4 py-1 bg-zinc-800 hover:bg-zinc-700 rounded-3xl">复制 HTML</button></div>
       </div>
 
       <!-- 4. Wallet -->
@@ -82,7 +130,7 @@
             <div class="h-11 bg-white/90 rounded-xl p-2.5 text-[#1b1d21] text-xs -mt-2"><div class="text-[9px]">•••• •••• •••• 5752</div></div>
           </div>
         </div></div>
-        <div class="text-center mt-3"><div class="font-semibold text-sm">Wallet</div><button onclick="copyComponent(4)" class="mt-1.5 text-xs px-4 py-1 bg-zinc-800 hover:bg-zinc-700 rounded-3xl">复制 HTML</button></div>
+        <div class="text-center mt-3"><div class="font-semibold text-sm scale-label">Wallet</div><button onclick="copyComponent(4)" class="mt-1.5 text-xs px-4 py-1 bg-zinc-800 hover:bg-zinc-700 rounded-3xl">复制 HTML</button></div>
       </div>
 
       <!-- 5. Overall Progress -->
@@ -92,7 +140,7 @@
           <div class="flex justify-center mt-3"><div class="relative w-28 h-28"><div class="absolute inset-0 rounded-full" style="background:#1b1d21"></div><div class="absolute inset-3 rounded-full" style="background:#1b1d21"></div><div class="absolute inset-[14px] flex items-center justify-center text-2xl font-bold">40%</div></div></div>
           <div class="text-center mt-4"><div class="text-[#808389] text-xs">Overall Progress</div></div>
         </div></div>
-        <div class="text-center mt-3"><div class="font-semibold text-sm">Overall Progress</div><button onclick="copyComponent(5)" class="mt-1.5 text-xs px-4 py-1 bg-zinc-800 hover:bg-zinc-700 rounded-3xl">复制 HTML</button></div>
+        <div class="text-center mt-3"><div class="font-semibold text-sm scale-label">Overall Progress</div><button onclick="copyComponent(5)" class="mt-1.5 text-xs px-4 py-1 bg-zinc-800 hover:bg-zinc-700 rounded-3xl">复制 HTML</button></div>
       </div>
 
       <!-- 6. Clock -->
@@ -101,7 +149,7 @@
           <div class="flex justify-between px-1 text-xs"><div class="text-[#808389]">Back</div><div class="font-bold">Time</div></div>
           <div class="flex justify-center mt-4"><div class="relative w-28 h-28 rounded-full" style="background:#1b1d21"><div class="absolute inset-3 rounded-full" style="background:#1b1d21"></div><div class="absolute top-1/2 left-1/2 w-0.5 h-8 bg-[#7c3cfd] origin-bottom -translate-x-1/2 -translate-y-full" style="transform:rotate(120deg)"></div><div class="absolute top-1/2 left-1/2 w-0.5 h-6 bg-white origin-bottom -translate-x-1/2 -translate-y-full" style="transform:rotate(30deg)"></div></div></div>
         </div></div>
-        <div class="text-center mt-3"><div class="font-semibold text-sm">Clock</div><button onclick="copyComponent(6)" class="mt-1.5 text-xs px-4 py-1 bg-zinc-800 hover:bg-zinc-700 rounded-3xl">复制 HTML</button></div>
+        <div class="text-center mt-3"><div class="font-semibold text-sm scale-label">Clock</div><button onclick="copyComponent(6)" class="mt-1.5 text-xs px-4 py-1 bg-zinc-800 hover:bg-zinc-700 rounded-3xl">复制 HTML</button></div>
       </div>
 
       <!-- 7. Confirm Transaction -->
@@ -110,7 +158,7 @@
           <div class="flex-1 flex items-center justify-center"><div class="w-24 h-24 rounded-full flex items-center justify-center" style="background:#7640ef"><i class="fa-solid fa-check text-5xl text-white"></i></div></div>
           <div class="text-center pb-6"><div class="text-[#808389] text-xs">Confirm transaction</div></div>
         </div></div>
-        <div class="text-center mt-3"><div class="font-semibold text-sm">Confirm Transaction</div><button onclick="copyComponent(7)" class="mt-1.5 text-xs px-4 py-1 bg-zinc-800 hover:bg-zinc-700 rounded-3xl">复制 HTML</button></div>
+        <div class="text-center mt-3"><div class="font-semibold text-sm scale-label">Confirm Transaction</div><button onclick="copyComponent(7)" class="mt-1.5 text-xs px-4 py-1 bg-zinc-800 hover:bg-zinc-700 rounded-3xl">复制 HTML</button></div>
       </div>
 
       <!-- 8. Call -->
@@ -125,7 +173,7 @@
             <div class="w-9 h-9 rounded-full flex items-center justify-center" style="background:#1b1d21"><i class="fa-solid fa-volume-up text-xs"></i></div>
           </div>
         </div></div>
-        <div class="text-center mt-3"><div class="font-semibold text-sm">Call</div><button onclick="copyComponent(8)" class="mt-1.5 text-xs px-4 py-1 bg-zinc-800 hover:bg-zinc-700 rounded-3xl">复制 HTML</button></div>
+        <div class="text-center mt-3"><div class="font-semibold text-sm scale-label">Call</div><button onclick="copyComponent(8)" class="mt-1.5 text-xs px-4 py-1 bg-zinc-800 hover:bg-zinc-700 rounded-3xl">复制 HTML</button></div>
       </div>
 
       <!-- 9. Tasks -->
@@ -138,7 +186,7 @@
             <div class="flex items-center gap-2 px-3 py-2"><div class="w-4 h-4 bg-[#7640ef] rounded flex items-center justify-center"><i class="fa-solid fa-check text-[10px]"></i></div><span class="line-through text-[#808389]">Call grandma at 8 AM</span></div>
           </div>
         </div></div>
-        <div class="text-center mt-3"><div class="font-semibold text-sm">Tasks</div><button onclick="copyComponent(9)" class="mt-1.5 text-xs px-4 py-1 bg-zinc-800 hover:bg-zinc-700 rounded-3xl">复制 HTML</button></div>
+        <div class="text-center mt-3"><div class="font-semibold text-sm scale-label">Tasks</div><button onclick="copyComponent(9)" class="mt-1.5 text-xs px-4 py-1 bg-zinc-800 hover:bg-zinc-700 rounded-3xl">复制 HTML</button></div>
       </div>
 
       <!-- 10. Message -->
@@ -148,7 +196,7 @@
           <div class="mt-3 mx-2 bg-[#1b1d21] rounded-2xl p-3 text-xs leading-tight">Congratulations, Pavel just purchased Skeo-Skeuomorphic UI Kit...</div>
           <div class="mt-auto mx-2 mb-3"><div class="h-9 rounded-2xl flex items-center justify-center text-xs font-medium" style="background:#7640ef">Delete</div></div>
         </div></div>
-        <div class="text-center mt-3"><div class="font-semibold text-sm">Message</div><button onclick="copyComponent(10)" class="mt-1.5 text-xs px-4 py-1 bg-zinc-800 hover:bg-zinc-700 rounded-3xl">复制 HTML</button></div>
+        <div class="text-center mt-3"><div class="font-semibold text-sm scale-label">Message</div><button onclick="copyComponent(10)" class="mt-1.5 text-xs px-4 py-1 bg-zinc-800 hover:bg-zinc-700 rounded-3xl">复制 HTML</button></div>
       </div>
 
       <!-- 11. Notifications -->
@@ -162,7 +210,7 @@
             <div class="bg-[#1b1d21] rounded-2xl h-16 flex items-center justify-center relative"><i class="fa-solid fa-users text-2xl text-[#ff3333]"></i><div class="absolute -top-1 -right-1 bg-[#ff4a8c] text-white text-xs w-5 h-5 rounded-full flex items-center justify-center font-bold">12</div></div>
           </div>
         </div></div>
-        <div class="text-center mt-3"><div class="font-semibold text-sm">Notifications</div><button onclick="copyComponent(11)" class="mt-1.5 text-xs px-4 py-1 bg-zinc-800 hover:bg-zinc-700 rounded-3xl">复制 HTML</button></div>
+        <div class="text-center mt-3"><div class="font-semibold text-sm scale-label">Notifications</div><button onclick="copyComponent(11)" class="mt-1.5 text-xs px-4 py-1 bg-zinc-800 hover:bg-zinc-700 rounded-3xl">复制 HTML</button></div>
       </div>
 
       <!-- 12. Activity -->
@@ -172,7 +220,7 @@
           <div class="flex justify-center mt-4"><div class="relative w-28 h-28"><div class="absolute inset-0 rounded-full border-8 border-[#1b1d21]"></div><div class="absolute inset-[6px] rounded-full border-8 border-[#ffaa5c]"></div><div class="absolute inset-[14px] rounded-full border-8 border-[#7640ef]"></div><div class="absolute inset-[22px] rounded-full border-8 border-[#1b1d21]"></div></div></div>
           <div class="text-center mt-3 text-xs text-[#808389]">1240 / 10000 steps</div>
         </div></div>
-        <div class="text-center mt-3"><div class="font-semibold text-sm">Activity</div><button onclick="copyComponent(12)" class="mt-1.5 text-xs px-4 py-1 bg-zinc-800 hover:bg-zinc-700 rounded-3xl">复制 HTML</button></div>
+        <div class="text-center mt-3"><div class="font-semibold text-sm scale-label">Activity</div><button onclick="copyComponent(12)" class="mt-1.5 text-xs px-4 py-1 bg-zinc-800 hover:bg-zinc-700 rounded-3xl">复制 HTML</button></div>
       </div>
 
       <!-- 13. Team -->
@@ -181,7 +229,7 @@
           <div class="text-center text-sm font-bold">Team</div>
           <div class="flex justify-center mt-4"><div class="relative w-28 h-28"><div class="absolute w-9 h-9 bg-[#1b1d21] rounded-full" style="left:50%;top:0;transform:translateX(-50%)"></div><div class="absolute w-9 h-9 bg-[#1b1d21] rounded-full" style="right:0;top:50%;transform:translateY(-50%)"></div><div class="absolute w-9 h-9 bg-[#1b1d21] rounded-full" style="left:0;top:50%;transform:translateY(-50%)"></div><div class="absolute w-9 h-9 bg-[#1b1d21] rounded-full" style="left:50%;bottom:0;transform:translateX(-50%)"></div><div class="absolute w-7 h-7 bg-[#1b1d21] rounded-full" style="left:12%;top:12%"></div><div class="absolute w-7 h-7 bg-[#1b1d21] rounded-full" style="right:12%;top:12%"></div></div></div>
         </div></div>
-        <div class="text-center mt-3"><div class="font-semibold text-sm">Team</div><button onclick="copyComponent(13)" class="mt-1.5 text-xs px-4 py-1 bg-zinc-800 hover:bg-zinc-700 rounded-3xl">复制 HTML</button></div>
+        <div class="text-center mt-3"><div class="font-semibold text-sm scale-label">Team</div><button onclick="copyComponent(13)" class="mt-1.5 text-xs px-4 py-1 bg-zinc-800 hover:bg-zinc-700 rounded-3xl">复制 HTML</button></div>
       </div>
 
       <!-- 14. Card -->
@@ -194,7 +242,7 @@
             <div class="text-xs mt-1">04.2019</div>
           </div>
         </div></div>
-        <div class="text-center mt-3"><div class="font-semibold text-sm">Card</div><button onclick="copyComponent(14)" class="mt-1.5 text-xs px-4 py-1 bg-zinc-800 hover:bg-zinc-700 rounded-3xl">复制 HTML</button></div>
+        <div class="text-center mt-3"><div class="font-semibold text-sm scale-label">Card</div><button onclick="copyComponent(14)" class="mt-1.5 text-xs px-4 py-1 bg-zinc-800 hover:bg-zinc-700 rounded-3xl">复制 HTML</button></div>
       </div>
 
       <!-- 15. Messages -->
@@ -205,7 +253,7 @@
           <div class="mt-2 ml-auto"><div class="bg-[#ff4a8c] rounded-2xl p-2 text-xs max-w-[120px]">What did u say about<br>my mother?</div></div>
           <div class="mt-auto flex"><div class="w-6 h-6 rounded-full" style="background:#ff4a8c"></div></div>
         </div></div>
-        <div class="text-center mt-3"><div class="font-semibold text-sm">Messages</div><button onclick="copyComponent(15)" class="mt-1.5 text-xs px-4 py-1 bg-zinc-800 hover:bg-zinc-700 rounded-3xl">复制 HTML</button></div>
+        <div class="text-center mt-3"><div class="font-semibold text-sm scale-label">Messages</div><button onclick="copyComponent(15)" class="mt-1.5 text-xs px-4 py-1 bg-zinc-800 hover:bg-zinc-700 rounded-3xl">复制 HTML</button></div>
       </div>
 
       <!-- 16. Add Contact -->
@@ -215,7 +263,7 @@
           <div class="mt-3 font-bold">Kira Valakas</div>
           <div class="mt-auto w-full px-4 pb-4"><div class="h-9 rounded-2xl flex items-center justify-center text-sm font-medium" style="background:#7640ef">Add Contact</div></div>
         </div></div>
-        <div class="text-center mt-3"><div class="font-semibold text-sm">Add Contact</div><button onclick="copyComponent(16)" class="mt-1.5 text-xs px-4 py-1 bg-zinc-800 hover:bg-zinc-700 rounded-3xl">复制 HTML</button></div>
+        <div class="text-center mt-3"><div class="font-semibold text-sm scale-label">Add Contact</div><button onclick="copyComponent(16)" class="mt-1.5 text-xs px-4 py-1 bg-zinc-800 hover:bg-zinc-700 rounded-3xl">复制 HTML</button></div>
       </div>
 
     </div>
@@ -237,6 +285,56 @@
       btns.forEach(b => b.innerText = '已复制!');
       setTimeout(() => location.reload(), 800);
     }
+
+    // === Preview Size Controller ===
+    (function initSizeControls() {
+      const grid = document.getElementById('cards-grid');
+      const buttons = document.querySelectorAll('#size-controls .scale-btn');
+
+      function setScale(scale) {
+        // Remove all scale classes
+        grid.classList.remove('scale-1', 'scale-1_35', 'scale-1_7', 'scale-2_2');
+
+        let cls = 'scale-1';
+        if (scale === '1.35') cls = 'scale-1_35';
+        else if (scale === '1.7') cls = 'scale-1_7';
+        else if (scale === '2.2') cls = 'scale-2_2';
+
+        grid.classList.add(cls);
+
+        // Dynamically adjust columns for larger sizes so cards don't feel cramped
+        grid.style.gridTemplateColumns = '';
+        if (scale === '1.7') {
+          grid.style.gridTemplateColumns = 'repeat(auto-fit, minmax(260px, 1fr))';
+        } else if (scale === '2.2') {
+          grid.style.gridTemplateColumns = 'repeat(auto-fit, minmax(320px, 1fr))';
+        }
+
+        // Update active button
+        buttons.forEach(btn => {
+          btn.classList.remove('active');
+          if (btn.dataset.scale === scale) btn.classList.add('active');
+        });
+
+        // Persist choice
+        try { localStorage.setItem('wm-card-scale', scale); } catch(e){}
+      }
+
+      buttons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          setScale(btn.dataset.scale);
+        });
+      });
+
+      // Restore previous choice if exists
+      try {
+        const saved = localStorage.getItem('wm-card-scale');
+        if (saved) {
+          setScale(saved);
+        }
+      } catch(e){}
+    })();
+
     console.log('%c[Watch Me] 全部 16 个 Dark Theme 卡片复刻完成', 'color:#10b981');
   </script>
 </body>

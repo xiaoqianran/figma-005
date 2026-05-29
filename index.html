@@ -3,47 +3,63 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Watch Me UI Kit — Figma 复刻项目</title>
+  <title>Watch Me UI Kit — Figma 复刻 + 交互原型</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-zinc-950 text-white">
-  <div class="max-w-5xl mx-auto px-6 py-16">
-    <h1 class="text-5xl font-bold tracking-tight">Watch Me UI Kit</h1>
-    <p class="mt-4 text-xl text-zinc-400">基于 Figma Dark Theme 的高保真可交互 Web 原型</p>
+  <div class="max-w-5xl mx-auto px-6 py-12">
+    <div class="flex items-center justify-between">
+      <div>
+        <h1 class="text-5xl font-bold tracking-tight">Watch Me UI Kit</h1>
+        <p class="mt-2 text-xl text-zinc-400">Figma Dark Theme → 高保真可交互 Web 原型</p>
+      </div>
+      <div class="text-right text-sm">
+        <div class="text-emerald-400 font-medium">16/16 卡片已复刻</div>
+        <div class="text-zinc-500">含完整交互原型</div>
+      </div>
+    </div>
 
-    <div class="mt-12 grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+    <div class="mt-10 grid md:grid-cols-2 gap-6">
+      <!-- Main Attraction -->
       <a href="prototypes/watch-me-interactive-prototype.html" 
-         class="block p-8 bg-zinc-900 rounded-3xl hover:bg-zinc-800 transition-colors">
-        <div class="font-semibold text-2xl">交互式原型</div>
-        <div class="mt-2 text-zinc-400">完整的手表模拟器，包含 16 个可交互屏幕</div>
-        <div class="mt-4 text-sm text-emerald-400">→ 立即体验</div>
+         class="group block p-8 bg-zinc-900 hover:bg-zinc-800 rounded-3xl border border-emerald-900/50 transition-all">
+        <div class="flex items-center gap-3">
+          <div class="text-3xl">⌚</div>
+          <div>
+            <div class="font-semibold text-2xl group-hover:text-emerald-400 transition-colors">交互式手表原型</div>
+            <div class="text-emerald-400 text-sm font-medium">推荐 · 完整体验</div>
+          </div>
+        </div>
+        <div class="mt-4 text-zinc-400">280×280 智能手表模拟器，16 个屏幕全部可交互（真实 Timer、Tasks、Messages、Call 流程等）</div>
+        <div class="mt-4 inline-flex items-center text-sm text-emerald-400">立即打开原型 →</div>
+      </a>
+
+      <a href="components/component-catalog.html" 
+         class="block p-8 bg-zinc-900 hover:bg-zinc-800 rounded-3xl transition-all">
+        <div class="font-semibold text-2xl">组件目录 (Catalog)</div>
+        <div class="mt-2 text-zinc-400">16 个独立可复用卡片 + 一键复制纯净 HTML（无外部依赖）</div>
+        <div class="mt-4 text-sm text-emerald-400">→ 打开组件目录</div>
       </a>
 
       <a href="components/dark-theme-cards-library.html" 
-         class="block p-8 bg-zinc-900 rounded-3xl hover:bg-zinc-800 transition-colors">
-        <div class="font-semibold text-2xl">组件库</div>
-        <div class="mt-2 text-zinc-400">所有卡片的静态展示 + 一键复制 HTML</div>
-        <div class="mt-4 text-sm text-emerald-400">→ 查看所有组件</div>
+         class="block p-8 bg-zinc-900 hover:bg-zinc-800 rounded-3xl transition-all">
+        <div class="font-semibold text-2xl">静态卡片库</div>
+        <div class="mt-2 text-zinc-400">所有 16 个卡片的高保真网格展示 + 设计令牌参考</div>
       </a>
 
-      <a href="prototypes/watch-me-dark-perfect.html" 
-         class="block p-8 bg-zinc-900 rounded-3xl hover:bg-zinc-800 transition-colors">
-        <div class="font-semibold text-2xl">完美复刻</div>
-        <div class="mt-2 text-zinc-400">手机外框 + 多场景卡片高保真呈现</div>
-        <div class="mt-4 text-sm text-emerald-400">→ 查看复刻</div>
-      </a>
-
-      <a href="prototypes/watch-me-replica.html" 
-         class="block p-8 bg-zinc-900 rounded-3xl hover:bg-zinc-800 transition-colors">
-        <div class="font-semibold text-2xl">卡片展示</div>
-        <div class="mt-2 text-zinc-400">核心卡片网格 + 设计令牌参考</div>
-        <div class="mt-4 text-sm text-emerald-400">→ 打开预览</div>
-      </a>
+      <div class="p-8 bg-zinc-900 rounded-3xl">
+        <div class="font-semibold text-xl mb-3">项目结构</div>
+        <div class="text-sm text-zinc-400 space-y-1">
+          <div><span class="font-mono text-emerald-400">prototypes/</span> — 完整可运行演示</div>
+          <div><span class="font-mono text-emerald-400">components/cards/</span> — 16 个模块化独立组件</div>
+          <div><span class="font-mono text-emerald-400">docs/</span> — 规范与状态</div>
+        </div>
+        <div class="mt-4 text-xs text-zinc-500">所有组件均为纯 Tailwind，可直接复制进任何项目</div>
+      </div>
     </div>
 
-    <div class="mt-16 text-sm text-zinc-500">
-      本项目使用 figma-mcp-go 提取 Figma 节点数据进行高保真复刻。<br>
-      目标：将设计稿转化为可直接用于项目的可交互组件。
+    <div class="mt-12 text-center text-xs text-zinc-500">
+      基于 figma-mcp-go 提取的真实节点数据 • 严格遵循专业提交规范
     </div>
   </div>
 </body>
