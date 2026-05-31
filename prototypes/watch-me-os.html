@@ -22,6 +22,7 @@
       --wm-magenta: #ff3d8b;               /* accent-magenta */
       --wm-lime: #dceeb1;
       --wm-lilac: #c5b0f4;
+      --wm-purple: #c5b0f4;                /* lilac as the purple-ish accent for legacy wm-purple */
       --wm-mint: #c8e6cd;
       --wm-cream: #f4ecd6;
       --wm-pink: #efd4d4;
@@ -205,9 +206,9 @@
     }
     .page-dot {
       width: 5px; height: 5px; border-radius: 50%;
-      background: rgba(255,255,255,0.25);
+      background: var(--wm-border);
     }
-    .page-dot.active { background: var(--wm-gold); }
+    .page-dot.active { background: var(--wm-magenta); }
 
     /* App Styles */
     .app-header { 
@@ -667,7 +668,7 @@
         <div class="h-full flex flex-col items-center justify-center bg-[#ffffff]">
           <div class="relative w-52 h-52">
             <svg width="208" height="208" class="rotate-[-90deg]">
-              <circle cx="104" cy="104" r="92" fill="none" stroke="#22252b" stroke-width="18"/>
+              <circle cx="104" cy="104" r="92" fill="none" stroke="#e6e6e6" stroke-width="18"/>
               <circle cx="104" cy="104" r="92" fill="none" stroke="var(--wm-gold)" stroke-width="18"
                       stroke-dasharray="${(WM.state.time.m / 60) * 578} 578"/>
             </svg>
@@ -690,17 +691,20 @@
     registerApp('timer', (root) => {
       const t = WM.state.timer;
       root.innerHTML = `
-        <div class="h-full flex flex-col">
-          <div class="status-bar"><div class="px-3">TIMER</div><div class="px-3 text-emerald-400 text-xs">PRESET ${t.preset/60}m</div></div>
+        <div class="h-full flex flex-col bg-[#ffffff]">
+          <div class="status-bar"><div class="px-3" style="color:#000">TIMER</div><div class="px-3 text-xs" style="color:#5f6166">PRESET ${t.preset/60}m</div></div>
           <div class="flex-1 flex flex-col items-center justify-center">
-            <div id="timer-display" class="text-6xl font-semibold tabular-nums tracking-[-2.5px] display-font">${formatTime(t.remaining || t.preset)}</div>
+            <div id="timer-display" class="text-6xl font-semibold tabular-nums tracking-[-2.5px] display-font" style="color:#000">${formatTime(t.remaining || t.preset)}</div>
             <div class="flex gap-3 mt-6">
               <button onclick="toggleTimer(this)" class="lux-button px-8">${t.running ? 'PAUSE' : 'START'}</button>
               <button onclick="resetTimer()" class="lux-button secondary px-6">RESET</button>
             </div>
           </div>
           <div class="p-3 grid grid-cols-4 gap-2 text-xs">
-            ${[60,180,300,600].map(s => `<div onclick="setTimerPreset(${s}, this)" class="text-center py-1.5 rounded-xl bg-[#f7f7f5] active:bg-[#f7f7f5] cursor-pointer">${s/60}m</div>`).join('')}
+            ${[60,180,300,600].map((s,i) => {
+              const pastels = ['#dceeb1','#c5b0f4','#c8e6cd','#f3c9b6'];
+              return `<div onclick="setTimerPreset(${s}, this)" class="text-center py-1.5 rounded-xl cursor-pointer" style="background:${pastels[i]};color:#000">${s/60}m</div>`;
+            }).join('')}
           </div>
         </div>`;
       if (t.running) startTimerLoop(root);
@@ -744,21 +748,21 @@
     // TASKS
     registerApp('tasks', (root) => {
       root.innerHTML = `
-        <div class="h-full flex flex-col text-sm">
+        <div class="h-full flex flex-col text-sm bg-[#ffffff]">
           <div class="app-header"><div>Tasks</div><div class="text-xs text-[#5f6166]">${WM.state.tasks.length} today</div></div>
           <div class="flex-1 overflow-auto px-1 pb-2" style="scrollbar-width: none;">
             ${WM.state.tasks.map((t, i) => `
               <div class="list-item cursor-pointer" onclick="toggleTask(${t.id}, this)">
-                <div class="w-4 h-4 rounded border flex-shrink-0 flex items-center justify-center ${t.done ? 'bg-[#ff3d8b] border-[#ff3d8b]' : 'border-white/60'}">
+                <div class="w-4 h-4 rounded border flex-shrink-0 flex items-center justify-center ${t.done ? 'bg-[#ff3d8b] border-[#ff3d8b]' : 'border-[#e6e6e6]'}">
                   ${t.done ? '<i class="fa-solid fa-check text-[9px]"></i>' : ''}
                 </div>
-                <div class="flex-1 text-xs ${t.done ? 'line-through opacity-60' : ''}">${t.text}</div>
+                <div class="flex-1 text-xs ${t.done ? 'line-through opacity-60' : ''}" style="color:#000">${t.text}</div>
                 <div class="text-[10px] text-[#5f6166]">${t.due}</div>
               </div>
             `).join('')}
           </div>
-          <div class="p-3 border-t border-white/10">
-            <input id="new-task" placeholder="New task..." class="w-full bg-transparent border border-white/20 rounded-xl px-3 py-2 text-xs placeholder:text-[#505055]" 
+          <div class="p-3 border-t border-[#e6e6e6]">
+            <input id="new-task" placeholder="New task..." class="w-full bg-[#f7f7f5] border border-[#e6e6e6] rounded-xl px-3 py-2 text-xs placeholder:text-[#5f6166]" style="color:#000"
                    onkeydown="if(event.key==='Enter') addTask(this)">
           </div>
         </div>`;
@@ -791,20 +795,20 @@
     // MESSAGES
     registerApp('messages', (root) => {
       root.innerHTML = `
-        <div class="h-full flex flex-col">
+        <div class="h-full flex flex-col bg-[#ffffff]">
           <div class="app-header"><div>Messages</div><div onclick="navigate('new-msg')" class="text-[#ff3d8b] text-xs cursor-pointer">NEW</div></div>
           <div class="flex-1 overflow-auto px-2 space-y-px text-xs">
             ${WM.state.messages.map(m => `
-              <div class="p-2.5 rounded-2xl ${m.me ? 'bg-[#ff3d8b]/80 ml-6' : 'bg-[#f7f7f5] mr-6'}">
-                <div class="flex justify-between text-[10px] opacity-70"><div>${m.from}</div><div>${m.time}</div></div>
-                <div class="mt-0.5">${m.text}</div>
+              <div class="p-2.5 rounded-2xl ${m.me ? 'ml-6' : 'bg-[#f7f7f5] mr-6'}" style="${m.me ? 'background:#c5b0f4' : ''}">
+                <div class="flex justify-between text-[10px] opacity-70" style="color:#5f6166"><div>${m.from}</div><div>${m.time}</div></div>
+                <div class="mt-0.5" style="color:#000">${m.text}</div>
               </div>
             `).join('')}
           </div>
-          <div class="p-2 border-t border-white/10 flex gap-2">
-            <input id="msg-input" placeholder="Reply..." class="flex-1 bg-[#f7f7f5] rounded-2xl px-3 py-1.5 text-xs" 
+          <div class="p-2 border-t border-[#e6e6e6] flex gap-2">
+            <input id="msg-input" placeholder="Reply..." class="flex-1 bg-[#f7f7f5] rounded-2xl px-3 py-1.5 text-xs" style="color:#000"
                    onkeydown="if(event.key==='Enter') sendMessage(this)">
-            <button onclick="sendMessage()" class="px-4 rounded-2xl bg-[#ff3d8b] text-xs font-medium">Send</button>
+            <button onclick="sendMessage()" class="px-4 rounded-2xl bg-[#ff3d8b] text-xs font-medium" style="color:#fff">Send</button>
           </div>
         </div>`;
     }, 'fa-comments');
