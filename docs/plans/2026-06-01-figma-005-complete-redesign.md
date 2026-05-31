@@ -63,7 +63,7 @@ figma-005/
 Success: Feels like Vacheron / AP / high jewelry site but for smart instrument. Lighthouse >=95, no jank.
 
 ### 2. Watch Me OS Simulator (new flagship)
-- **Hardware Shell**: Ultra-premium 320x320px screen (or 280 as Figma) with multi-layer metallic case, sapphire crystal with real reflections (mouse-follow + gyro on mobile), rotatable crown (drag vertical = scroll digital crown, with haptic feel via vibration if available + spring physics), side button.
+- **Hardware Shell**: Ultra-premium square/rectangular modern smartwatch (rounded-square case; rectangular screen sized for 184×224 modules) with multi-layer metallic case, sapphire crystal with real reflections (mouse-follow + gyro on mobile), rotatable crown (drag vertical = scroll digital crown, with haptic feel via vibration if available + spring physics), side button. (Note: implemented form factor updated from original 320x320 assumption to better match rectangular UI modules.)
 - **OS Layer**:
   - Boot / wake beautiful animation.
   - App grid (4x4 or customizable) + dock (3 persistent: Clock, Messages, Health).
@@ -159,3 +159,5 @@ Each track produces its own commits. Orchestrator (main) merges via worktree whe
 ---
 
 *Generated autonomously per "complete redesign, no frequent questions" directive. All decisions based on existing artifacts, Figma replica history, luxury watch UI conventions, and modern static web best practices.*
+
+**Post-implementation note (documentation consistency pass)**: The flagship simulator was delivered with square/rectangular hardware (see `prototypes/watch-me-os.html` comments: "SQUARE SMARTWATCH HARDWARE (modern rectangular form to match UI modules)"). This benefits alignment with the 184×224 rectangular component modules. Relevant docs (README, USAGE_GUIDE, DESIGN.md, this plan, index.html) updated to communicate the form factor and rationale. No round-watch descriptions remain in active docs.

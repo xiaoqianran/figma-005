@@ -573,6 +573,7 @@ The defining surface of Figma's marketing. Each is a full-content-width panel wi
 ## Known Gaps
 
 - The exact pastel hex values of `{colors.block-*}` are derived from screenshot pixels; the production source likely uses named tokens that aren't exposed via CSS variables. Treat the documented hex values as faithful approximations rather than exact brand specs.
+- **Square Watch Hardware Note**: The interactive OS simulator (`prototypes/watch-me-os.html`, linked prominently from this landing) uses a modern square/rectangular smartwatch form factor (rounded-square case with rectangular screen). This was deliberately chosen post-redesign to match the 184×224 rectangular proportions of the Figma-extracted UI modules in the component kit — ensuring visual and spatial consistency between marketing site, OS experience, and embeddable cards. The DESIGN.md system itself governs only the marketing/landing color blocks and is independent of the OS hardware shape.
 - Dark mode is not documented because the marketing site does not ship a dark theme — the closest analog is the navy color-block (`color-block-section-navy`) and the inverse-canvas footer.
 - Form-field error and validation styling is not visible on `/contact/` because no error states render in the static screenshot. Inputs have hairline borders and rounded `{rounded.md}` corners; error treatment is not documented.
 - The animated marquee-strip and color-block reveal animations are not documented (per the no-interaction policy).

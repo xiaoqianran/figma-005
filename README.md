@@ -17,8 +17,8 @@ After a full ground-up redesign, **figma-005** delivers three world-class, zero-
 
 | Artifact | File | Purpose |
 |----------|------|---------|
-| **Brand Landing** | `index.html` | $30k Swiss watch marketing site with live hero watch, configurator, and deep links into the OS |
-| **Watch Me OS** | `prototypes/watch-me-os.html` | Flagship 320px physical watch shell + 10+ fully interactive apps, digital crown physics, persistence, themes |
+| **Brand Landing** | `index.html` | Figma-style color-block marketing site (per DESIGN.md) with prominent links to the square smartwatch OS simulator |
+| **Watch Me OS** | `prototypes/watch-me-os.html` | Flagship square/rectangular smartwatch simulator (modern rounded-square hardware with rectangular screen) + 10+ fully interactive apps, digital crown physics, persistence, themes. Screen matches 184×224 module proportions. |
 | **Component Kit** | `components/` | 16+ high-fidelity 184×224 cards + live gallery + true interactive catalog/playground |
 
 All run instantly. No build. No node_modules in production. Pure craft.
@@ -47,7 +47,7 @@ npm start
 
 `prototypes/watch-me-os.html` is the heart of the redesign:
 
-- **Physical Hardware**: Multi-layer platinum case, sapphire crystal with live mouse-follow reflections, real digital crown (vertical drag + momentum + detents), side button (short/long press).
+- **Physical Hardware**: Modern square/rectangular smartwatch (large rounded-square platinum case, 56px border-radius corners). Rectangular screen deliberately proportioned to match the 184×224 rectangular UI modules from the component kit. Features multi-layer case, sapphire crystal with live mouse-follow reflections, real digital crown (vertical drag + momentum + detents), side button (short/long press).
 - **10+ Production Apps**: Home, Clock (multiple faces), Timer (real countdown + crown scrub), Tasks (CRUD + persistence), Messages (bidirectional + send), Wallet + NFC tap payment, Health (animated rings + SVG chart), Music (scrub + volume via crown), Settings (live theme switch), + stubs for the rest.
 - **OS Primitives**: Global notifications, state that survives refresh (localStorage), 3 themes (Dark/Light/Gold), keyboard support, 60fps interactions.
 - **Dev API**: `window.WM.test.*` (crown, navigate, reset, notify...).
@@ -73,7 +73,7 @@ See [docs/USAGE_GUIDE.md](docs/USAGE_GUIDE.md) for full integration patterns.
 figma-005/
 ├── index.html                 # Cinematic luxury landing (complete redesign)
 ├── prototypes/
-│   ├── watch-me-os.html       # NEW flagship simulator (crown, 10+ apps, PWA-ready)
+│   ├── watch-me-os.html       # NEW flagship square simulator (rectangular hardware matching 184×224 modules, crown, 10+ apps, PWA-ready)
 │   └── watch-me-interactive-prototype.html   # Legacy reference (preserved)
 ├── components/
 │   ├── cards/                 # 16+ standalone high-fidelity demos
@@ -109,7 +109,7 @@ The simulator and landing are deliberately single-file for maximum portability. 
 
 ## Status After Complete Redesign
 
-- ✅ Full cinematic luxury landing with working configurator + hero physics
+- ✅ Full Figma-style color-block luxury landing (DESIGN.md) with deep links to square simulator
 - ✅ Flagship OS simulator with crown, persistence, 10+ apps, themes
 - ✅ PWA manifest + service worker (installable, offline capable)
 - ✅ Comprehensive docs (plan + usage guide)

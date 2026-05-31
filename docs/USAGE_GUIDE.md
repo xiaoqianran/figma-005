@@ -24,10 +24,9 @@ npm start
 ```
 
 ### Key Features for Users
-- **Hero Watch**: Real-time analog movement, breathing lume, drag the crown (right side) to set time, click face to cycle complications (Time → Rings → Moonphase → Telemetry).
-- **Watch Configurator**: Change case finish / strap. Hero updates live + price reflects.
-- **"Launch Simulator"**: Primary CTA opens the full Watch Me OS in a premium modal or dedicated view (links to `prototypes/watch-me-os.html`).
-- **The OS Section**: Visual previews of key apps with direct deep links where implemented.
+- **Figma Marketing Style**: Color-block sections (lime, lilac, cream, navy per DESIGN.md) with elegant typography and prominent CTAs.
+- **"Launch Simulator" / Deep Links**: Multiple primary CTAs open the full square Watch Me OS simulator (`prototypes/watch-me-os.html` — modern rectangular hardware matching 184×224 modules).
+- **The OS Section**: Visual previews of key apps with direct deep links to the square simulator.
 
 ### Embedding / Customization
 The landing is intentionally a complete marketing page. To embed just the hero watch in your own site:
@@ -45,7 +44,7 @@ Landing is dark-luxury by default. Add `data-theme="light"` on `<html>` for a so
 
 ## 2. Watch Me OS Simulator (`prototypes/watch-me-os.html`)
 
-This is the **star of the project** — the most advanced browser-based luxury smartwatch simulation available.
+This is the **star of the project** — the most advanced browser-based luxury **square smartwatch** simulation available (modern rectangular form factor chosen to perfectly frame the 184×224 rectangular UI modules).
 
 ### Running
 - Double-click the file
@@ -53,6 +52,8 @@ This is the **star of the project** — the most advanced browser-based luxury s
 - Recommended: `npm run serve` then visit `/prototypes/watch-me-os.html`
 
 ### Hardware Interactions
+The simulator renders a modern **square/rectangular** smartwatch hardware shell (not traditional round) with a rectangular screen. This form factor was selected specifically because it aligns with and natively hosts the 184×224 rectangular page modules used in the component kit.
+
 - **Digital Crown**: Click and drag vertically on the right crown area. Momentum + detents included. Controls:
   - Scroll in lists (Tasks, Messages, Settings)
   - Scrub timer / music progress
@@ -175,7 +176,7 @@ npm run verify               # structural health check
 5. Commit with conventional message per `docs/COMMIT_MESSAGE_GUIDE.md` (legacy but still relevant).
 
 ### Performance Budget
-- Landing hero watch: < 35kB CSS/JS combined for the watch module.
+- Landing (color-block Figma system): lightweight, no embedded watch simulation (simulator is separate linked artifact).
 - Simulator: Prioritize perceived performance (instant app switch, progressive hydration of heavy apps like Health charts).
 
 ---
