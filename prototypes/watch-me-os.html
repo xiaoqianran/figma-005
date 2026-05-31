@@ -76,37 +76,51 @@
       transition: background 60ms linear;
     }
     .watch-screen {
-      position: absolute; inset: 44px;
-      width: 292px; height: 292px;
-      border-radius: 48px;
+      position: absolute; inset: 38px;
+      width: 304px; height: 304px;
+      border-radius: 52px;
       background: var(--wm-surface);
       box-shadow: inset 0 0 0 1px rgba(0,0,0,0.6);
       overflow: hidden; z-index: 30;
       color: var(--wm-text);
     }
+    /* Crown with realistic stem - right side at 3 o'clock */
     .crown {
-      position: absolute; right: -11px; top: 50%; transform: translateY(-50%);
-      width: 22px; height: 58px;
-      background: linear-gradient(90deg, #2f2f33, #1a1a1d 40%, #2f2f33);
+      position: absolute; right: -18px; top: 50%; transform: translateY(-50%);
+      width: 26px; height: 64px;
+      background: linear-gradient(90deg, #2f2f33, #1a1a1d 35%, #2f2f33);
       border-radius: 9999px;
-      box-shadow: 2px 0 6px rgba(0,0,0,0.6), inset -1px 0 3px rgba(255,255,255,0.1);
+      box-shadow: 3px 0 8px rgba(0,0,0,0.65), inset -1px 0 4px rgba(255,255,255,0.12);
       cursor: ns-resize; z-index: 50;
       border: 1px solid #3a3a40;
     }
+    .crown::before {
+      content: '';
+      position: absolute;
+      left: -6px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 8px;
+      height: 10px;
+      background: #1a1a1d;
+      border-radius: 2px;
+      box-shadow: inset 0 0 0 1px #3a3a40;
+    }
     .crown::after {
-      content: ''; position: absolute; inset: 8px 3px;
-      background: repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(0,0,0,0.25) 2px, rgba(0,0,0,0.25) 4px);
+      content: ''; position: absolute; inset: 9px 4px;
+      background: repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(0,0,0,0.28) 2px, rgba(0,0,0,0.28) 4px);
       border-radius: 9999px;
     }
-    .side-button {
-      position: absolute; left: -7px; top: 42%; width: 14px; height: 38px;
+    /* Subtle integrated pusher at 9 o'clock (left) - not a prominent side button */
+    .side-pusher {
+      position: absolute; left: -5px; top: 50%; transform: translateY(-50%);
+      width: 7px; height: 22px;
       background: linear-gradient(#2a2a2e, #1a1a1d);
-      border-radius: 9999px 0 0 9999px;
-      box-shadow: -2px 0 5px rgba(0,0,0,0.5);
-      cursor: pointer; z-index: 50;
-      transition: transform 80ms ease;
+      border-radius: 9999px;
+      box-shadow: -1px 0 3px rgba(0,0,0,0.5);
+      z-index: 49;
+      border: 1px solid #3a3a40;
     }
-    .side-button:active { transform: translateX(-1px); }
 
     /* Screen Content */
     .screen { width: 100%; height: 100%; position: relative; overflow: hidden; }
@@ -199,11 +213,11 @@
           </div>
         </div>
 
-        <!-- Physical Crown -->
+        <!-- Physical Crown with stem -->
         <div class="crown" id="crown" title="Digital Crown — drag vertically"></div>
         
-        <!-- Side Button -->
-        <div class="side-button" id="side-btn" title="Side Button (short press = Home, long = Switcher)"></div>
+        <!-- Subtle integrated pusher at 9 o'clock -->
+        <div class="side-pusher" id="side-pusher"></div>
       </div>
     </div>
 
@@ -421,22 +435,24 @@
 
     // ==================== SIDE BUTTON ====================
     function initSideButton() {
-      const btn = document.getElementById('side-btn');
+      // Subtle pusher at 9 o'clock - short press = home, long press = app switcher (same behavior, less visually prominent)
+      const pusher = document.getElementById('side-pusher');
+      if (!pusher) return;
       let pressTimer = null;
 
-      btn.addEventListener('pointerdown', () => {
+      pusher.addEventListener('pointerdown', () => {
         pressTimer = setTimeout(() => {
           showAppSwitcher();
         }, 620);
+        pusher.style.transform = 'translateY(-50%) translateX(-1px)';
       });
-      btn.addEventListener('pointerup', () => {
+      pusher.addEventListener('pointerup', () => {
+        pusher.style.transform = 'translateY(-50%)';
         if (pressTimer) {
           clearTimeout(pressTimer);
-          // Short press
           if (WM.state.currentApp !== 'home') {
             navigate('home');
           } else {
-            // Wake / subtle animation
             const screen = document.getElementById('screen');
             screen.style.transition = 'transform 120ms';
             screen.style.transform = 'scale(0.985)';
@@ -444,7 +460,10 @@
           }
         }
       });
-      btn.addEventListener('pointerleave', () => clearTimeout(pressTimer));
+      pusher.addEventListener('pointerleave', () => {
+        pusher.style.transform = 'translateY(-50%)';
+        clearTimeout(pressTimer);
+      });
     }
 
     function showAppSwitcher() {
