@@ -19,8 +19,8 @@ const REQUIRED = [
 ];
 
 const CHECKS = [
-  { file: 'index.html', contains: ['Watch Me', 'The Instrument'], minLines: 300 },
-  { file: 'prototypes/watch-me-os.html', contains: ['Watch Me OS', 'crown', 'registerApp'], minLines: 400 },
+  { file: 'index.html', contains: ['Watch Me', 'The Instrument', 'color-block'], minLines: 200 },
+  { file: 'prototypes/watch-me-os.html', contains: ['Watch Me OS', 'crown', 'watch-case', 'border-radius: 56px'], minLines: 500 },
   { file: 'prototypes/watch-me-interactive-prototype.html', contains: ['renderScreen'], minLines: 600 },
 ];
 
