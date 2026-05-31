@@ -38,8 +38,8 @@
 
     /* ==================== SQUARE SMARTWATCH HARDWARE (modern rectangular form to match UI modules) ==================== */
     .watch-container {
-      width: 360px;
-      height: 420px;
+      width: 480px;   /* Much larger on page - watch now dominates the view */
+      height: 560px;
       position: relative;
       filter: drop-shadow(0 60px 140px rgba(0,0,0,0.9));
     }
@@ -59,15 +59,15 @@
     }
     .watch-bezel {
       position: absolute;
-      inset: 14px;
-      border-radius: 46px;
+      inset: 18px;                    /* Scaled for larger watch */
+      border-radius: 62px;
       background: #121214;
       box-shadow: inset 0 0 0 2px #29292e, inset 0 20px 60px rgba(0,0,0,0.85);
     }
     .watch-crystal {
       position: absolute;
-      inset: 26px;
-      border-radius: 38px;
+      inset: 28px;                    /* Consistent with new screen inset */
+      border-radius: 54px;
       background: #0a0b0d;
       box-shadow: 
         inset 0 0 0 1px rgba(255,255,255,0.12),
@@ -89,27 +89,27 @@
     }
     .watch-screen {
       position: absolute;
-      inset: 32px;
-      width: 296px;
-      height: 356px; /* rectangular screen */
-      border-radius: 32px;
-      background: var(--wm-bg); /* Figma white canvas */
+      inset: 36px;                    /* Consistent thick bezel for better visual alignment */
+      width: 408px;
+      height: 488px;                  /* Larger rectangular screen, better proportions */
+      border-radius: 28px;
+      background: var(--wm-bg);       /* Figma white canvas */
       box-shadow: inset 0 0 0 1px var(--wm-border);
       overflow: hidden;
       z-index: 30;
-      color: var(--wm-ink); /* black text */
+      color: var(--wm-ink);           /* black text */
     }
     /* Digital Crown - right side vertical for square watch (inspired by modern square smartwatch best practices) */
     .crown {
       position: absolute;
-      right: -14px;
+      right: -16px;
       top: 50%;
       transform: translateY(-50%);
-      width: 24px;
-      height: 72px;
+      width: 26px;
+      height: 92px;                     /* Longer crown for bigger watch */
       background: linear-gradient(90deg, #2f2f33, #1a1a1d 35%, #2f2f33);
-      border-radius: 12px;
-      box-shadow: 4px 0 10px rgba(0,0,0,0.65), inset -1px 0 5px rgba(255,255,255,0.12);
+      border-radius: 13px;
+      box-shadow: 5px 0 12px rgba(0,0,0,0.65), inset -1px 0 6px rgba(255,255,255,0.12);
       cursor: ns-resize;
       z-index: 50;
       border: 1px solid #3a3a40;
@@ -117,11 +117,11 @@
     .crown::before {
       content: '';
       position: absolute;
-      left: -5px;
+      left: -6px;
       top: 50%;
       transform: translateY(-50%);
-      width: 6px;
-      height: 14px;
+      width: 7px;
+      height: 18px;
       background: #1a1a1d;
       border-radius: 2px;
       box-shadow: inset 0 0 0 1px #3a3a40;
@@ -129,19 +129,19 @@
     .crown::after {
       content: '';
       position: absolute;
-      inset: 10px 3px;
+      inset: 12px 4px;
       background: repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(0,0,0,0.3) 2px, rgba(0,0,0,0.3) 5px);
       border-radius: 8px;
     }
 
-    /* Subtle side pusher (left edge) - for square form factor */
+    /* Subtle side pusher (left edge) */
     .side-pusher {
       position: absolute;
-      left: -4px;
+      left: -5px;
       top: 50%;
       transform: translateY(-50%);
-      width: 6px;
-      height: 28px;
+      width: 7px;
+      height: 36px;
       background: linear-gradient(#2a2a2e, #1a1a1d);
       border-radius: 3px;
       box-shadow: -2px 0 4px rgba(0,0,0,0.5);
@@ -261,7 +261,7 @@
     /* Visible dev harness - light Figma style */
     .dev-harness {
       margin-top: 12px; background: #ffffff; border: 1px solid #e6e6e6; border-radius: 12px;
-      font-size: 10px; padding: 8px 10px; color: #5f6166; width: 380px;
+      font-size: 10px; padding: 8px 10px; color: #5f6166; width: 480px; /* match new watch width */
     }
     .dev-harness button {
       font-size: 9px; padding: 2px 8px; background: #f7f7f5; border: 1px solid #e6e6e6; border-radius: 6px; margin: 2px; color: #000;
