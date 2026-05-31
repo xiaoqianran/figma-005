@@ -428,9 +428,9 @@
         Apps[name].render(root, props);
       } else {
         root.innerHTML = `
-          <div class="h-full flex flex-col items-center justify-center p-6 text-center">
-            <i class="fa-solid fa-rocket text-3xl mb-3 opacity-50"></i>
-            <div class="font-semibold text-sm">${name.toUpperCase()}</div>
+          <div class="h-full flex flex-col items-center justify-center p-6 text-center bg-[#ffffff]">
+            <i class="fa-solid fa-rocket text-3xl mb-3 opacity-50" style="color:#5f6166"></i>
+            <div class="font-semibold text-sm" style="color:#000">${name.toUpperCase()}</div>
             <div class="text-xs text-[#5f6166] mt-1">App coming in next OTA</div>
             <button onclick="navigate('home')" class="mt-6 lux-button text-xs px-5 py-1.5">Return Home</button>
           </div>`;
@@ -567,19 +567,19 @@
       const root = document.getElementById('screen-root');
       const apps = Object.keys(Apps);
       root.innerHTML = `
-        <div class="p-3 h-full overflow-auto">
+        <div class="p-3 h-full overflow-auto bg-[#ffffff]">
           <div class="text-xs uppercase tracking-widest text-[#5f6166] px-1 mb-2">APP SWITCHER</div>
           <div class="grid grid-cols-4 gap-2">
             ${apps.map(name => `
               <div onclick="navigate('${name}');" 
-                   class="aspect-square flex flex-col items-center justify-center rounded-2xl bg-[#f7f7f5] hover:bg-[#f7f7f5] active:bg-white/15 cursor-pointer text-center p-1.5">
+                   class="aspect-square flex flex-col items-center justify-center rounded-2xl bg-[#f7f7f5] hover:bg-[#f1f1f3] active:bg-[#e6e6e6] cursor-pointer text-center p-1.5">
                 <i class="fa-solid ${Apps[name].icon} text-lg mb-1 wm-purple"></i>
-                <div class="text-[9px] leading-none text-[#c8c8cc]">${name}</div>
+                <div class="text-[9px] leading-none" style="color:#5f6166">${name}</div>
               </div>
             `).join('')}
           </div>
           <div class="text-center mt-4">
-            <button onclick="navigate('home')" class="text-xs px-4 py-1 rounded-full bg-[#f7f7f5]">Close</button>
+            <button onclick="navigate('home')" class="text-xs px-4 py-1 rounded-full bg-[#f7f7f5]" style="color:#000">Close</button>
           </div>
         </div>`;
     }
@@ -777,10 +777,12 @@
       const check = el.querySelector('.w-4');
       if (t.done) {
         check.classList.add('bg-[#ff3d8b]', 'border-[#ff3d8b]');
+        check.classList.remove('border-[#e6e6e6]');
         check.innerHTML = '<i class="fa-solid fa-check text-[9px]"></i>';
         el.querySelector('div.flex-1').classList.add('line-through', 'opacity-60');
       } else {
         check.classList.remove('bg-[#ff3d8b]', 'border-[#ff3d8b]');
+        check.classList.add('border-[#e6e6e6]');
         check.innerHTML = '';
         el.querySelector('div.flex-1').classList.remove('line-through', 'opacity-60');
       }
@@ -800,7 +802,7 @@
           <div class="flex-1 overflow-auto px-2 space-y-px text-xs">
             ${WM.state.messages.map(m => `
               <div class="p-2.5 rounded-2xl ${m.me ? 'ml-6' : 'bg-[#f7f7f5] mr-6'}" style="${m.me ? 'background:#c5b0f4' : ''}">
-                <div class="flex justify-between text-[10px] opacity-70" style="color:#5f6166"><div>${m.from}</div><div>${m.time}</div></div>
+                <div class="flex justify-between text-[10px]" style="color:#5f6166;opacity:0.85"><div>${m.from}</div><div>${m.time}</div></div>
                 <div class="mt-0.5" style="color:#000">${m.text}</div>
               </div>
             `).join('')}
@@ -824,10 +826,10 @@
     // WALLET
     registerApp('wallet', (root) => {
       root.innerHTML = `
-        <div class="h-full flex flex-col p-3">
+        <div class="h-full flex flex-col p-3 bg-[#ffffff]">
           <div class="text-xs text-[#5f6166]">WALLET</div>
-          <div class="mt-1 text-3xl font-semibold display-font">$${WM.state.wallet.balance}</div>
-          <div class="mt-4 text-xs">Cards • ${WM.state.wallet.cards}</div>
+          <div class="mt-1 text-3xl font-semibold display-font" style="color:#000">$${WM.state.wallet.balance}</div>
+          <div class="mt-4 text-xs" style="color:#5f6166">Cards • ${WM.state.wallet.cards}</div>
           <div class="mt-auto grid grid-cols-2 gap-2">
             <div onclick="simulateNFC()" class="lux-button flex items-center justify-center gap-2 text-sm py-3"><i class="fa-solid fa-wifi"></i> TAP TO PAY</div>
             <div onclick="navigate('confirm-tx')" class="lux-button secondary flex items-center justify-center gap-2 text-sm py-3">SEND</div>
@@ -837,13 +839,13 @@
 
     function simulateNFC() {
       const root = document.getElementById('screen-root');
-      root.innerHTML = `<div class="h-full flex flex-col items-center justify-center">
+      root.innerHTML = `<div class="h-full flex flex-col items-center justify-center bg-[#ffffff]">
         <div class="w-20 h-20 rounded-full border-[6px] border-[#ff3d8b] flex items-center justify-center animate-pulse">
           <i class="fa-solid fa-wifi text-3xl text-[#ff3d8b]"></i>
         </div>
-        <div class="mt-4 text-sm">Payment approved</div>
+        <div class="mt-4 text-sm" style="color:#000">Payment approved</div>
         <div class="text-xs text-[#5f6166] mt-0.5">- $42.00 • Coffee Lab</div>
-        <button onclick="navigate('wallet')" class="mt-8 text-xs px-5 py-2 rounded-full bg-[#f7f7f5]">Done</button>
+        <button onclick="navigate('wallet')" class="mt-8 text-xs px-5 py-2 rounded-full bg-[#f7f7f5]" style="color:#000">Done</button>
       </div>`;
       setTimeout(() => { WM.state.wallet.balance -= 42; saveState(); }, 1800);
     }
@@ -851,20 +853,20 @@
     // HEALTH (with fake chart)
     registerApp('health', (root) => {
       root.innerHTML = `
-        <div class="h-full p-3 flex flex-col">
-          <div class="text-xs mb-1">TODAY • ${WM.state.health.steps.toLocaleString()} STEPS</div>
+        <div class="h-full p-3 flex flex-col bg-[#ffffff]">
+          <div class="text-xs mb-1" style="color:#000">TODAY • ${WM.state.health.steps.toLocaleString()} STEPS</div>
           <div class="flex justify-between text-[10px] mb-1">
-            <div class="wm-purple">MOVE ${WM.state.health.move}%</div>
-            <div class="text-orange-400">EX ${WM.state.health.exercise}%</div>
-            <div class="text-emerald-400">STAND ${WM.state.health.stand}h</div>
+            <div style="color:#ff3d8b">MOVE ${WM.state.health.move}%</div>
+            <div style="color:#c5a26f">EX ${WM.state.health.exercise}%</div>
+            <div style="color:#1ea64a">STAND ${WM.state.health.stand}h</div>
           </div>
           <div class="flex-1 flex items-center justify-center">
             <svg width="148" height="148">
-              <circle cx="74" cy="74" r="62" fill="none" stroke="#222" stroke-width="18"/>
+              <circle cx="74" cy="74" r="62" fill="none" stroke="#e6e6e6" stroke-width="18"/>
               <circle cx="74" cy="74" r="62" fill="none" stroke="#ff3d8b" stroke-width="18" 
                       stroke-dasharray="${WM.state.health.move * 3.89} 389" transform="rotate(-90 74 74)"/>
-              <circle cx="74" cy="74" r="42" fill="none" stroke="#222" stroke-width="14"/>
-              <circle cx="74" cy="74" r="42" fill="none" stroke="#f59e0b" stroke-width="14" 
+              <circle cx="74" cy="74" r="42" fill="none" stroke="#e6e6e6" stroke-width="14"/>
+              <circle cx="74" cy="74" r="42" fill="none" stroke="#c5a26f" stroke-width="14" 
                       stroke-dasharray="${WM.state.health.exercise * 2.64} 264" transform="rotate(-90 74 74)"/>
             </svg>
           </div>
@@ -876,23 +878,23 @@
     registerApp('music', (root) => {
       const m = WM.state.music;
       root.innerHTML = `
-        <div class="h-full flex flex-col p-3">
-          <div class="text-xs opacity-70">NOW PLAYING</div>
-          <div class="mt-2 text-lg font-medium leading-none">${m.track}</div>
+        <div class="h-full flex flex-col p-3 bg-[#ffffff]">
+          <div class="text-xs" style="color:#5f6166">NOW PLAYING</div>
+          <div class="mt-2 text-lg font-medium leading-none" style="color:#000">${m.track}</div>
           <div class="text-xs text-[#5f6166]">Hania Rani • 2024</div>
           <div class="mt-5">
-            <div class="h-0.5 bg-white/20 rounded">
+            <div class="h-0.5 bg-[#f7f7f5] rounded">
               <div id="music-progress" class="h-0.5 bg-[#ff3d8b] rounded" style="width:${m.progress}%"></div>
             </div>
           </div>
           <div class="flex justify-between text-[10px] text-[#5f6166] mt-0.5"><div>1:41</div><div>4:03</div></div>
           <div class="mt-auto flex items-center justify-between px-2">
-            <i onclick="toggleMusic(this)" class="fa-solid ${m.playing ? 'fa-pause' : 'fa-play'} text-xl cursor-pointer"></i>
+            <i onclick="toggleMusic(this)" class="fa-solid ${m.playing ? 'fa-pause' : 'fa-play'} text-xl cursor-pointer" style="color:#000"></i>
             <div class="flex-1 mx-4">
               <input type="range" min="0" max="100" value="${m.volume}" 
                      oninput="WM.state.music.volume = +this.value; saveState()" class="w-full accent-[#c5a26f]">
             </div>
-            <i class="fa-solid fa-volume-up"></i>
+            <i class="fa-solid fa-volume-up" style="color:#5f6166"></i>
           </div>
         </div>`;
     }, 'fa-music');
@@ -907,30 +909,30 @@
     // SETTINGS
     registerApp('settings', (root) => {
       root.innerHTML = `
-        <div class="h-full flex flex-col text-sm">
+        <div class="h-full flex flex-col text-sm bg-[#ffffff]">
           <div class="app-header">Settings</div>
           <div class="px-2 flex-1 overflow-auto text-xs space-y-1">
             <div class="list-item justify-between" onclick="cycleTheme()"><div>Theme</div><div class="text-[#ff3d8b]">${WM.state.theme.toUpperCase()}</div></div>
-            <div class="list-item justify-between"><div>Always On Display</div><div class="text-emerald-400">ON</div></div>
+            <div class="list-item justify-between"><div>Always On Display</div><div style="color:#1ea64a">ON</div></div>
             <div class="list-item justify-between" onclick="WM.state.battery = Math.max(12, WM.state.battery-8); saveState(); navigate('settings')">
-              <div>Battery Saver</div><div>${WM.state.battery}%</div>
+              <div>Battery Saver</div><div style="color:#000">${WM.state.battery}%</div>
             </div>
             <div class="list-item justify-between"><div>Reduce Motion</div><div class="text-[#5f6166]">OFF</div></div>
-            <div class="list-item justify-between"><div>Crown Haptics</div><div class="text-emerald-400">ON</div></div>
+            <div class="list-item justify-between"><div>Crown Haptics</div><div style="color:#1ea64a">ON</div></div>
           </div>
-          <div class="p-3 text-center text-[10px] text-[#505055]">Watch Me OS 1.0 • Build 2026.06</div>
+          <div class="p-3 text-center text-[10px] text-[#5f6166]">Watch Me OS 1.0 • Build 2026.06</div>
         </div>`;
     }, 'fa-cog');
 
     // NEW MESSAGE (Figma card inspired)
     registerApp('new-msg', (root) => {
       root.innerHTML = `
-        <div class="p-3 h-full flex flex-col">
-          <div class="text-xs mb-1">NEW MESSAGE</div>
-          <input placeholder="To: " class="bg-[#f7f7f5] rounded px-3 py-1 text-xs mb-2" value="Sarah Chen">
-          <textarea class="flex-1 bg-[#f7f7f5] rounded-xl p-3 text-xs resize-none" placeholder="Type message..."></textarea>
+        <div class="p-3 h-full flex flex-col bg-[#ffffff]">
+          <div class="text-xs mb-1" style="color:#000">NEW MESSAGE</div>
+          <input placeholder="To: " class="bg-[#f7f7f5] rounded px-3 py-1 text-xs mb-2" value="Sarah Chen" style="color:#000">
+          <textarea class="flex-1 bg-[#f7f7f5] rounded-xl p-3 text-xs resize-none" placeholder="Type message..." style="color:#000"></textarea>
           <div class="flex gap-2 mt-2">
-            <button onclick="navigate('messages')" class="flex-1 py-2 rounded-2xl bg-[#f7f7f5] text-xs">CANCEL</button>
+            <button onclick="navigate('messages')" class="flex-1 py-2 rounded-2xl bg-[#f7f7f5] text-xs" style="color:#000">CANCEL</button>
             <button onclick="sendQuickMessage(this)" class="flex-1 py-2 rounded-2xl lux-button text-xs">SEND</button>
           </div>
         </div>`;
@@ -945,9 +947,9 @@
 
     // CONFIRM TX stub
     registerApp('confirm-tx', (root) => {
-      root.innerHTML = `<div class="h-full flex flex-col items-center justify-center p-4 text-center">
-        <div class="text-2xl font-semibold display-font">-$180</div>
-        <div class="text-xs mt-1 opacity-70">to Atelier Reserve</div>
+      root.innerHTML = `<div class="h-full flex flex-col items-center justify-center p-4 text-center bg-[#ffffff]">
+        <div class="text-2xl font-semibold display-font" style="color:#000">-$180</div>
+        <div class="text-xs mt-1" style="color:#5f6166">to Atelier Reserve</div>
         <button onclick="confirmTx(this)" class="mt-8 lux-button px-10">CONFIRM WITH CROWN</button>
         <div class="text-[10px] text-[#5f6166] mt-3">Drag crown to authorize</div>
       </div>`;
@@ -968,10 +970,10 @@
 
     registerApp('notifications', (root) => {
       root.innerHTML = `
-        <div class="p-3">
-          <div class="text-xs mb-2">NOTIFICATIONS</div>
+        <div class="p-3 bg-[#ffffff] h-full">
+          <div class="text-xs mb-2" style="color:#000">NOTIFICATIONS</div>
           ${WM.state.notifications.length ? WM.state.notifications.map(n => `
-            <div class="list-item text-xs">${n.title}</div>
+            <div class="list-item text-xs" style="color:#000">${n.title}</div>
           `).join('') : `<div class="text-center py-8 text-xs text-[#5f6166]">All caught up</div>`}
         </div>`;
     }, 'fa-bell');
@@ -1081,9 +1083,9 @@
     }
 
     // Register a few more for switcher completeness
-    registerApp('activity', (r) => { r.innerHTML = `<div class="p-4 text-xs">Activity rings live in Health app. <span onclick="navigate('health')" class="underline cursor-pointer">Open Health →</span></div>`; }, 'fa-chart-line');
-    registerApp('team', (r) => { r.innerHTML = `<div class="p-4"><div class="text-xs mb-2">TEAM</div><div class="flex -space-x-2">${[1,2,3,4].map(i=>`<div class="w-7 h-7 rounded-full bg-zinc-700 border border-[#1b1d21]"></div>`).join('')}</div></div>`; }, 'fa-users');
-    registerApp('add-contact', (r) => { r.innerHTML = `<div class="p-4 text-xs">Add contact form stub. <button onclick="navigate('messages')" class="underline">Done</button></div>`; }, 'fa-user-plus');
+    registerApp('activity', (r) => { r.innerHTML = `<div class="p-4 text-xs bg-[#ffffff] h-full" style="color:#000">Activity rings live in Health app. <span onclick="navigate('health')" class="underline cursor-pointer" style="color:#ff3d8b">Open Health →</span></div>`; }, 'fa-chart-line');
+    registerApp('team', (r) => { r.innerHTML = `<div class="p-4 bg-[#ffffff] h-full"><div class="text-xs mb-2" style="color:#000">TEAM</div><div class="flex -space-x-2">${[ '#dceeb1','#c5b0f4','#c8e6cd','#f3c9b6' ].map(c=>`<div class="w-7 h-7 rounded-full" style="background:${c};border:1px solid #e6e6e6"></div>`).join('')}</div><div class="text-[10px] mt-2" style="color:#5f6166">4 members online</div></div>`; }, 'fa-users');
+    registerApp('add-contact', (r) => { r.innerHTML = `<div class="p-4 text-xs bg-[#ffffff] h-full" style="color:#000">Add contact form stub. <button onclick="navigate('messages')" class="underline" style="color:#ff3d8b">Done</button></div>`; }, 'fa-user-plus');
 
     // Auto boot
     window.onload = bootWatch;
