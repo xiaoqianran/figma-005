@@ -1,5 +1,8 @@
 # Watch Me 2026 — The Instrument
 
+> **Active Design Reference**: This project now follows the Figma marketing design system extracted via `getdesign`.
+> See [DESIGN.md](./DESIGN.md) for the complete spec (color blocks, typography, spacing, components, layout rhythm). All new UI work must reference it.
+
 **Complete Redesign (2026-06)**  
 A museum-quality luxury smart instrument experience: cinematic brand landing + the most advanced self-contained browser smartwatch OS ever built + production-ready modular UI kit.
 
