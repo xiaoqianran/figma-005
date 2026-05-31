@@ -10,29 +10,36 @@
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Space+Grotesk:wght@500;600&amp;display=swap');
     
     :root {
-      --wm-bg: #0f1114;
-      --wm-surface: #1f2126;          /* lifted for better readability */
-      --wm-surface-2: #24272c;        /* cards / elevated surfaces */
-      --wm-gold: #c5a26f;
-      --wm-purple: #7640ef;
-      --wm-pink: #ff4a8c;
+      /* Figma design system alignment (from DESIGN.md) */
+      --wm-bg: #0a0a0a;                    /* close to Figma inverse-canvas / primary black */
+      --wm-surface: #1a1a1e;               /* dark surface */
+      --wm-surface-2: #222228;             /* elevated cards */
+      --wm-ink: #ffffff;                   /* Figma inverse-ink */
+      --wm-ink-soft: #a8acb3;              /* secondary text */
+      --wm-border: rgba(255,255,255,0.10);
+
+      /* Figma accent colors for joyful/tech feel */
+      --wm-magenta: #ff3d8b;               /* Figma accent-magenta - primary action */
+      --wm-lime: #dceeb1;
+      --wm-lilac: #c5b0f4;
+      --wm-mint: #c8e6cd;
+      --wm-gold: #c5a26f;                  /* kept for luxury watch heritage */
+      --wm-navy: #1f1d3d;                  /* Figma block-navy for depth */
+
+      /* Legacy fallbacks for compatibility */
+      --wm-purple: #ff3d8b;
+      --wm-pink: #ff3d8b;
       --wm-text: #f2f2f2;
-      --wm-text-sec: #a8acb3;         /* much better contrast */
-      --wm-border: rgba(255,255,255,0.08);
+      --wm-text-sec: #a8acb3;
     }
     
     [data-theme="light"] {
       --wm-bg: #f4f4f6;
       --wm-surface: #ffffff;
       --wm-surface-2: #f1f1f3;
-      --wm-text: #111113;
-      --wm-text-sec: #5f6166;
+      --wm-ink: #111113;
+      --wm-ink-soft: #5f6166;
       --wm-border: rgba(0,0,0,0.08);
-    }
-    
-    [data-theme="gold"] {
-      --wm-gold: #d4af37;
-      --wm-purple: #8b5cf6;
     }
 
     body { font-family: 'Inter', system-ui, sans-serif; background: #08090a; }
@@ -156,10 +163,10 @@
     .status-bar {
       height: 28px; padding: 0 14px; display: flex; align-items: center; justify-content: space-between;
       font-size: 10px; font-weight: 600; letter-spacing: 0.5px; 
-      background: rgba(0,0,0,0.4);
+      background: rgba(0,0,0,0.5);
       border-bottom: 1px solid var(--wm-border);
       position: relative; z-index: 40;
-      color: var(--wm-text-sec);
+      color: var(--wm-ink-soft);
     }
     /* Better safe area + multi-page home like real smartwatches */
     .screen-content {
@@ -190,12 +197,12 @@
       font-size: 12px; 
       gap: 5px;
       min-height: 72px;
-      color: var(--wm-text);
+      color: var(--wm-ink);
     }
     .app-icon:hover { background: #2a2d33; border-color: rgba(255,255,255,0.14); }
     .app-icon:active { transform: scale(0.93); }
-    .app-icon .fa { font-size: 22px; margin-bottom: 2px; color: var(--wm-gold); }
-    .app-icon span { font-size: 10px; opacity: 0.92; }
+    .app-icon .fa { font-size: 22px; margin-bottom: 2px; color: var(--wm-magenta); } /* Figma magenta accent */
+    .app-icon span { font-size: 10px; opacity: 0.92; color: var(--wm-ink); }
 
     /* Simple page indicator */
     .page-dots {
@@ -220,7 +227,7 @@
       display: flex; 
       justify-content: space-between; 
       align-items: center; 
-      color: var(--wm-text);
+      color: var(--wm-ink);
       border-bottom: 1px solid var(--wm-border);
     }
     .list-item {
@@ -234,16 +241,16 @@
       border: 1px solid var(--wm-border);
       transition: all 0.1s; 
       min-height: 44px;
-      color: var(--wm-text);
+      color: var(--wm-ink);
     }
     .list-item:hover { background: #2a2d33; }
     .list-item:active { background: #32353b; transform: scale(0.985); }
     .lux-button {
-      background: var(--wm-purple); color: white; font-weight: 600; font-size: 12px;
-      padding: 8px 18px; border-radius: 9999px; transition: all 0.1s;
+      background: var(--wm-magenta); color: white; font-weight: 600; font-size: 12px;
+      padding: 8px 18px; border-radius: 9999px; transition: all 0.1s; /* Figma pill + magenta */
     }
-    .lux-button:active { transform: scale(0.96); background: #5f2fd1; }
-    .lux-button.secondary { background: #2a2c32; color: #d1d1d5; }
+    .lux-button:active { transform: scale(0.96); filter: brightness(0.9); }
+    .lux-button.secondary { background: var(--wm-surface-2); color: var(--wm-ink-soft); border: 1px solid var(--wm-border); }
 
     .ring { transition: stroke-dashoffset 400ms cubic-bezier(0.23,1,0.32,1); }
     .wm-gold { color: var(--wm-gold); }
@@ -267,7 +274,7 @@
     .dev-harness button {
       font-size: 9px; padding: 2px 8px; background: #1f2126; border: 1px solid #333; border-radius: 6px; margin: 2px; color: #aaa;
     }
-    .dev-harness button:hover { background: #c5a26f; color: #111; border-color: #c5a26f; }
+    .dev-harness button:hover { background: #ff3d8b; color: #fff; border-color: #ff3d8b; }
   </style>
 </head>
 <body class="bg-[#08090a] flex items-center justify-center min-h-screen p-8">
@@ -279,6 +286,7 @@
         <span class="text-[#a8acb3] font-medium tracking-[1px] text-xs">WATCH ME OS v1.0</span>
       </div>
       <div class="h-3 w-px bg-white/10"></div>
+      <div class="px-2 py-0.5 text-[10px] rounded bg-emerald-900/60 text-emerald-300 font-mono tracking-wider">SQUARE</div>
       <button onclick="resetAll()" 
               class="text-[#a8acb3] hover:text-white text-xs flex items-center gap-1.5 transition-colors">
         <i class="fa-solid fa-undo text-[10px]"></i> RESET STATE
@@ -682,7 +690,7 @@
               </div>
             </div>
           </div>
-          <div onclick="navigate('settings')" class="mt-4 text-xs flex items-center gap-1.5 cursor-pointer text-[#c5a26f]">
+          <div onclick="navigate('settings')" class="mt-4 text-xs flex items-center gap-1.5 cursor-pointer text-[#ff3d8b]">
             <i class="fa-solid fa-cog"></i> <span>CHANGE FACE</span>
           </div>
         </div>`;
@@ -751,7 +759,7 @@
           <div class="flex-1 overflow-auto px-1 pb-2" style="scrollbar-width: none;">
             ${WM.state.tasks.map((t, i) => `
               <div class="list-item cursor-pointer" onclick="toggleTask(${t.id}, this)">
-                <div class="w-4 h-4 rounded border flex-shrink-0 flex items-center justify-center ${t.done ? 'bg-[#7640ef] border-[#7640ef]' : 'border-white/60'}">
+                <div class="w-4 h-4 rounded border flex-shrink-0 flex items-center justify-center ${t.done ? 'bg-[#ff3d8b] border-[#ff3d8b]' : 'border-white/60'}">
                   ${t.done ? '<i class="fa-solid fa-check text-[9px]"></i>' : ''}
                 </div>
                 <div class="flex-1 text-xs ${t.done ? 'line-through opacity-60' : ''}">${t.text}</div>
@@ -774,11 +782,11 @@
       // Quick visual
       const check = el.querySelector('.w-4');
       if (t.done) {
-        check.classList.add('bg-[#7640ef]', 'border-[#7640ef]');
+        check.classList.add('bg-[#ff3d8b]', 'border-[#ff3d8b]');
         check.innerHTML = '<i class="fa-solid fa-check text-[9px]"></i>';
         el.querySelector('div.flex-1').classList.add('line-through', 'opacity-60');
       } else {
-        check.classList.remove('bg-[#7640ef]', 'border-[#7640ef]');
+        check.classList.remove('bg-[#ff3d8b]', 'border-[#ff3d8b]');
         check.innerHTML = '';
         el.querySelector('div.flex-1').classList.remove('line-through', 'opacity-60');
       }
@@ -794,10 +802,10 @@
     registerApp('messages', (root) => {
       root.innerHTML = `
         <div class="h-full flex flex-col">
-          <div class="app-header"><div>Messages</div><div onclick="navigate('new-msg')" class="text-[#7640ef] text-xs cursor-pointer">NEW</div></div>
+          <div class="app-header"><div>Messages</div><div onclick="navigate('new-msg')" class="text-[#ff3d8b] text-xs cursor-pointer">NEW</div></div>
           <div class="flex-1 overflow-auto px-2 space-y-px text-xs">
             ${WM.state.messages.map(m => `
-              <div class="p-2.5 rounded-2xl ${m.me ? 'bg-[#7640ef]/80 ml-6' : 'bg-white/10 mr-6'}">
+              <div class="p-2.5 rounded-2xl ${m.me ? 'bg-[#ff3d8b]/80 ml-6' : 'bg-white/10 mr-6'}">
                 <div class="flex justify-between text-[10px] opacity-70"><div>${m.from}</div><div>${m.time}</div></div>
                 <div class="mt-0.5">${m.text}</div>
               </div>
@@ -806,7 +814,7 @@
           <div class="p-2 border-t border-white/10 flex gap-2">
             <input id="msg-input" placeholder="Reply..." class="flex-1 bg-white/10 rounded-2xl px-3 py-1.5 text-xs" 
                    onkeydown="if(event.key==='Enter') sendMessage(this)">
-            <button onclick="sendMessage()" class="px-4 rounded-2xl bg-[#7640ef] text-xs font-medium">Send</button>
+            <button onclick="sendMessage()" class="px-4 rounded-2xl bg-[#ff3d8b] text-xs font-medium">Send</button>
           </div>
         </div>`;
     }, 'fa-comments');
@@ -836,8 +844,8 @@
     function simulateNFC() {
       const root = document.getElementById('screen-root');
       root.innerHTML = `<div class="h-full flex flex-col items-center justify-center">
-        <div class="w-20 h-20 rounded-full border-[6px] border-[#c5a26f] flex items-center justify-center animate-pulse">
-          <i class="fa-solid fa-wifi text-3xl text-[#c5a26f]"></i>
+        <div class="w-20 h-20 rounded-full border-[6px] border-[#ff3d8b] flex items-center justify-center animate-pulse">
+          <i class="fa-solid fa-wifi text-3xl text-[#ff3d8b]"></i>
         </div>
         <div class="mt-4 text-sm">Payment approved</div>
         <div class="text-xs text-[#a8acb3] mt-0.5">- $42.00 • Coffee Lab</div>
@@ -859,14 +867,14 @@
           <div class="flex-1 flex items-center justify-center">
             <svg width="148" height="148">
               <circle cx="74" cy="74" r="62" fill="none" stroke="#222" stroke-width="18"/>
-              <circle cx="74" cy="74" r="62" fill="none" stroke="#7640ef" stroke-width="18" 
+              <circle cx="74" cy="74" r="62" fill="none" stroke="#ff3d8b" stroke-width="18" 
                       stroke-dasharray="${WM.state.health.move * 3.89} 389" transform="rotate(-90 74 74)"/>
               <circle cx="74" cy="74" r="42" fill="none" stroke="#222" stroke-width="14"/>
               <circle cx="74" cy="74" r="42" fill="none" stroke="#f59e0b" stroke-width="14" 
                       stroke-dasharray="${WM.state.health.exercise * 2.64} 264" transform="rotate(-90 74 74)"/>
             </svg>
           </div>
-          <div onclick="navigate('settings')" class="text-center text-xs text-[#c5a26f] cursor-pointer">VIEW TRENDS →</div>
+          <div onclick="navigate('settings')" class="text-center text-xs text-[#ff3d8b] cursor-pointer">VIEW TRENDS →</div>
         </div>`;
     }, 'fa-heart-pulse');
 
@@ -880,7 +888,7 @@
           <div class="text-xs text-[#a8acb3]">Hania Rani • 2024</div>
           <div class="mt-5">
             <div class="h-0.5 bg-white/20 rounded">
-              <div id="music-progress" class="h-0.5 bg-[#c5a26f] rounded" style="width:${m.progress}%"></div>
+              <div id="music-progress" class="h-0.5 bg-[#ff3d8b] rounded" style="width:${m.progress}%"></div>
             </div>
           </div>
           <div class="flex justify-between text-[10px] text-[#a8acb3] mt-0.5"><div>1:41</div><div>4:03</div></div>
@@ -908,7 +916,7 @@
         <div class="h-full flex flex-col text-sm">
           <div class="app-header">Settings</div>
           <div class="px-2 flex-1 overflow-auto text-xs space-y-1">
-            <div class="list-item justify-between" onclick="cycleTheme()"><div>Theme</div><div class="text-[#c5a26f]">${WM.state.theme.toUpperCase()}</div></div>
+            <div class="list-item justify-between" onclick="cycleTheme()"><div>Theme</div><div class="text-[#ff3d8b]">${WM.state.theme.toUpperCase()}</div></div>
             <div class="list-item justify-between"><div>Always On Display</div><div class="text-emerald-400">ON</div></div>
             <div class="list-item justify-between" onclick="WM.state.battery = Math.max(12, WM.state.battery-8); saveState(); navigate('settings')">
               <div>Battery Saver</div><div>${WM.state.battery}%</div>
@@ -1058,7 +1066,7 @@
       harness.className = 'dev-harness';
       harness.innerHTML = `
         <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">
-          <strong style="color:#c5a26f">WM TEST</strong>
+          <strong style="color:#ff3d8b">WM TEST</strong>
           <button onclick="WM.test.crown(90)">Crown +90</button>
           <button onclick="WM.test.navigate('timer')">Timer</button>
           <button onclick="WM.test.navigate('health')">Health</button>
@@ -1070,7 +1078,7 @@
       const container = document.getElementById('watch-container');
       if (container) container.parentNode.insertBefore(harness, container.nextSibling);
 
-      console.log('%c[Watch Me OS] Boot complete. window.WM.test.* + detent audio ready.', 'color:#c5a26f');
+      console.log('%c[Watch Me OS] Boot complete. Figma colors + square hardware ready.', 'color:#ff3d8b');
     }
 
     function resetAll() {
