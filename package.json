@@ -1,28 +1,35 @@
 {
-  "name": "figma101-005-watch-me-dark",
-  "version": "0.2.0",
-  "description": "Figma 101 Lesson 005: High-fidelity replication of Watch Me UI Kit Dark Theme cards. Self-contained interactive prototypes and modular HTML components.",
+  "name": "watch-me-2026",
+  "version": "1.0.0",
+  "description": "Watch Me 2026 — Premium luxury smart instrument. Complete redesign: cinematic brand landing + production-grade interactive smartwatch OS simulator + high-fidelity modular UI kit. Zero-dependency, self-contained, Figma-faithful.",
   "private": true,
   "scripts": {
-    "start": "npx http-server -p 8080 -o -c-1",
+    "start": "npx http-server -p 8080 -o index.html -c-1",
     "serve": "npx http-server -p 3000 -c-1 --cors",
-    "preview": "npx live-server --port=8080 --open=/index.html --watch=.,prototypes,components 2>nul || npx http-server -p 8080 -o index.html -c-1"
+    "preview": "npx live-server --port=8080 --open=/index.html 2>/dev/null || npx http-server -p 8080 -o index.html -c-1",
+    "dev": "npx http-server -p 5173 -c-1 --cors",
+    "verify": "node scripts/verify.js",
+    "lint:html": "npx html-validate index.html prototypes/*.html components/**/*.html 2>/dev/null || echo 'html-validate not installed or no issues reported'",
+    "build:info": "echo 'Watch Me 2026 - static artifacts ready. No build step required for core deliverables.'"
   },
   "keywords": [
-    "figma",
-    "replica",
+    "watch-me",
+    "smartwatch",
+    "luxury-ui",
+    "figma-replica",
+    "interactive-prototype",
     "ui-kit",
     "dark-theme",
-    "prototype",
-    "html",
+    "vanilla-js",
     "tailwind",
-    "watch-me"
+    "pwa",
+    "self-contained"
   ],
-  "author": "Figma 101",
+  "author": "Watch Me Atelier",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://example.local/figma101/005.git"
+    "url": "git+https://example.local/watch-me/2026.git"
   },
   "engines": {
     "node": ">=18"

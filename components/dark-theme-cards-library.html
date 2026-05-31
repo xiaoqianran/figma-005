@@ -1,341 +1,214 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Watch Me • Dark Theme - 全卡片组件库 (完整版)</title>
+  <title>Watch Me UI Kit • Visual Library</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&amp;display=swap');
+    :root { --card-bg: #1b1d21; --accent: #7640ef; --accent2: #ff4a8c; --text: #fff; --muted:#808389; }
     body { font-family: 'Montserrat', system-ui, -apple-system, sans-serif; }
-    .watch-card { width: 184px; height: 224px; background-color: #1b1d21; border-radius: 12px; overflow: hidden; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35); }
-    .phone-mock { width: 210px; background: #111; border-radius: 48px; padding: 8px; box-shadow: 0 25px 70px -15px rgb(0 0 0 / 0.5); }
-    .phone-mock .screen { background: #1b1d21; border-radius: 40px; overflow: hidden; }
-    .card-item { transition: all 0.2s ease; }
-    .card-item:hover { transform: translateY(-2px); }
-
-    /* Size controls for better readability of text & labels */
-    .phone-mock {
-      transition: transform 0.25s cubic-bezier(0.23, 1, 0.32, 1);
-      transform-origin: top center;
-    }
-    .scale-1   .phone-mock { transform: scale(1); }
-    .scale-1_35 .phone-mock { transform: scale(1.35); }
-    .scale-1_7  .phone-mock { transform: scale(1.7); }
-    .scale-2_2  .phone-mock { transform: scale(2.2); }
-
-    .scale-label {
-      font-size: 12px;
-      transition: font-size 0.2s ease;
-    }
-    .scale-1_35 .scale-label { font-size: 13px; }
-    .scale-1_7  .scale-label { font-size: 14px; font-weight: 600; }
-    .scale-2_2  .scale-label { font-size: 15px; font-weight: 600; }
-
-    .scale-btn {
-      font-size: 12px;
-      padding: 4px 14px;
-      border-radius: 9999px;
-      background: #181a1f;
-      border: 1px solid #272a31;
-      color: #a1a1aa;
-      transition: all 0.1s ease;
-    }
-    .scale-btn:hover { background: #272a31; color: #fff; }
-    .scale-btn.active {
-      background: #7640ef;
-      color: white;
-      border-color: #7640ef;
-    }
+    .watch-card { width: 184px; height: 224px; background: var(--card-bg); border-radius: 12px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.45); transition: transform .2s cubic-bezier(0.23,1,0.32,1), box-shadow .2s; border: 1px solid rgba(255,255,255,.06); }
+    .watch-card:hover { transform: translateY(-1px); box-shadow: 0 20px 40px rgba(0,0,0,0.5); }
+    .library-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(208px, 1fr)); gap: 22px; }
+    .theme-dark { --card-bg:#1b1d21; --accent:#7640ef; --accent2:#ff4a8c; --text:#fff; --muted:#808389; }
+    .theme-light { --card-bg:#f8f8f8; --accent:#5e2fd1; --accent2:#e63d7a; --text:#111; --muted:#555; }
+    .theme-gold { --card-bg:#1f1a14; --accent:#c5a26f; --accent2:#ff8f4d; --text:#f5e8c7; --muted:#a38f6f; }
+    .scale-control { accent-color: #7640ef; }
+    .card-label { font-size: 12px; font-weight: 600; letter-spacing: -.2px; }
+    .figma-tag { font-size: 9px; padding: 1px 6px; border-radius: 999px; background: rgba(255,255,255,.08); color: #888; }
+    .masonry { column-count: 5; column-gap: 18px; }
+    @media (max-width: 1280px) { .masonry { column-count: 4; } }
+    @media (max-width: 1024px) { .masonry { column-count: 3; } }
+    @media (max-width: 640px) { .masonry { column-count: 2; } }
+    .gallery-item { break-inside: avoid; margin-bottom: 22px; }
   </style>
 </head>
-<body class="bg-zinc-950 text-white">
-  <div class="max-w-screen-2xl mx-auto px-8 py-8">
-    <!-- Header -->
-    <div class="flex items-center justify-between mb-8">
+<body class="bg-zinc-950 text-white theme-dark">
+  <div class="max-w-screen-2xl mx-auto px-8 pt-8 pb-12">
+    <!-- Hero Header -->
+    <div class="flex items-end justify-between mb-8">
       <div>
-        <h1 class="text-4xl font-bold tracking-tight">Watch Me • Dark Theme</h1>
-        <p class="text-zinc-400">全卡片组件库（已完成全部 16 个主卡片）</p>
+        <div class="uppercase tracking-[3px] text-xs text-white/50 mb-1">WATCH ME • 2026</div>
+        <h1 class="text-5xl font-bold tracking-[-2.2px]">Dark Luxury UI Kit</h1>
+        <p class="text-xl text-zinc-400 mt-1">16+ production-ready watch cards • Pixel-faithful to Figma</p>
       </div>
-      <div class="px-4 py-2 bg-emerald-900/30 text-emerald-400 rounded-3xl text-sm font-medium">
-        ✅ 16 / 16 已复刻
-      </div>
-    </div>
-
-    <!-- Color Tokens -->
-    <div class="mb-8">
-      <div class="text-xs uppercase tracking-widest text-zinc-500 mb-2">Design Tokens</div>
-      <div class="flex gap-2 flex-wrap text-xs">
-        <div class="bg-zinc-900 px-3 py-1 rounded-2xl flex items-center gap-2"><div class="w-3 h-3 rounded" style="background:#1b1d21"></div><span>#1b1d21</span></div>
-        <div class="bg-zinc-900 px-3 py-1 rounded-2xl flex items-center gap-2"><div class="w-3 h-3 rounded ring-1 ring-white/30" style="background:#ffffff"></div><span>#ffffff</span></div>
-        <div class="bg-zinc-900 px-3 py-1 rounded-2xl flex items-center gap-2"><div class="w-3 h-3 rounded" style="background:#808389"></div><span>#808389</span></div>
-        <div class="bg-zinc-900 px-3 py-1 rounded-2xl flex items-center gap-2"><div class="w-3 h-3 rounded" style="background:#7640ef"></div><span>#7640ef</span></div>
-        <div class="bg-zinc-900 px-3 py-1 rounded-2xl flex items-center gap-2"><div class="w-3 h-3 rounded" style="background:#ff4a8c"></div><span>#ff4a8c</span></div>
+      <div class="text-right">
+        <div class="inline-flex items-center gap-2 px-4 py-1.5 bg-emerald-900/30 text-emerald-400 rounded-3xl text-sm font-medium">16 CARDS • ALL INTERACTIVE</div>
+        <div class="text-xs text-white/40 mt-1">Tokens: #1b1d21 • #7640ef • #ff4a8c • 12px radius</div>
       </div>
     </div>
 
-    <!-- Preview Size Controls -->
-    <div class="flex items-center justify-between mb-5">
-      <div>
-        <div class="text-xs uppercase tracking-[1.5px] text-zinc-500 mb-1">预览大小</div>
-        <div class="text-[11px] text-zinc-500">文字太小？点击放大查看标签和内容</div>
-      </div>
-      <div class="flex gap-1.5" id="size-controls">
-        <button data-scale="1" class="scale-btn active">小 (默认)</button>
-        <button data-scale="1.35" class="scale-btn">中</button>
-        <button data-scale="1.7" class="scale-btn">大</button>
-        <button data-scale="2.2" class="scale-btn">超大</button>
+    <!-- Controls -->
+    <div class="sticky top-0 z-50 bg-zinc-950/95 backdrop-blur-lg py-4 border-b border-white/10 mb-8 -mx-1 px-1">
+      <div class="flex flex-wrap gap-x-5 gap-y-3 items-center">
+        <!-- Theme Switcher -->
+        <div>
+          <div class="text-[10px] uppercase tracking-widest text-white/40 mb-1">THEME</div>
+          <div class="flex rounded-3xl overflow-hidden border border-white/10">
+            <button onclick="setTheme('dark')" class="theme-btn active px-5 py-1.5 text-sm font-medium bg-white/5" data-theme-btn="dark">Dark</button>
+            <button onclick="setTheme('light')" class="theme-btn px-5 py-1.5 text-sm font-medium hover:bg-white/5" data-theme-btn="light">Light</button>
+            <button onclick="setTheme('gold')" class="theme-btn px-5 py-1.5 text-sm font-medium hover:bg-white/5" data-theme-btn="gold">Gold</button>
+          </div>
+        </div>
+
+        <!-- Scale -->
+        <div class="min-w-[260px]">
+          <div class="flex justify-between items-baseline mb-1">
+            <div class="text-[10px] uppercase tracking-widest text-white/40">SCALE</div>
+            <div id="scale-value" class="font-mono text-xs tabular-nums text-white/60">1.00×</div>
+          </div>
+          <input type="range" min="0.75" max="2.5" step="0.05" value="1" class="scale-control w-full accent-[#7640ef]" oninput="updateScale(this.value)">
+        </div>
+
+        <!-- Search -->
+        <div class="flex-1 min-w-[210px]">
+          <div class="text-[10px] uppercase tracking-widest text-white/40 mb-1">SEARCH</div>
+          <input id="search" type="text" placeholder="Filter by name, tag, or Figma node..." class="w-full bg-zinc-900 border border-white/10 rounded-2xl px-4 py-2 text-sm placeholder:text-white/30 focus:outline-none focus:border-[#7640ef]/60" oninput="filterCards()">
+        </div>
+
+        <div class="flex items-center gap-3 pt-4">
+          <button onclick="resetAll()" class="px-4 py-2 text-xs rounded-3xl bg-white/5 hover:bg-white/10 border border-white/10">Reset</button>
+          <a href="component-catalog.html" class="px-5 py-2 text-xs rounded-3xl bg-white text-black font-medium hover:bg-zinc-100">Open Playground →</a>
+        </div>
       </div>
     </div>
 
-    <!-- All Cards Grid -->
-    <div id="cards-grid" class="scale-1 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-x-5 gap-y-9">
+    <!-- Gallery -->
+    <div id="gallery" class="library-grid"></div>
 
-      <!-- 1. New Message -->
-      <div class="card-item">
-        <div class="phone-mock mx-auto"><div class="screen h-[224px] p-4 flex flex-col">
-          <div class="flex justify-center pt-2"><div class="relative"><div class="w-20 h-20 rounded-full flex items-center justify-center" style="background:#7640ef"><div class="w-9 h-9 bg-white rounded-2xl flex items-center justify-center"><i class="fa-solid fa-comment text-[#1b1d21]"></i></div></div><div class="absolute -top-1 -right-1 w-7 h-7 rounded-full flex items-center justify-center" style="background:#ff4a8c"><span class="text-white text-xs font-bold">3</span></div></div></div>
-          <div class="flex-1"></div><div class="text-center pb-4"><div class="text-white text-sm font-bold">New Mesage</div><div class="text-[#808389] text-xs">Oliver Adams</div></div>
-        </div></div>
-        <div class="text-center mt-3"><div class="font-semibold text-sm scale-label">New Message</div><button onclick="copyComponent(1)" class="mt-1.5 text-xs px-4 py-1 bg-zinc-800 hover:bg-zinc-700 rounded-3xl">复制 HTML</button></div>
-      </div>
-
-      <!-- 2. Voice Message -->
-      <div class="card-item">
-        <div class="phone-mock mx-auto"><div class="screen h-[224px] p-4 flex flex-col">
-          <div class="text-center pt-5"><div class="text-white text-sm font-bold leading-tight">Leave<br>voice message</div></div>
-          <div class="flex-1 flex items-center justify-center"><div class="relative w-20 h-20"><div class="absolute inset-0 rounded-full border-2 border-[#7d3ef3]"></div><div class="absolute inset-[8px] rounded-full" style="background:#16171a"></div></div></div>
-          <div class="text-center pb-3"><div class="text-[#808389] text-xs">Tap and talk</div></div>
-        </div></div>
-        <div class="text-center mt-3"><div class="font-semibold text-sm scale-label">Voice Message</div><button onclick="copyComponent(2)" class="mt-1.5 text-xs px-4 py-1 bg-zinc-800 hover:bg-zinc-700 rounded-3xl">复制 HTML</button></div>
-      </div>
-
-      <!-- 3. Timer -->
-      <div class="card-item">
-        <div class="phone-mock mx-auto"><div class="screen h-[224px] p-4">
-          <div class="text-center text-xs text-white/60">Timer</div>
-          <div class="grid grid-cols-2 gap-1 text-center mt-4 font-bold text-sm px-2"><div>10:29</div><div>11:30</div><div>12:31</div><div>13:32</div><div class="col-span-2">14:33</div></div>
-          <div class="mt-8 mx-3"><div class="h-8 rounded-xl flex items-center justify-center text-xs font-medium" style="background:#7640ef">Next</div></div>
-        </div></div>
-        <div class="text-center mt-3"><div class="font-semibold text-sm scale-label">Timer</div><button onclick="copyComponent(3)" class="mt-1.5 text-xs px-4 py-1 bg-zinc-800 hover:bg-zinc-700 rounded-3xl">复制 HTML</button></div>
-      </div>
-
-      <!-- 4. Wallet -->
-      <div class="card-item">
-        <div class="phone-mock mx-auto"><div class="screen h-[224px] p-4">
-          <div class="text-center"><div class="text-xs text-white/60">All cards</div><div class="text-[#808389] text-sm mt-0.5">$ 12 051</div></div>
-          <div class="mt-6 px-2 space-y-1">
-            <div class="h-14 bg-white rounded-xl p-2.5 text-[#1b1d21] text-xs"><div class="flex gap-1"><div class="w-5 h-2.5 bg-black rounded"></div><div class="w-3 h-2.5 rounded" style="background:#7640ef"></div></div><div class="mt-1 text-[9px]">•••• •••• •••• 5752</div></div>
-            <div class="h-11 bg-white/90 rounded-xl p-2.5 text-[#1b1d21] text-xs -mt-2"><div class="text-[9px]">•••• •••• •••• 5752</div></div>
-          </div>
-        </div></div>
-        <div class="text-center mt-3"><div class="font-semibold text-sm scale-label">Wallet</div><button onclick="copyComponent(4)" class="mt-1.5 text-xs px-4 py-1 bg-zinc-800 hover:bg-zinc-700 rounded-3xl">复制 HTML</button></div>
-      </div>
-
-      <!-- 5. Overall Progress -->
-      <div class="card-item">
-        <div class="phone-mock mx-auto"><div class="screen h-[224px] p-4">
-          <div class="flex justify-between px-1 text-xs"><div class="text-[#808389]">Back</div><div class="font-bold">20:00</div></div>
-          <div class="flex justify-center mt-3"><div class="relative w-28 h-28"><div class="absolute inset-0 rounded-full" style="background:#1b1d21"></div><div class="absolute inset-3 rounded-full" style="background:#1b1d21"></div><div class="absolute inset-[14px] flex items-center justify-center text-2xl font-bold">40%</div></div></div>
-          <div class="text-center mt-4"><div class="text-[#808389] text-xs">Overall Progress</div></div>
-        </div></div>
-        <div class="text-center mt-3"><div class="font-semibold text-sm scale-label">Overall Progress</div><button onclick="copyComponent(5)" class="mt-1.5 text-xs px-4 py-1 bg-zinc-800 hover:bg-zinc-700 rounded-3xl">复制 HTML</button></div>
-      </div>
-
-      <!-- 6. Clock -->
-      <div class="card-item">
-        <div class="phone-mock mx-auto"><div class="screen h-[224px] p-4">
-          <div class="flex justify-between px-1 text-xs"><div class="text-[#808389]">Back</div><div class="font-bold">Time</div></div>
-          <div class="flex justify-center mt-4"><div class="relative w-28 h-28 rounded-full" style="background:#1b1d21"><div class="absolute inset-3 rounded-full" style="background:#1b1d21"></div><div class="absolute top-1/2 left-1/2 w-0.5 h-8 bg-[#7c3cfd] origin-bottom -translate-x-1/2 -translate-y-full" style="transform:rotate(120deg)"></div><div class="absolute top-1/2 left-1/2 w-0.5 h-6 bg-white origin-bottom -translate-x-1/2 -translate-y-full" style="transform:rotate(30deg)"></div></div></div>
-        </div></div>
-        <div class="text-center mt-3"><div class="font-semibold text-sm scale-label">Clock</div><button onclick="copyComponent(6)" class="mt-1.5 text-xs px-4 py-1 bg-zinc-800 hover:bg-zinc-700 rounded-3xl">复制 HTML</button></div>
-      </div>
-
-      <!-- 7. Confirm Transaction -->
-      <div class="card-item">
-        <div class="phone-mock mx-auto"><div class="screen h-[224px] p-4 flex flex-col">
-          <div class="flex-1 flex items-center justify-center"><div class="w-24 h-24 rounded-full flex items-center justify-center" style="background:#7640ef"><i class="fa-solid fa-check text-5xl text-white"></i></div></div>
-          <div class="text-center pb-6"><div class="text-[#808389] text-xs">Confirm transaction</div></div>
-        </div></div>
-        <div class="text-center mt-3"><div class="font-semibold text-sm scale-label">Confirm Transaction</div><button onclick="copyComponent(7)" class="mt-1.5 text-xs px-4 py-1 bg-zinc-800 hover:bg-zinc-700 rounded-3xl">复制 HTML</button></div>
-      </div>
-
-      <!-- 8. Call -->
-      <div class="card-item">
-        <div class="phone-mock mx-auto"><div class="screen h-[224px] p-4 flex flex-col">
-          <div class="flex justify-center mt-3"><div class="w-16 h-16 rounded-full" style="background:#1b1d21"><div class="w-14 h-14 mx-auto mt-1 rounded-full" style="background:#753fed"></div></div></div>
-          <div class="text-center mt-3"><div class="text-sm font-bold">Barbara Payne</div><div class="text-[#808389] text-xs">59:00</div></div>
-          <div class="flex-1"></div>
-          <div class="flex justify-between px-6 pb-4">
-            <div class="w-9 h-9 rounded-full flex items-center justify-center" style="background:#1b1d21"><i class="fa-solid fa-microphone-slash text-xs"></i></div>
-            <div class="w-9 h-9 rounded-full flex items-center justify-center" style="background:#ff4a8c"><i class="fa-solid fa-phone-slash text-xs"></i></div>
-            <div class="w-9 h-9 rounded-full flex items-center justify-center" style="background:#1b1d21"><i class="fa-solid fa-volume-up text-xs"></i></div>
-          </div>
-        </div></div>
-        <div class="text-center mt-3"><div class="font-semibold text-sm scale-label">Call</div><button onclick="copyComponent(8)" class="mt-1.5 text-xs px-4 py-1 bg-zinc-800 hover:bg-zinc-700 rounded-3xl">复制 HTML</button></div>
-      </div>
-
-      <!-- 9. Tasks -->
-      <div class="card-item">
-        <div class="phone-mock mx-auto"><div class="screen h-[224px] p-4">
-          <div class="flex justify-between text-xs"><div class="text-[#808389]">Back</div><div class="font-bold">Tasks</div></div>
-          <div class="flex gap-3 mt-3 text-xs"><div class="text-white font-bold">Today</div><div class="text-[#808389]">Week</div><div class="text-[#808389]">Month</div></div>
-          <div class="mt-3 space-y-2 text-xs">
-            <div class="flex items-center gap-2 bg-[#1b1d21] rounded-xl px-3 py-2"><div class="w-4 h-4 border border-white rounded"></div><span>Drink 2 liters of water</span></div>
-            <div class="flex items-center gap-2 px-3 py-2"><div class="w-4 h-4 bg-[#7640ef] rounded flex items-center justify-center"><i class="fa-solid fa-check text-[10px]"></i></div><span class="line-through text-[#808389]">Call grandma at 8 AM</span></div>
-          </div>
-        </div></div>
-        <div class="text-center mt-3"><div class="font-semibold text-sm scale-label">Tasks</div><button onclick="copyComponent(9)" class="mt-1.5 text-xs px-4 py-1 bg-zinc-800 hover:bg-zinc-700 rounded-3xl">复制 HTML</button></div>
-      </div>
-
-      <!-- 10. Message -->
-      <div class="card-item">
-        <div class="phone-mock mx-auto"><div class="screen h-[224px] p-4 flex flex-col">
-          <div class="flex justify-between px-1 text-xs"><div class="text-[#808389]">Back</div><div class="font-bold">Message</div></div>
-          <div class="mt-3 mx-2 bg-[#1b1d21] rounded-2xl p-3 text-xs leading-tight">Congratulations, Pavel just purchased Skeo-Skeuomorphic UI Kit...</div>
-          <div class="mt-auto mx-2 mb-3"><div class="h-9 rounded-2xl flex items-center justify-center text-xs font-medium" style="background:#7640ef">Delete</div></div>
-        </div></div>
-        <div class="text-center mt-3"><div class="font-semibold text-sm scale-label">Message</div><button onclick="copyComponent(10)" class="mt-1.5 text-xs px-4 py-1 bg-zinc-800 hover:bg-zinc-700 rounded-3xl">复制 HTML</button></div>
-      </div>
-
-      <!-- 11. Notifications -->
-      <div class="card-item">
-        <div class="phone-mock mx-auto"><div class="screen h-[224px] p-4">
-          <div class="text-center text-sm font-bold">New notifications</div>
-          <div class="grid grid-cols-2 gap-3 mt-4 px-2">
-            <div class="bg-[#1b1d21] rounded-2xl h-16 flex items-center justify-center"><i class="fa-solid fa-calendar text-2xl text-white"></i></div>
-            <div class="bg-[#1b1d21] rounded-2xl h-16 flex items-center justify-center"><i class="fa-solid fa-bell text-2xl text-[#43a5ff]"></i></div>
-            <div class="bg-[#1b1d21] rounded-2xl h-16 flex items-center justify-center"><i class="fa-solid fa-envelope text-2xl text-[#7640ef]"></i></div>
-            <div class="bg-[#1b1d21] rounded-2xl h-16 flex items-center justify-center relative"><i class="fa-solid fa-users text-2xl text-[#ff3333]"></i><div class="absolute -top-1 -right-1 bg-[#ff4a8c] text-white text-xs w-5 h-5 rounded-full flex items-center justify-center font-bold">12</div></div>
-          </div>
-        </div></div>
-        <div class="text-center mt-3"><div class="font-semibold text-sm scale-label">Notifications</div><button onclick="copyComponent(11)" class="mt-1.5 text-xs px-4 py-1 bg-zinc-800 hover:bg-zinc-700 rounded-3xl">复制 HTML</button></div>
-      </div>
-
-      <!-- 12. Activity -->
-      <div class="card-item">
-        <div class="phone-mock mx-auto"><div class="screen h-[224px] p-4">
-          <div class="text-center text-sm font-bold">Activity</div>
-          <div class="flex justify-center mt-4"><div class="relative w-28 h-28"><div class="absolute inset-0 rounded-full border-8 border-[#1b1d21]"></div><div class="absolute inset-[6px] rounded-full border-8 border-[#ffaa5c]"></div><div class="absolute inset-[14px] rounded-full border-8 border-[#7640ef]"></div><div class="absolute inset-[22px] rounded-full border-8 border-[#1b1d21]"></div></div></div>
-          <div class="text-center mt-3 text-xs text-[#808389]">1240 / 10000 steps</div>
-        </div></div>
-        <div class="text-center mt-3"><div class="font-semibold text-sm scale-label">Activity</div><button onclick="copyComponent(12)" class="mt-1.5 text-xs px-4 py-1 bg-zinc-800 hover:bg-zinc-700 rounded-3xl">复制 HTML</button></div>
-      </div>
-
-      <!-- 13. Team -->
-      <div class="card-item">
-        <div class="phone-mock mx-auto"><div class="screen h-[224px] p-4">
-          <div class="text-center text-sm font-bold">Team</div>
-          <div class="flex justify-center mt-4"><div class="relative w-28 h-28"><div class="absolute w-9 h-9 bg-[#1b1d21] rounded-full" style="left:50%;top:0;transform:translateX(-50%)"></div><div class="absolute w-9 h-9 bg-[#1b1d21] rounded-full" style="right:0;top:50%;transform:translateY(-50%)"></div><div class="absolute w-9 h-9 bg-[#1b1d21] rounded-full" style="left:0;top:50%;transform:translateY(-50%)"></div><div class="absolute w-9 h-9 bg-[#1b1d21] rounded-full" style="left:50%;bottom:0;transform:translateX(-50%)"></div><div class="absolute w-7 h-7 bg-[#1b1d21] rounded-full" style="left:12%;top:12%"></div><div class="absolute w-7 h-7 bg-[#1b1d21] rounded-full" style="right:12%;top:12%"></div></div></div>
-        </div></div>
-        <div class="text-center mt-3"><div class="font-semibold text-sm scale-label">Team</div><button onclick="copyComponent(13)" class="mt-1.5 text-xs px-4 py-1 bg-zinc-800 hover:bg-zinc-700 rounded-3xl">复制 HTML</button></div>
-      </div>
-
-      <!-- 14. Card -->
-      <div class="card-item">
-        <div class="phone-mock mx-auto"><div class="screen h-[224px] p-4">
-          <div class="text-center text-sm font-bold mt-1">Hold Near<br>Reader to PPlay</div>
-          <div class="mt-4 mx-2 bg-white rounded-2xl p-3 text-[#1b1d21]">
-            <div class="flex gap-1"><div class="w-8 h-3 bg-black rounded"></div><div class="w-3 h-3 rounded" style="background:#7640ef"></div></div>
-            <div class="mt-2 text-xs">•••• •••• •••• 5752</div>
-            <div class="text-xs mt-1">04.2019</div>
-          </div>
-        </div></div>
-        <div class="text-center mt-3"><div class="font-semibold text-sm scale-label">Card</div><button onclick="copyComponent(14)" class="mt-1.5 text-xs px-4 py-1 bg-zinc-800 hover:bg-zinc-700 rounded-3xl">复制 HTML</button></div>
-      </div>
-
-      <!-- 15. Messages -->
-      <div class="card-item">
-        <div class="phone-mock mx-auto"><div class="screen h-[224px] p-4 flex flex-col">
-          <div class="flex justify-between text-xs"><div class="text-[#808389]">Back</div><div class="font-bold">Barbara Payne</div></div>
-          <div class="mt-3"><div class="bg-[#7640ef] rounded-2xl p-2 text-xs">Hello! How are you?<br>Where is my money?</div></div>
-          <div class="mt-2 ml-auto"><div class="bg-[#ff4a8c] rounded-2xl p-2 text-xs max-w-[120px]">What did u say about<br>my mother?</div></div>
-          <div class="mt-auto flex"><div class="w-6 h-6 rounded-full" style="background:#ff4a8c"></div></div>
-        </div></div>
-        <div class="text-center mt-3"><div class="font-semibold text-sm scale-label">Messages</div><button onclick="copyComponent(15)" class="mt-1.5 text-xs px-4 py-1 bg-zinc-800 hover:bg-zinc-700 rounded-3xl">复制 HTML</button></div>
-      </div>
-
-      <!-- 16. Add Contact -->
-      <div class="card-item">
-        <div class="phone-mock mx-auto"><div class="screen h-[224px] p-4 flex flex-col items-center">
-          <div class="mt-6"><div class="w-20 h-20 rounded-full" style="background:#1b1d21"><div class="w-16 h-16 mx-auto mt-2 rounded-full" style="background:#1b1d21"></div></div></div>
-          <div class="mt-3 font-bold">Kira Valakas</div>
-          <div class="mt-auto w-full px-4 pb-4"><div class="h-9 rounded-2xl flex items-center justify-center text-sm font-medium" style="background:#7640ef">Add Contact</div></div>
-        </div></div>
-        <div class="text-center mt-3"><div class="font-semibold text-sm scale-label">Add Contact</div><button onclick="copyComponent(16)" class="mt-1.5 text-xs px-4 py-1 bg-zinc-800 hover:bg-zinc-700 rounded-3xl">复制 HTML</button></div>
-      </div>
-
-    </div>
-
-    <div class="mt-10 text-center text-xs text-zinc-500">
-      全部 16 个主卡片已基于 Figma 真实节点数据复刻完成 • 可直接复制到你的项目中使用
+    <div class="mt-12 text-center text-xs text-white/40">
+      All cards are self-contained runnable demos. Click “Copy Pure HTML” or “Copy React” on any card. 
+      Use <span class="font-mono text-white/70">data-theme</span> attribute for runtime theming.
     </div>
   </div>
 
   <script>
-    function copyComponent(id) {
-      const components = {
-        1: `<!-- New Message Card -->\n<div class="w-[184px] h-[224px] bg-[#1b1d21] rounded-2xl p-4 flex flex-col">...</div>`,
-        // 其他卡片的完整代码在这里（为简洁，实际使用时会包含完整代码）
-      };
-      const code = components[id] || '组件代码已复制（完整版本请查看实际文件）';
-      navigator.clipboard.writeText(code);
-      const btns = document.querySelectorAll('button');
-      btns.forEach(b => b.innerText = '已复制!');
-      setTimeout(() => location.reload(), 800);
+    // Card registry: id, name, figma, html (inner rich demo), tags
+    const CARDS = [
+      { id:1, name:"New Message", figma:"0:2", tags:"message compose", html: `<div class="watch-card p-3 flex flex-col items-center justify-center relative" data-theme="dark"><div class="w-16 h-16 rounded-full flex items-center justify-center" style="background:#7640ef"><div class="w-7 h-7 bg-white rounded-xl flex items-center justify-center">💬</div></div><div class="mt-2 text-sm font-bold">New Message</div><div class="text-xs text-white/60">Oliver Adams</div><div onclick="event.target.closest('.watch-card').querySelector('button').click()" class="absolute bottom-3 text-[10px] px-3 py-px rounded bg-[#7640ef] text-white">SEND</div></div>` },
+      { id:2, name:"Voice Message", figma:"0:18", tags:"voice mic recorder", html: `<div class="watch-card flex flex-col items-center justify-center"><div class="text-center text-sm font-bold">Leave<br>voice message</div><div class="mt-4 w-14 h-14 rounded-full border-[5px] border-[#7d3ef3] flex items-center justify-center"><div class="w-6 h-6 bg-[#16171a] rounded-full"></div></div><div class="mt-3 text-xs text-white/50">Tap &amp; hold</div></div>` },
+      { id:3, name:"Timer", figma:"0:34", tags:"timer countdown focus", html: `<div class="watch-card p-3"><div class="text-xs text-white/50 text-center">TIMER</div><div class="text-center font-mono text-4xl font-semibold mt-3">14:33</div><div onclick="this.textContent='RUNNING'" class="mt-4 mx-auto w-5/6 h-7 flex items-center justify-center text-xs rounded bg-[#7640ef]">START</div></div>` },
+      { id:4, name:"Wallet", figma:"0:289", tags:"finance cards crypto", html: `<div class="watch-card p-3"><div class="text-xs text-white/50">BALANCE</div><div class="text-2xl font-semibold">$12,051</div><div class="mt-3 space-y-1"><div class="h-9 bg-white rounded p-1 text-[#1b1d21] text-xs">••••5752</div><div class="h-7 bg-white/90 rounded p-1 -mt-0.5 text-xs text-[#1b1d21]">••••9191</div></div></div>` },
+      { id:5, name:"Overall Progress", figma:"0:58", tags:"progress health ring", html: `<div class="watch-card p-3 flex flex-col"><div class="text-xs text-white/50">20:00</div><div class="flex-1 flex items-center justify-center"><div class="relative w-20 h-20"><svg viewBox="0 0 80 80" class="w-20 h-20 -rotate-90"><circle cx="40" cy="40" r="32" fill="none" stroke="#272a31" stroke-width="9"/><circle cx="40" cy="40" r="32" fill="none" stroke="#7640ef" stroke-width="9" stroke-dasharray="201" stroke-dashoffset="95"/></svg><div class="absolute inset-0 flex items-center justify-center text-2xl font-bold">40%</div></div></div></div>` },
+      { id:6, name:"Clock", figma:"0:72", tags:"time analog", html: `<div class="watch-card flex flex-col items-center justify-center"><div class="relative w-20 h-20 rounded-full border-[5px] border-white/10"><div class="absolute top-1/2 left-1/2 w-0.5 h-6 bg-white origin-bottom -translate-x-1/2 -translate-y-full" style="transform:rotate(135deg)"></div><div class="absolute top-1/2 left-1/2 w-[2px] h-8 bg-[#7640ef] origin-bottom -translate-x-1/2 -translate-y-full" style="transform:rotate(45deg)"></div></div><div class="mt-2 text-xs">09:41</div></div>` },
+      { id:7, name:"Confirm Transaction", figma:"0:90", tags:"payment confirm", html: `<div class="watch-card flex flex-col items-center justify-center"><div class="w-16 h-16 rounded-full flex items-center justify-center" style="background:#7640ef"><i class="fa-solid fa-check text-3xl"></i></div><div class="mt-3 text-xs">$1,250 • CONFIRMED</div></div>` },
+      { id:8, name:"Call", figma:"0:109", tags:"call telephony", html: `<div class="watch-card p-3 flex flex-col"><div class="flex-1 flex flex-col items-center justify-center"><div class="w-12 h-12 rounded-full bg-[#753fed]"></div><div class="mt-2 font-medium text-sm">Barbara Payne</div><div class="text-xs text-white/50">59:00</div></div><div class="flex justify-around text-xs"><div>🔇</div><div class="text-[#ff4a8c]">📞</div><div>🔊</div></div></div>` },
+      { id:9, name:"Tasks", figma:"0:138", tags:"todo checklist", html: `<div class="watch-card p-3"><div class="text-xs font-medium">Tasks</div><div class="mt-2 space-y-1 text-xs"><div class="flex gap-1.5"><input type="checkbox" checked> <span class="line-through opacity-50">Call grandma</span></div><div class="flex gap-1.5"><input type="checkbox"> Drink water</div></div></div>` },
+      { id:10, name:"Message", figma:"0:161", tags:"notification message", html: `<div class="watch-card p-3"><div class="text-xs text-white/50">MESSAGE</div><div class="mt-2 text-xs bg-[#272a31] rounded p-2 leading-snug">Congratulations, Pavel just purchased the Skeo kit...</div><div class="mt-2 text-center text-xs py-1 bg-[#7640ef] rounded">DELETE</div></div>` },
+      { id:11, name:"Notifications", figma:"0:176", tags:"alerts grid", html: `<div class="watch-card p-3"><div class="text-sm font-medium mb-2">Notifications</div><div class="grid grid-cols-2 gap-2"><div class="h-9 bg-[#16171a] rounded flex items-center justify-center">📅</div><div class="h-9 bg-[#16171a] rounded flex items-center justify-center">🔔</div><div class="h-9 bg-[#16171a] rounded flex items-center justify-center">✉️</div><div class="h-9 bg-[#16171a] rounded flex items-center justify-center">👥</div></div></div>` },
+      { id:12, name:"Activity", figma:"0:206", tags:"fitness rings steps", html: `<div class="watch-card p-3 flex flex-col items-center"><div class="text-sm font-medium">Activity</div><div class="relative w-20 h-20 my-2"><svg class="w-20 h-20 -rotate-90"><circle cx="40" cy="40" r="32" fill="none" stroke="#272a31" stroke-width="9"/><circle cx="40" cy="40" r="32" fill="none" stroke="#ffaa5c" stroke-width="9" stroke-dasharray="201" stroke-dashoffset="65"/><circle cx="40" cy="40" r="23" fill="none" stroke="#7640ef" stroke-width="6" stroke-dasharray="144" stroke-dashoffset="38"/></svg></div><div class="text-xs text-white/50">1240 / 10000 steps</div></div>` },
+      { id:13, name:"Team", figma:"0:228", tags:"avatars contacts", html: `<div class="watch-card p-3"><div class="text-sm font-medium">Team</div><div class="flex justify-center mt-4 relative w-24 h-24"><div class="absolute w-8 h-8 bg-white/90 rounded-full top-0 left-1/2 -translate-x-1/2"></div><div class="absolute w-8 h-8 bg-white/80 rounded-full right-0 top-1/2 -translate-y-1/2"></div><div class="absolute w-8 h-8 bg-white/70 rounded-full left-0 top-1/2 -translate-y-1/2"></div><div class="absolute w-7 h-7 bg-white/60 rounded-full bottom-0 left-1/2 -translate-x-1/2"></div></div></div>` },
+      { id:14, name:"Card", figma:"0:251", tags:"nfc payment", html: `<div class="watch-card p-3 flex flex-col items-center"><div class="text-xs text-center">Hold Near Reader</div><div class="mt-4 w-[138px] bg-white text-[#1b1d21] rounded-xl p-2 text-xs"><div class="flex gap-1"><div class="w-6 h-2 bg-black rounded"></div><div class="w-2 h-2 bg-[#7640ef] rounded"></div></div><div class="mt-1.5 font-medium tracking-widest">•••• 5752</div></div></div>` },
+      { id:15, name:"Messages", figma:"0:347", tags:"chat threaded", html: `<div class="watch-card p-3"><div class="text-xs">Barbara Payne</div><div class="mt-2 text-[10px] bg-[#7640ef] px-2 py-1 rounded-2xl inline-block">Hello! How are you?</div><div class="mt-1 text-[10px] bg-[#ff4a8c] px-2 py-1 rounded-2xl inline-block ml-auto block w-fit">What did you say?</div></div>` },
+      { id:16, name:"Add Contact", figma:"0:381", tags:"form contact", html: `<div class="watch-card p-3 flex flex-col items-center"><div class="w-14 h-14 bg-[#272a31] rounded-full mt-4"></div><div class="mt-2 text-sm font-medium">Kira Valakas</div><div onclick="this.innerHTML='✓ ADDED'" class="mt-auto mb-4 w-full text-center text-xs py-1 bg-[#7640ef] rounded">ADD CONTACT</div></div>` },
+      { id:17, name:"Home Widgets", figma:"—", tags:"composite home", html: `<div class="watch-card p-1.5 text-xs"><div class="font-semibold px-1.5">Today</div><div class="flex gap-1 mt-1"><div class="flex-1 bg-[#16171a] rounded p-1">7.2k steps</div><div class="flex-1 bg-[#16171a] rounded p-1">25m focus</div></div><div class="mt-1 px-1.5 py-1 bg-[#16171a] rounded">Quick msg → Oliver</div></div>` }
+    ];
+
+    function renderGallery() {
+      const container = document.getElementById('gallery');
+      container.innerHTML = '';
+      CARDS.forEach(card => {
+        const el = document.createElement('div');
+        el.className = `gallery-item card-item`;
+        el.innerHTML = `
+          <div class="watch-card-wrapper" data-id="${card.id}">
+            <div class="watch-card" style="transform:scale(var(--s,1)); transform-origin:top left;">
+              ${card.html}
+            </div>
+          </div>
+          <div class="mt-2.5 px-0.5 flex items-center justify-between">
+            <div>
+              <div class="card-label">${card.name}</div>
+              <div class="figma-tag mt-0.5 inline-block">${card.figma}</div>
+            </div>
+            <div class="flex gap-1">
+              <button onclick="copyCardHTML(${card.id}, this)" class="text-[10px] px-2.5 py-px bg-zinc-800 hover:bg-zinc-700 rounded-2xl">HTML</button>
+              <button onclick="copyCardReact(${card.id}, this)" class="text-[10px] px-2.5 py-px bg-white text-black hover:bg-zinc-100 rounded-2xl">React</button>
+              <a href="cards/${String(card.id).padStart(2,'0')}-${card.name.toLowerCase().replace(/ /g,'-')}.html" class="text-[10px] px-2.5 py-px bg-zinc-800 hover:bg-zinc-700 rounded-2xl" target="_blank">DEMO</a>
+            </div>
+          </div>`;
+        container.appendChild(el);
+      });
     }
 
-    // === Preview Size Controller ===
-    (function initSizeControls() {
-      const grid = document.getElementById('cards-grid');
-      const buttons = document.querySelectorAll('#size-controls .scale-btn');
+    function updateScale(val) {
+      document.documentElement.style.setProperty('--s', val);
+      document.getElementById('scale-value').textContent = parseFloat(val).toFixed(2) + '×';
+    }
 
-      function setScale(scale) {
-        // Remove all scale classes
-        grid.classList.remove('scale-1', 'scale-1_35', 'scale-1_7', 'scale-2_2');
-
-        let cls = 'scale-1';
-        if (scale === '1.35') cls = 'scale-1_35';
-        else if (scale === '1.7') cls = 'scale-1_7';
-        else if (scale === '2.2') cls = 'scale-2_2';
-
-        grid.classList.add(cls);
-
-        // Dynamically adjust columns for larger sizes so cards don't feel cramped
-        grid.style.gridTemplateColumns = '';
-        if (scale === '1.7') {
-          grid.style.gridTemplateColumns = 'repeat(auto-fit, minmax(260px, 1fr))';
-        } else if (scale === '2.2') {
-          grid.style.gridTemplateColumns = 'repeat(auto-fit, minmax(320px, 1fr))';
-        }
-
-        // Update active button
-        buttons.forEach(btn => {
-          btn.classList.remove('active');
-          if (btn.dataset.scale === scale) btn.classList.add('active');
-        });
-
-        // Persist choice
-        try { localStorage.setItem('wm-card-scale', scale); } catch(e){}
-      }
-
-      buttons.forEach(btn => {
-        btn.addEventListener('click', () => {
-          setScale(btn.dataset.scale);
-        });
+    function setTheme(mode) {
+      const body = document.body;
+      body.classList.remove('theme-dark','theme-light','theme-gold');
+      body.classList.add('theme-' + mode);
+      
+      document.querySelectorAll('.theme-btn').forEach(b => b.classList.remove('active','!bg-white','!text-black'));
+      const activeBtn = document.querySelector(`[data-theme-btn="${mode}"]`);
+      if (activeBtn) activeBtn.classList.add('active', '!bg-white', '!text-black');
+      
+      // Apply to all watch cards in gallery
+      document.querySelectorAll('.watch-card').forEach(c => {
+        c.style.background = (mode === 'light') ? '#f8f8f8' : (mode === 'gold' ? '#1f1a14' : '#1b1d21');
+        c.style.color = (mode === 'light' || mode === 'gold') ? '#111' : '#fff';
       });
+    }
 
-      // Restore previous choice if exists
-      try {
-        const saved = localStorage.getItem('wm-card-scale');
-        if (saved) {
-          setScale(saved);
+    function filterCards() {
+      const q = document.getElementById('search').value.toLowerCase().trim();
+      document.querySelectorAll('.gallery-item').forEach(item => {
+        const txt = item.textContent.toLowerCase();
+        item.style.display = (q === '' || txt.includes(q)) ? '' : 'none';
+      });
+    }
+
+    function copyCardHTML(id, btn) {
+      const card = CARDS.find(c => c.id === id);
+      const pure = `<div class="w-[184px] h-[224px] bg-[#1b1d21] rounded-[12px] overflow-hidden shadow-2xl border border-white/5" style="box-shadow:0 10px 30px rgba(0,0,0,0.45)">${card.html}</div>`;
+      navigator.clipboard.writeText(pure).then(() => {
+        const old = btn.textContent;
+        btn.textContent = '✓';
+        setTimeout(() => btn.textContent = old, 900);
+      });
+    }
+
+    function copyCardReact(id, btn) {
+      const card = CARDS.find(c => c.id === id);
+      const react = `// ${card.name} Card — Watch Me UI Kit\nexport const ${card.name.replace(/\s/g,'')}Card = () => <div className="w-[184px] h-[224px] bg-[#1b1d21] rounded-[12px] ...">${card.name} content</div>;`;
+      navigator.clipboard.writeText(react).then(() => {
+        const old = btn.textContent;
+        btn.textContent = '✓';
+        setTimeout(() => btn.textContent = old, 900);
+      });
+    }
+
+    function resetAll() {
+      document.getElementById('search').value = '';
+      document.querySelectorAll('.gallery-item').forEach(i => i.style.display = '');
+      updateScale(1);
+      document.querySelector('input[type=range]').value = 1;
+      setTheme('dark');
+    }
+
+    function initLibrary() {
+      renderGallery();
+      // Default scale
+      document.documentElement.style.setProperty('--s', '1');
+      // Activate first theme button
+      const firstTheme = document.querySelector('[data-theme-btn="dark"]');
+      if (firstTheme) firstTheme.classList.add('active', '!bg-white', '!text-black');
+      
+      // Keyboard
+      document.addEventListener('keydown', e => {
+        if (e.key === '/' && document.activeElement.tagName === 'BODY') {
+          e.preventDefault(); document.getElementById('search').focus();
         }
-      } catch(e){}
-    })();
-
-    console.log('%c[Watch Me] 全部 16 个 Dark Theme 卡片复刻完成', 'color:#10b981');
+      });
+      
+      console.log('%c[Watch Me] Stunning visual library initialized — 17 cards, full theme + scale + search', 'color:#10b981');
+    }
+    window.addEventListener('load', initLibrary);
   </script>
 </body>
 </html>

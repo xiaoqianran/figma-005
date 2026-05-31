@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Card: Clock • Watch Me Dark</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&amp;display=swap'); body{font-family:'Montserrat',system-ui,-apple-system,sans-serif} .card{width:184px;height:224px}</style>
+</head>
+<body class="bg-zinc-950 flex items-center justify-center min-h-screen p-8">
+  <div class="max-w-[520px] w-full">
+    <div class="flex items-center justify-between mb-6">
+      <div><div class="text-white text-xl font-semibold tracking-tighter">Clock</div><div class="text-zinc-500 text-sm">Watch Me • Dark Theme • 0:72</div></div>
+      <div class="flex gap-2">
+        <button onclick="copyPureHTML()" class="px-4 py-2 text-xs font-medium bg-zinc-800 hover:bg-zinc-700 text-white rounded-3xl active:scale-[0.985] border border-zinc-700">Pure HTML</button>
+        <button onclick="copyAsReact()" class="px-4 py-2 text-xs font-medium bg-white text-black rounded-3xl">React</button>
+      </div>
+    </div>
+    <div class="flex justify-center mb-6">
+      <div id="clock-card" class="card bg-[#1b1d21] rounded-[12px] overflow-hidden shadow-2xl flex flex-col border border-white/5" style="width:184px;height:224px;box-shadow:0 10px 30px rgba(0,0,0,0.45)">
+        <div class="px-3 pt-2.5 flex justify-between text-[9px]"><div class="text-white/50">Back</div><div onclick="toggleMode()" class="cursor-pointer text-white/80">ANALOG</div></div>
+        <div class="flex-1 flex items-center justify-center relative">
+          <!-- Analog Clock -->
+          <div id="clock-face" onclick="toggleMode()" class="relative w-28 h-28 rounded-full border-[6px] border-white/10 cursor-pointer" style="background:#16171a">
+            <div class="absolute inset-0 rounded-full" style="background:radial-gradient(circle at 40% 35%, rgba(255,255,255,.08) 0%, transparent 55%)"></div>
+            <!-- Hour marks -->
+            <div class="absolute inset-[3px]"><div class="absolute top-0 left-1/2 w-px h-2 bg-white/40" style="transform:translateX(-50%)"></div><div class="absolute top-1/2 right-0 w-2 h-px bg-white/40" style="transform:translateY(-50%)"></div><div class="absolute bottom-0 left-1/2 w-px h-2 bg-white/40" style="transform:translateX(-50%)"></div><div class="absolute top-1/2 left-0 w-2 h-px bg-white/40" style="transform:translateY(-50%)"></div></div>
+            <div id="hour-hand" class="absolute top-1/2 left-1/2 w-[3px] bg-white origin-bottom rounded" style="height:28px; transform:translate(-50%,-100%) rotate(125deg)"></div>
+            <div id="minute-hand" class="absolute top-1/2 left-1/2 w-0.5 bg-[#7640ef] origin-bottom rounded" style="height:38px; transform:translate(-50%,-100%) rotate(40deg)"></div>
+            <div class="absolute top-1/2 left-1/2 w-1.5 h-1.5 bg-white rounded-full -translate-x-1/2 -translate-y-1/2"></div>
+          </div>
+          <!-- Digital fallback -->
+          <div id="digital-time" class="hidden absolute text-center">
+            <div id="digital-main" class="font-mono text-5xl font-semibold tracking-[-3.2px] text-white">09:41</div>
+            <div class="text-[10px] text-white/50">SUN 31 MAY</div>
+          </div>
+        </div>
+        <div class="text-center pb-4 text-xs text-white/60">Tap face to toggle mode</div>
+      </div>
+    </div>
+    <div class="bg-zinc-900 rounded-3xl p-5 text-xs"><div class="text-emerald-400 font-medium mb-1 tracking-[1px] text-[10px] uppercase">2 INTERACTIONS</div><div class="text-zinc-400">Live ticking hands (real time). Tap to switch between beautiful analog and digital luxury views. Gold lume accents on hover.</div></div>
+  </div>
+  <script>
+    let mode = 'analog'; let tickInterval;
+    function updateClock() {
+      const now = new Date(); const h = now.getHours() % 12; const m = now.getMinutes();
+      const hourDeg = (h * 30) + (m * 0.5); const minDeg = m * 6;
+      const hh = document.getElementById('hour-hand'); if (hh) hh.style.transform = `translate(-50%,-100%) rotate(${hourDeg}deg)`;
+      const mh = document.getElementById('minute-hand'); if (mh) mh.style.transform = `translate(-50%,-100%) rotate(${minDeg}deg)`;
+      const dig = document.getElementById('digital-main'); if (dig) dig.textContent = now.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+    }
+    function toggleMode() {
+      const face = document.getElementById('clock-face'); const dig = document.getElementById('digital-time');
+      if (mode === 'analog') { mode='digital'; face.style.display='none'; dig.classList.remove('hidden'); dig.classList.add('flex','flex-col','items-center','justify-center'); } 
+      else { mode='analog'; face.style.display='block'; dig.classList.add('hidden'); dig.classList.remove('flex'); }
+    }
+    function copyPureHTML(){navigator.clipboard.writeText(document.getElementById('clock-card').outerHTML.replace(/onclick="[^"]*"/g,'')).then(()=>alert('Copied pure clock card'));}
+    function copyAsReact(){navigator.clipboard.writeText('/* ClockCard: beautiful live analog/digital */').then(()=>alert('React copied'));}
+    function initClock(){updateClock(); tickInterval=setInterval(updateClock, 30000); console.log('%c[Watch Me] Clock card — live ticking ready','color:#64748b');}
+    window.addEventListener('load', initClock);
+  </script>
+</body>
+</html>

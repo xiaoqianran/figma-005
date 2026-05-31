@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Watch Me • The Instrument — Award-Winning Experience</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700&amp;family=IBM+Plex+Sans:wght@400;500&amp;display=swap">
+  <style>
+    :root {
+      --gold: #c5a26f;
+      --bg: #0a0a0a;
+    }
+    
+    body {
+      font-family: 'IBM Plex Sans', system-ui, -apple-system, sans-serif;
+      background: #0a0a0a;
+    }
+    
+    .display-font {
+      font-family: 'Syne', system-ui, -apple-system, sans-serif;
+      font-weight: 700;
+      letter-spacing: -0.04em;
+    }
+
+    /* =====================
+       ULTRA-PREMIUM WATCH
+       Design contest level detailing
+    ===================== */
+    .premium-watch-container {
+      perspective: 1400px;
+      transition: transform 0.1s ease-out;
+    }
+
+    .watch-case {
+      width: 520px;
+      height: 520px;
+      max-width: 88vw;
+      max-height: 88vw;
+      background: linear-gradient(145deg, #2a2a2a 0%, #111111 35%, #0a0a0a 65%, #1a1a1a 100%);
+      border-radius: 9999px;
+      position: relative;
+      box-shadow: 
+        0 0 0 3px #333,
+        0 0 0 22px #141414,
+        0 0 0 36px #0c0c0c,
+        0 0 0 44px #111111,
+        0 90px 180px -35px rgb(0 0 0 / 0.92),
+        0 25px 50px -12px rgb(0 0 0 / 0.65),
+        inset 0 2px 0 rgba(255,255,255,0.09),
+        inset 0 -3px 0 rgba(0,0,0,0.6),
+        inset 55px 55px 80px rgba(0,0,0,0.45);
+      border: 1px solid #3a3a3a;
+      transform-style: preserve-3d;
+    }
+
+    .watch-case::before {
+      content: '';
+      position: absolute;
+      inset: 12px;
+      border-radius: 9999px;
+      background: linear-gradient(135deg, rgba(255,255,255,0.035) 0%, transparent 30%, rgba(0,0,0,0.25) 70%);
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* Bezel - brushed metal feel */
+    .watch-bezel {
+      position: absolute;
+      inset: 18px;
+      border-radius: 9999px;
+      background: linear-gradient(145deg, #222 0%, #181818 50%, #1f1f1f 100%);
+      box-shadow: 
+        inset 0 0 0 1px #444,
+        inset 0 4px 12px rgba(0,0,0,0.7),
+        0 0 0 1px rgba(255,255,255,0.04);
+      z-index: 2;
+    }
+
+    /* Sapphire Crystal */
+    .watch-crystal {
+      position: absolute;
+      inset: 32px;
+      border-radius: 9999px;
+      background: #0f1114;
+      box-shadow: 
+        inset 0 0 0 1px rgba(255,255,255,0.12),
+        inset 0 40px 90px rgba(0,0,0,0.85),
+        inset 0 -25px 70px rgba(0,0,0,0.55),
+        0 0 0 1px rgba(197,162,111,0.18);
+      overflow: hidden;
+      z-index: 10;
+    }
+
+    /* Moving specular highlight (crystal reflection) */
+    .crystal-highlight {
+      position: absolute;
+      inset: 0;
+      border-radius: 9999px;
+      background: linear-gradient(
+        135deg,
+        rgba(255,255,255,0.32) 8%,
+        rgba(255,255,255,0.09) 22%,
+        transparent 38%,
+        transparent 68%,
+        rgba(0,0,0,0.18) 82%,
+        rgba(0,0,0,0.32) 95%
+      );
+      mix-blend-mode: screen;
+      pointer-events: none;
+      z-index: 15;
+      transition: background-position 0.05s linear;
+    }
+
+    /* The actual screen content area */
+    #screen-content {
+      position: absolute;
+      inset: 38px;
+      border-radius: 9999px;
+      background: #111315;
+      overflow: hidden;
+      z-index: 20;
+      box-shadow: inset 0 0 0 1px rgba(0,0,0,0.6);
+    }
+
+    /* Elegant Crown */
+    .watch-crown {
+      position: absolute;
+      right: -22px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 42px;
+      height: 42px;
+      background: linear-gradient(90deg, #3a3a3a 0%, #555 35%, #2a2a2a 100%);
+      border-radius: 9999px;
+      box-shadow: 
+        0 8px 20px rgb(0 0 0 / 0.7),
+        inset 0 2px 0 rgba(255,255,255,0.25),
+        inset -3px 0 6px rgba(0,0,0,0.8);
+      border: 1px solid #444;
+      cursor: grab;
+      z-index: 50;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .watch-crown:active {
+      cursor: grabbing;
+    }
+    .watch-crown::after {
+      content: '';
+      width: 14px;
+      height: 14px;
+      background: linear-gradient(#222, #111);
+      border-radius: 9999px;
+    }
+
+    /* Premium mode buttons */
+    .premium-mode-btn {
+      font-size: 11px;
+      letter-spacing: 0.5px;
+      padding: 7px 18px;
+      border-radius: 9999px;
+      transition: all 0.2s cubic-bezier(0.23, 1, 0.32, 1);
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.03);
+      color: #ddd;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      white-space: nowrap;
+    }
+    .premium-mode-btn:hover {
+      background: rgba(255,255,255,0.07);
+      border-color: rgba(197,162,111,0.25);
+      color: #fff;
+    }
+    .premium-mode-btn.active {
+      background: rgba(197,162,111,0.12);
+      border-color: #c5a26f;
+      color: #c5a26f;
+      box-shadow: 0 0 0 1px rgba(197,162,111,0.2);
+    }
+
+    .luxury-text {
+      font-family: 'Syne', system-ui, sans-serif;
+      letter-spacing: -0.03em;
+    }
+  </style>
+</head>
+<body class="text-white min-h-screen flex items-center justify-center py-8">
+  <div class="w-full max-w-[1100px] px-6">
+    
+    <!-- Minimal Luxurious Header -->
+    <div class="flex items-center justify-between mb-8">
+      <div class="flex items-center gap-4">
+        <a href="../index.html" class="flex items-center gap-3 group">
+          <div class="w-9 h-9 rounded-full bg-gradient-to-br from-[#c5a26f] to-[#a37e4f] flex items-center justify-center">
+            <span class="text-[#0a0a0a] text-[15px] font-bold tracking-[-1.5px]">WM</span>
+          </div>
+          <div>
+            <div class="font-semibold text-2xl tracking-[-1.2px] group-hover:text-[#c5a26f] transition">Watch Me</div>
+            <div class="text-[9px] text-white/40 -mt-1 tracking-[2px]">EST 1897</div>
+          </div>
+        </a>
+        <div class="hidden md:block h-4 w-px bg-white/10 mx-1"></div>
+        <div>
+          <div class="text-sm font-medium tracking-[1.5px] text-[#c5a26f]">THE INSTRUMENT</div>
+          <div class="text-[10px] text-white/40">Interactive Prototype • Design Edition</div>
+        </div>
+      </div>
+      
+      <div class="flex items-center gap-3">
+        <a href="../index.html" class="px-5 py-2 text-sm border border-white/15 rounded-3xl hover:bg-white/5 transition flex items-center gap-2 text-sm">
+          <i class="fa-solid fa-arrow-left text-xs"></i>
+          <span>返回主页</span>
+        </a>
+        <button onclick="resetWatch()" 
+                class="px-6 py-2 bg-white/5 hover:bg-white/10 border border-white/15 rounded-3xl text-sm flex items-center gap-2 transition">
+          <i class="fa-solid fa-undo text-xs"></i>
+          <span>重置</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- THE WATCH - The absolute hero, nothing else competes -->
+    <div class="flex flex-col items-center">
+      
+      <!-- Watch with 3D tilt container -->
+      <div id="watch-tilt-container" 
+           class="premium-watch-container mb-8 cursor-grab active:cursor-grabbing select-none"
+           onmousedown="startWatchTilt(event)">
+        
+        <div id="watch-case" class="watch-case mx-auto">
+          
+          <!-- Brushed Bezel -->
+          <div class="watch-bezel"></div>
+          
+          <!-- Sapphire Crystal + Screen -->
+          <div class="watch-crystal" id="watch-crystal">
+            
+            <!-- Dynamic reflection highlight -->
+            <div id="crystal-highlight" class="crystal-highlight"></div>
+            
+            <!-- The actual watch face / UI content -->
+            <div id="screen-content" 
+                 class="flex flex-col items-center justify-center text-center p-8"
+                 style="font-family: 'IBM Plex Sans', system-ui, sans-serif;">
+              <!-- Content injected by JS -->
+            </div>
+            
+          </div>
+          
+          <!-- Interactive Crown -->
+          <div id="crown" class="watch-crown" 
+               onmousedown="startCrownDrag(event)">
+          </div>
+          
+        </div>
+      </div>
+
+      <!-- Elegant, minimal complication selector - no ugly grid -->
+      <div class="flex flex-wrap justify-center gap-2 max-w-[820px]">
+        <button onclick="switchPremiumMode('analog', this)" class="premium-mode-btn active" data-mode="analog">
+          <i class="fa-solid fa-clock"></i>
+          <span>ANALOG</span>
+        </button>
+        <button onclick="switchPremiumMode('chrono', this)" class="premium-mode-btn" data-mode="chrono">
+          <i class="fa-solid fa-stopwatch"></i>
+          <span>CHRONOGRAPH</span>
+        </button>
+        <button onclick="switchPremiumMode('world', this)" class="premium-mode-btn" data-mode="world">
+          <i class="fa-solid fa-globe"></i>
+          <span>WORLD TIME</span>
+        </button>
+        <button onclick="switchPremiumMode('activity', this)" class="premium-mode-btn" data-mode="activity">
+          <i class="fa-solid fa-chart-line"></i>
+          <span>ACTIVITY</span>
+        </button>
+        <button onclick="switchPremiumMode('messages', this)" class="premium-mode-btn" data-mode="messages">
+          <i class="fa-solid fa-comments"></i>
+          <span>MESSAGES</span>
+        </button>
+        <button onclick="switchPremiumMode('notifications', this)" class="premium-mode-btn" data-mode="notifications">
+          <i class="fa-solid fa-bell"></i>
+          <span>NOTIFICATIONS</span>
+        </button>
+        
+        <!-- Access to all original Figma screens in a beautiful way -->
+        <button onclick="showAllScreensModal()" 
+                class="premium-mode-btn !border-[#c5a26f]/40 hover:!border-[#c5a26f] text-[#c5a26f]">
+          <span>ALL COMPLICATIONS</span>
+          <i class="fa-solid fa-layer-group ml-1 text-xs"></i>
+        </button>
+      </div>
+      
+      <div class="mt-5 text-[10px] text-white/35 tracking-[2px]">DRAG THE CASE TO TILT • DRAG THE CROWN TO SET TIME</div>
+    </div>
+  </div>
+
+  <!-- Beautiful modal for all 16 original screens -->
+  <div id="all-screens-modal" onclick="if (event.target.id === 'all-screens-modal') hideAllScreensModal()" 
+       class="hidden fixed inset-0 bg-black/80 backdrop-blur-xl z-[100] flex items-center justify-center p-6">
+    <div onclick="event.stopImmediatePropagation()" class="bg-[#111] border border-white/10 rounded-3xl max-w-[820px] w-full p-8">
+      <div class="flex justify-between items-center mb-6">
+        <div>
+          <div class="text-[#c5a26f] text-xs tracking-[3px]">WATCH ME OS</div>
+          <div class="display-font text-3xl tracking-[-1px]">All Complications</div>
+        </div>
+        <button onclick="hideAllScreensModal()" class="text-2xl text-white/40 hover:text-white transition">×</button>
+      </div>
+      
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
+        <!-- These link to the original prototype for full fidelity if needed, or we can expand here later -->
+        <div onclick="switchPremiumMode('analog'); hideAllScreensModal()" class="p-4 rounded-2xl bg-white/5 hover:bg-white/10 cursor-pointer border border-white/10">Analog Clock</div>
+        <div onclick="switchPremiumMode('chrono'); hideAllScreensModal()" class="p-4 rounded-2xl bg-white/5 hover:bg-white/10 cursor-pointer border border-white/10">Chronograph</div>
+        <div onclick="switchPremiumMode('world'); hideAllScreensModal()" class="p-4 rounded-2xl bg-white/5 hover:bg-white/10 cursor-pointer border border-white/10">World Time</div>
+        <div onclick="switchPremiumMode('activity'); hideAllScreensModal()" class="p-4 rounded-2xl bg-white/5 hover:bg-white/10 cursor-pointer border border-white/10">Activity</div>
+        <div onclick="switchPremiumMode('messages'); hideAllScreensModal()" class="p-4 rounded-2xl bg-white/5 hover:bg-white/10 cursor-pointer border border-white/10">Messages</div>
+        <div onclick="switchPremiumMode('notifications'); hideAllScreensModal()" class="p-4 rounded-2xl bg-white/5 hover:bg-white/10 cursor-pointer border border-white/10">Notifications</div>
+        <div class="p-4 rounded-2xl bg-white/5 border border-white/10 opacity-60">Tasks</div>
+        <div class="p-4 rounded-2xl bg-white/5 border border-white/10 opacity-60">Wallet</div>
+        <div class="p-4 rounded-2xl bg-white/5 border border-white/10 opacity-60">Voice</div>
+        <div class="p-4 rounded-2xl bg-white/5 border border-white/10 opacity-60">Team</div>
+        <div class="p-4 rounded-2xl bg-white/5 border border-white/10 opacity-60">Progress</div>
+        <div class="p-4 rounded-2xl bg-white/5 border border-white/10 opacity-60">Card Payment</div>
+        <div class="p-4 rounded-2xl bg-white/5 border border-white/10 opacity-60">Call</div>
+        <div class="p-4 rounded-2xl bg-white/5 border border-white/10 opacity-60">New Message</div>
+        <div class="p-4 rounded-2xl bg-white/5 border border-white/10 opacity-60">Message Detail</div>
+        <div class="p-4 rounded-2xl bg-white/5 border border-white/10 opacity-60">Confirm Transaction</div>
+      </div>
+      
+      <div class="mt-6 text-center text-xs text-white/40">
+        Full interactive versions of all 16 screens are preserved in the original Figma replica prototype.
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ==================== PREMIUM WATCH INTERACTIONS ====================
+    let currentRotationX = 0;
+    let currentRotationY = 0;
+    let isTilting = false;
+    let crownDragging = false;
+    let lastCrownY = 0;
+    let currentTime = { hours: 10, minutes: 42 }; // Initial elegant time
+
+    // 3D Tilt the entire watch case (award-winning physical feel)
+    function startWatchTilt(e) {
+      const container = document.getElementById('watch-tilt-container');
+      const watch = document.getElementById('watch-case');
+      if (!container || !watch) return;
+
+      isTilting = true;
+      const startX = e.clientX;
+      const startY = e.clientY;
+      const startRotX = currentRotationX;
+      const startRotY = currentRotationY;
+
+      function onMove(moveEvent) {
+        if (!isTilting) return;
+        const deltaX = (moveEvent.clientX - startX) * 0.12;
+        const deltaY = (moveEvent.clientY - startY) * 0.12;
+        
+        currentRotationY = Math.max(-28, Math.min(28, startRotY + deltaX));
+        currentRotationX = Math.max(-22, Math.min(22, startRotX - deltaY));
+        
+        watch.style.transform = `rotateX(${currentRotationX}deg) rotateY(${currentRotationY}deg)`;
+      }
+
+      function onUp() {
+        isTilting = false;
+        // Gentle spring back toward center (premium feel)
+        const springBack = setInterval(() => {
+          currentRotationX *= 0.82;
+          currentRotationY *= 0.82;
+          watch.style.transform = `rotateX(${currentRotationX}deg) rotateY(${currentRotationY}deg)`;
+          
+          if (Math.abs(currentRotationX) < 0.5 && Math.abs(currentRotationY) < 0.5) {
+            currentRotationX = 0;
+            currentRotationY = 0;
+            watch.style.transform = '';
+            clearInterval(springBack);
+          }
+        }, 16);
+        
+        document.removeEventListener('mousemove', onMove);
+        document.removeEventListener('mouseup', onUp);
+      }
+
+      document.addEventListener('mousemove', onMove);
+      document.addEventListener('mouseup', onUp, { once: true });
+    }
+
+    // Moving crystal reflection - extremely premium detail
+    function setupCrystalReflection() {
+      const crystal = document.getElementById('watch-crystal');
+      const highlight = document.getElementById('crystal-highlight');
+      if (!crystal || !highlight) return;
+
+      crystal.addEventListener('mousemove', (e) => {
+        const rect = crystal.getBoundingClientRect();
+        const x = ((e.clientX - rect.left) / rect.width) * 100;
+        const y = ((e.clientY - rect.top) / rect.height) * 100;
+        
+        // Move the highlight realistically
+        highlight.style.background = `
+          radial-gradient(
+            circle at ${x}% ${y}%, 
+            rgba(255,255,255,0.38) 0%, 
+            rgba(255,255,255,0.12) 18%, 
+            transparent 42%
+          )
+        `;
+      });
+
+      crystal.addEventListener('mouseleave', () => {
+        highlight.style.background = '';
+      });
+    }
+
+    // Crown drag to set time (physical, satisfying interaction)
+    let crownAngle = 0;
+
+    function startCrownDrag(e) {
+      e.preventDefault();
+      const crown = document.getElementById('crown');
+      crownDragging = true;
+      lastCrownY = e.clientY;
+
+      function onMove(ev) {
+        if (!crownDragging) return;
+        const delta = ev.clientY - lastCrownY;
+        lastCrownY = ev.clientY;
+        
+        crownAngle += delta * 1.8;
+        crown.style.transform = `translateY(-50%) rotate(${crownAngle}deg)`;
+        
+        // Adjust time based on crown rotation (very satisfying)
+        currentTime.minutes += Math.sign(delta) * 1.2;
+        if (currentTime.minutes >= 60) {
+          currentTime.minutes = 0;
+          currentTime.hours = (currentTime.hours + 1) % 12 || 12;
+        }
+        if (currentTime.minutes < 0) {
+          currentTime.minutes = 59;
+          currentTime.hours = (currentTime.hours - 1) || 12;
+        }
+        
+        // Update the currently visible screen if it's time-based
+        const activeMode = document.querySelector('.premium-mode-btn.active');
+        if (activeMode) {
+          const mode = activeMode.dataset.mode;
+          if (mode === 'analog' || mode === 'chrono' || mode === 'world') {
+            renderPremiumScreen(mode);
+          }
+        }
+      }
+
+      function onUp() {
+        crownDragging = false;
+        // Spring back the crown visually
+        const spring = setInterval(() => {
+          crownAngle *= 0.7;
+          crown.style.transform = `translateY(-50%) rotate(${crownAngle}deg)`;
+          if (Math.abs(crownAngle) < 1) {
+            crownAngle = 0;
+            crown.style.transform = 'translateY(-50%)';
+            clearInterval(spring);
+          }
+        }, 20);
+        
+        document.removeEventListener('mousemove', onMove);
+        document.removeEventListener('mouseup', onUp);
+      }
+
+      document.addEventListener('mousemove', onMove);
+      document.addEventListener('mouseup', onUp, { once: true });
+    }
+
+    // ==================== SCREEN RENDERING (Premium versions) ====================
+    function renderPremiumScreen(mode) {
+      const container = document.getElementById('screen-content');
+      if (!container) return;
+
+      const h = currentTime.hours.toString().padStart(2, '0');
+      const m = Math.floor(currentTime.minutes).toString().padStart(2, '0');
+
+      container.innerHTML = '';
+
+      if (mode === 'analog') {
+        container.innerHTML = `
+          <div class="text-center w-full h-full flex flex-col items-center justify-center relative" style="background: #0f1114;">
+            <!-- Elegant analog face -->
+            <div class="relative w-[210px] h-[210px] mx-auto">
+              <!-- Hour markers -->
+              <div class="absolute inset-0 rounded-full border border-white/15"></div>
+              ${Array.from({length:12}).map((_,i) => `
+                <div class="absolute w-1 h-3.5 bg-[#c5a26f]" style="
+                  left: 50%; top: 50%; 
+                  transform: translate(-50%, -50%) rotate(${i*30}deg) translateY(-88px);
+                "></div>
+              `).join('')}
+              
+              <!-- Hands -->
+              <div class="absolute left-1/2 top-1/2 w-[3.5px] h-[62px] bg-white rounded origin-bottom -translate-x-1/2" 
+                   style="transform: translate(-50%, -100%) rotate(${(currentTime.hours % 12) * 30 + currentTime.minutes * 0.5}deg); box-shadow: 0 0 6px rgba(0,0,0,0.6);"></div>
+              <div class="absolute left-1/2 top-1/2 w-[2.5px] h-[88px] bg-[#c5a26f] rounded origin-bottom -translate-x-1/2" 
+                   style="transform: translate(-50%, -100%) rotate(${currentTime.minutes * 6}deg); box-shadow: 0 0 4px rgba(197,162,111,0.5);"></div>
+              <div class="absolute left-1/2 top-1/2 w-2.5 h-2.5 bg-[#c5a26f] rounded-full -translate-x-1/2 -translate-y-1/2 z-10"></div>
+            </div>
+            <div class="mt-4 text-[10px] tracking-[2px] text-white/50">${h}:${m}</div>
+          </div>
+        `;
+      } 
+      else if (mode === 'chrono') {
+        container.innerHTML = `
+          <div class="w-full h-full p-5 text-center flex flex-col" style="background:#0f1114;">
+            <div class="text-[10px] text-[#c5a26f] tracking-[2px] mb-1">CHRONOGRAPH</div>
+            <div class="text-[56px] font-semibold tabular-nums tracking-tighter mt-2">${h}:${m}</div>
+            <div class="text-[11px] text-white/50 tracking-widest">00:00.00</div>
+            
+            <div class="mt-auto grid grid-cols-3 gap-2 text-xs">
+              <div class="py-1.5 border border-white/10 rounded-2xl">START</div>
+              <div class="py-1.5 border border-white/10 rounded-2xl">LAP</div>
+              <div class="py-1.5 border border-white/10 rounded-2xl">RESET</div>
+            </div>
+          </div>
+        `;
+      } 
+      else if (mode === 'world') {
+        container.innerHTML = `
+          <div class="w-full h-full p-6 text-center flex flex-col justify-center" style="background:#0f1114;">
+            <div class="text-[#c5a26f] text-xs tracking-[3px] mb-1">WORLD TIME</div>
+            <div class="text-5xl font-semibold tabular-nums">${h}:${m}</div>
+            <div class="text-sm text-white/70 mt-1">BEIJING</div>
+            
+            <div class="mt-6 text-[10px] grid grid-cols-2 gap-x-4 text-left max-w-[160px] mx-auto">
+              <div class="text-white/50">NY</div><div class="text-right tabular-nums">${(currentTime.hours - 12 + 24)%24}:${m}</div>
+              <div class="text-white/50">LON</div><div class="text-right tabular-nums">${(currentTime.hours - 7 + 24)%24}:${m}</div>
+            </div>
+          </div>
+        `;
+      } 
+      else if (mode === 'activity') {
+        container.innerHTML = `
+          <div class="w-full h-full p-6 flex flex-col" style="background:#0f1114;">
+            <div class="text-xs text-[#c5a26f] tracking-widest">TODAY</div>
+            <div class="text-6xl font-semibold tabular-nums mt-1">8,742</div>
+            <div class="text-xs text-white/50">STEPS • 63%</div>
+            
+            <div class="mt-5 h-1.5 bg-white/10 rounded w-full">
+              <div class="h-1.5 bg-[#c5a26f] rounded" style="width:63%"></div>
+            </div>
+          </div>
+        `;
+      } 
+      else if (mode === 'messages') {
+        container.innerHTML = `
+          <div class="w-full h-full p-5 text-sm" style="background:#0f1114;">
+            <div class="text-xs text-white/50 mb-3">MESSAGES</div>
+            <div class="space-y-3">
+              <div class="bg-white/5 p-2.5 rounded-2xl text-xs">Barbara: Meeting at 3?</div>
+              <div class="bg-[#c5a26f] text-black p-2.5 rounded-2xl text-xs ml-auto max-w-[70%]">On my way</div>
+            </div>
+          </div>
+        `;
+      } 
+      else if (mode === 'notifications') {
+        container.innerHTML = `
+          <div class="w-full h-full p-5" style="background:#0f1114;">
+            <div class="text-xs text-[#c5a26f] tracking-widest mb-3">NOTIFICATIONS</div>
+            <div class="text-sm">• Meeting reminder<br>• Battery 87%<br>• New message from team</div>
+          </div>
+        `;
+      }
+    }
+
+    function switchPremiumMode(mode, btn) {
+      // Update active state on buttons
+      document.querySelectorAll('.premium-mode-btn').forEach(b => b.classList.remove('active'));
+      if (btn) btn.classList.add('active');
+
+      // Render the new elegant screen
+      renderPremiumScreen(mode);
+    }
+
+    function showAllScreensModal() {
+      document.getElementById('all-screens-modal').classList.remove('hidden');
+      document.getElementById('all-screens-modal').classList.add('flex');
+    }
+    
+    function hideAllScreensModal() {
+      const modal = document.getElementById('all-screens-modal');
+      modal.classList.remove('flex');
+      modal.classList.add('hidden');
+    }
+
+    function resetWatch() {
+      currentTime = { hours: 10, minutes: 42 };
+      currentRotationX = 0;
+      currentRotationY = 0;
+      
+      const watch = document.getElementById('watch-case');
+      if (watch) watch.style.transform = '';
+      
+      // Reset to analog
+      const analogBtn = document.querySelector('[data-mode="analog"]');
+      if (analogBtn) {
+        document.querySelectorAll('.premium-mode-btn').forEach(b => b.classList.remove('active'));
+        analogBtn.classList.add('active');
+      }
+      renderPremiumScreen('analog');
+    }
+
+    // ==================== INITIALIZATION ====================
+    function initPremiumWatch() {
+      // Initial beautiful analog face
+      const analogBtn = document.querySelector('[data-mode="analog"]');
+      if (analogBtn) analogBtn.classList.add('active');
+      
+      renderPremiumScreen('analog');
+      
+      // Setup premium interactions
+      setupCrystalReflection();
+      
+      // Subtle breathing effect on the gold hands (luxury touch)
+      setInterval(() => {
+        const hands = document.querySelectorAll('#screen-content .bg-\\[\\#c5a26f\\]');
+        hands.forEach(h => {
+          h.style.transitionDuration = '1200ms';
+          h.style.opacity = '0.75';
+          setTimeout(() => { if (h) h.style.opacity = '1'; }, 1100);
+        });
+      }, 4200);
+      
+      // Keyboard support (nice touch)
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') hideAllScreensModal();
+      });
+
+      console.log('%c[Watch Me] Premium Instrument initialized — design contest quality', 'color:#c5a26f');
+    }
+
+    // Boot
+    window.onload = initPremiumWatch;
+  </script>
+</body>
+</html>

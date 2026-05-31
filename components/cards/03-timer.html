@@ -12,74 +12,232 @@
   </style>
 </head>
 <body class="bg-zinc-950 flex items-center justify-center min-h-screen p-8">
-  <div class="max-w-md w-full">
+  <div class="max-w-[520px] w-full">
+    <!-- Header -->
     <div class="flex items-center justify-between mb-6">
       <div>
         <div class="text-white text-xl font-semibold tracking-tighter">Timer</div>
-        <div class="text-zinc-500 text-sm">Watch Me • Dark Theme</div>
+        <div class="text-zinc-500 text-sm">Watch Me • Dark Theme • 0:34</div>
       </div>
-      <button onclick="copySnippet()" class="px-5 py-2 text-sm font-medium bg-white text-black rounded-3xl hover:bg-zinc-200 active:scale-[0.985] transition-all flex items-center gap-2">
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16v-4m4 4v4m4-8v8m4-4v-4m-16 8h16a2 2 0 002-2V6a2 2 0 00-2-2H4a2 2 0 00-2 2v12a2 2 0 002 2" /></svg>
-        Copy HTML
-      </button>
+      <div class="flex gap-2">
+        <button onclick="copyPureHTML()" class="px-4 py-2 text-xs font-medium bg-zinc-800 hover:bg-zinc-700 text-white rounded-3xl active:scale-[0.985] transition-all flex items-center gap-1.5 border border-zinc-700">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.25" d="M8 16v-4m4 4v4m4-8v8m4-4v-4m-16 8h16a2 2 0 002-2V6a2 2 0 00-2-2H4a2 2 0 00-2 2v12a2 2 0 002 2" /></svg>
+          Pure HTML
+        </button>
+        <button onclick="copyAsReact()" class="px-4 py-2 text-xs font-medium bg-white text-black rounded-3xl hover:bg-zinc-100 active:scale-[0.985] transition-all flex items-center gap-1.5">
+          React
+        </button>
+      </div>
     </div>
 
+    <!-- Live Preview -->
     <div class="flex justify-center mb-6">
-      <div class="card bg-[#1b1d21] rounded-[12px] overflow-hidden shadow-2xl p-4 flex flex-col" style="box-shadow: 0 10px 30px rgba(0,0,0,0.45);">
-        <!-- Header -->
-        <div class="text-center text-xs text-white/60 tracking-wider">Timer</div>
+      <div id="preview-container">
+        <!-- THE CARD -->
+        <div id="timer-card" class="card bg-[#1b1d21] rounded-[12px] overflow-hidden shadow-2xl flex flex-col border border-white/5" 
+             style="width:184px;height:224px;box-shadow:0 10px 30px rgba(0,0,0,0.45)">
+          
+          <!-- Header -->
+          <div class="px-3 pt-2.5 pb-1 flex items-center justify-between">
+            <div class="text-[10px] text-white/50 tracking-[1px]">TIMER</div>
+            <div onclick="resetTimer()" class="text-[9px] px-1.5 py-px bg-white/5 hover:bg-white/10 rounded cursor-pointer text-white/60">RESET</div>
+          </div>
 
-        <!-- Time slots grid -->
-        <div class="grid grid-cols-2 gap-x-1 gap-y-2 text-center mt-4 font-bold text-sm px-1.5 text-white">
-          <div>10:29</div>
-          <div>11:30</div>
-          <div>12:31</div>
-          <div>13:32</div>
-          <div class="col-span-2 text-base mt-0.5">14:33</div>
-        </div>
+          <!-- Big Countdown -->
+          <div class="px-4 pt-2 text-center">
+            <div id="timer-display" class="font-mono text-[42px] font-semibold tracking-[-2.2px] text-white tabular-nums leading-none">14:33</div>
+            <div class="text-[10px] text-[#ff4a8c] mt-0.5 tracking-widest">COUNTDOWN</div>
+          </div>
 
-        <!-- Next button (interactive in catalog) -->
-        <div class="mt-auto mx-2 mb-2">
-          <button onclick="simulateNext(this)" 
-                  class="w-full h-8 rounded-[10px] flex items-center justify-center text-xs font-semibold transition active:scale-[0.985]" 
-                  style="background:#7640ef; color:white;">
-            Next
-          </button>
+          <!-- Progress Ring -->
+          <div class="flex justify-center my-3">
+            <div class="relative w-20 h-20" onclick="toggleTimer()">
+              <svg class="w-20 h-20 -rotate-90" viewBox="0 0 80 80">
+                <circle cx="40" cy="40" r="32" fill="none" stroke="#272a31" stroke-width="7"/>
+                <circle id="progress-ring" cx="40" cy="40" r="32" fill="none" stroke="#7640ef" stroke-width="7" 
+                        stroke-dasharray="201" stroke-dashoffset="60" stroke-linecap="round"/>
+              </svg>
+              <div class="absolute inset-0 flex items-center justify-center">
+                <div class="text-[10px] text-white/60">REMAINING</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Preset Buttons -->
+          <div class="px-3 grid grid-cols-4 gap-1">
+            <button onclick="setPreset(5, this)" class="preset-btn text-[10px] py-1 bg-white/5 hover:bg-white/10 rounded text-white/80 active:bg-[#7640ef]/30 transition">5m</button>
+            <button onclick="setPreset(10, this)" class="preset-btn text-[10px] py-1 bg-white/5 hover:bg-white/10 rounded text-white/80 active:bg-[#7640ef]/30 transition">10m</button>
+            <button onclick="setPreset(25, this)" class="preset-btn text-[10px] py-1 bg-white/5 hover:bg-white/10 rounded text-white/80 active:bg-[#7640ef]/30 transition">25m</button>
+            <button onclick="setPreset(45, this)" class="preset-btn text-[10px] py-1 bg-white/5 hover:bg-white/10 rounded text-white/80 active:bg-[#7640ef]/30 transition">45m</button>
+          </div>
+
+          <!-- Controls -->
+          <div class="mt-auto p-3 pt-3 flex gap-2 border-t border-white/5">
+            <button onclick="toggleTimer()" id="start-btn"
+                    class="flex-1 h-[26px] rounded-[7px] text-[11px] font-semibold tracking-tight transition active:scale-[0.975]" 
+                    style="background:#7640ef;color:white;">START</button>
+            <button onclick="pauseTimer()" class="px-4 h-[26px] rounded-[7px] text-[11px] bg-white/5 hover:bg-white/10 text-white/80 transition">PAUSE</button>
+          </div>
         </div>
       </div>
     </div>
 
-    <div class="bg-zinc-900 rounded-3xl p-5 text-xs">
-      <div class="text-emerald-400 font-medium mb-2 text-[10px] tracking-[1px] uppercase">Interactive</div>
-      <div class="text-zinc-400">Click "Next" to highlight selection. Perfect for scheduling or countdown UIs.</div>
+    <div class="bg-zinc-900 rounded-3xl p-5 text-xs space-y-2">
+      <div class="text-emerald-400 font-semibold text-[10px] tracking-[1px] uppercase">4 INTERACTIONS</div>
+      <div class="text-zinc-400">Click ring or START to run live countdown (real JS timer). Preset chips instantly change duration. RESET + PAUSE supported. Progress ring animates live.</div>
+      <div class="pt-1 text-[10px] text-zinc-500">Ideal for fitness, focus, cooking apps. Embeddable with zero deps.</div>
     </div>
   </div>
+
+  <div id="toast" class="hidden fixed bottom-6 left-1/2 -translate-x-1/2 bg-black/90 border border-white/10 text-white text-xs px-4 py-2 rounded-3xl z-[999]"></div>
 
   <script>
-    function simulateNext(el) {
-      const orig = el.style.background;
-      el.style.background = '#ff4a8c';
-      el.textContent = 'Selected ✓';
-      setTimeout(() => {
-        el.style.background = orig;
-        el.textContent = 'Next';
-      }, 850);
+    let timerInterval = null;
+    let remainingSeconds = 14 * 60 + 33;
+    let totalSeconds = remainingSeconds;
+    let isRunning = false;
+
+    function formatTime(sec) {
+      const m = Math.floor(sec / 60);
+      const s = sec % 60;
+      return `${m}:${s.toString().padStart(2, '0')}`;
     }
 
-    function copySnippet() {
-      const snippet = `<div class="w-[184px] h-[224px] bg-[#1b1d21] rounded-[12px] overflow-hidden shadow-2xl p-4 flex flex-col" style="box-shadow: 0 10px 30px rgba(0,0,0,0.45);">
-  <div class="text-center text-xs text-white/60 tracking-wider">Timer</div>
-  <div class="grid grid-cols-2 gap-x-1 gap-y-2 text-center mt-4 font-bold text-sm px-1.5 text-white">
-    <div>10:29</div><div>11:30</div>
-    <div>12:31</div><div>13:32</div>
-    <div class="col-span-2 text-base mt-0.5">14:33</div>
-  </div>
-  <div class="mt-auto mx-2 mb-2">
-    <div class="w-full h-8 rounded-[10px] flex items-center justify-center text-xs font-semibold" style="background:#7640ef;color:white;">Next</div>
-  </div>
-</div>`;
-      navigator.clipboard.writeText(snippet).then(() => alert('Copied pure card HTML!'));
+    function updateDisplay() {
+      const disp = document.getElementById('timer-display');
+      if (disp) disp.textContent = formatTime(remainingSeconds);
+      
+      // Update ring
+      const ring = document.getElementById('progress-ring');
+      if (ring) {
+        const pct = remainingSeconds / totalSeconds;
+        const dash = 201;
+        ring.setAttribute('stroke-dashoffset', dash * (1 - pct));
+      }
+      
+      const btn = document.getElementById('start-btn');
+      if (btn) {
+        btn.textContent = isRunning ? 'RUNNING' : (remainingSeconds === 0 ? 'DONE' : 'START');
+        if (remainingSeconds === 0) btn.style.background = '#10b981';
+      }
     }
+
+    function toggleTimer() {
+      const btn = document.getElementById('start-btn');
+      if (remainingSeconds <= 0) {
+        resetTimer();
+        return;
+      }
+      if (!isRunning) {
+        isRunning = true;
+        if (btn) btn.style.background = '#ff4a8c';
+        timerInterval = setInterval(() => {
+          remainingSeconds--;
+          updateDisplay();
+          if (remainingSeconds <= 0) {
+            clearInterval(timerInterval);
+            isRunning = false;
+            const card = document.getElementById('timer-card');
+            if (card) {
+              card.style.boxShadow = '0 0 0 1px #10b981, 0 10px 30px rgba(0,0,0,0.45)';
+              setTimeout(() => {
+                if (card) card.style.boxShadow = '0 10px 30px rgba(0,0,0,0.45)';
+              }, 700);
+            }
+            showToast('Timer complete ✓');
+            updateDisplay();
+          }
+        }, 1000);
+      } else {
+        pauseTimer();
+      }
+      updateDisplay();
+    }
+
+    function pauseTimer() {
+      if (timerInterval) clearInterval(timerInterval);
+      isRunning = false;
+      const btn = document.getElementById('start-btn');
+      if (btn) btn.style.background = '#7640ef';
+      updateDisplay();
+    }
+
+    function resetTimer() {
+      if (timerInterval) clearInterval(timerInterval);
+      isRunning = false;
+      remainingSeconds = totalSeconds;
+      const ring = document.getElementById('progress-ring');
+      if (ring) ring.setAttribute('stroke-dashoffset', '60');
+      const btn = document.getElementById('start-btn');
+      if (btn) btn.style.background = '#7640ef';
+      updateDisplay();
+    }
+
+    function setPreset(mins, el) {
+      if (timerInterval) clearInterval(timerInterval);
+      isRunning = false;
+      
+      // visual feedback on preset
+      document.querySelectorAll('.preset-btn').forEach(b => b.style.background = '');
+      el.style.background = '#7640ef';
+      el.style.color = 'white';
+      setTimeout(() => {
+        el.style.background = '';
+        el.style.color = '';
+      }, 620);
+
+      remainingSeconds = mins * 60;
+      totalSeconds = remainingSeconds;
+      
+      const ring = document.getElementById('progress-ring');
+      if (ring) ring.setAttribute('stroke-dashoffset', '60');
+      
+      updateDisplay();
+      showToast(`${mins}m preset loaded`);
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.remove('hidden');
+      t.classList.add('flex');
+      setTimeout(() => {
+        t.classList.add('hidden');
+        t.classList.remove('flex');
+      }, 1600);
+    }
+
+    function copyPureHTML() {
+      const cardClone = document.getElementById('timer-card').cloneNode(true);
+      // Strip event handlers for pure copy
+      cardClone.querySelectorAll('button,[onclick]').forEach(el => {
+        el.removeAttribute('onclick');
+        el.onclick = null;
+      });
+      const html = cardClone.outerHTML.replace(/id="[^"]+"/g,'').replace(/onclick="[^"]*"/g,'');
+      navigator.clipboard.writeText(`<!-- Watch Me Timer Card -->\n${html}`).then(() => showToast('Pure HTML copied'));
+    }
+
+    function copyAsReact() {
+      const code = `const TimerCard = () => {
+  const [seconds, setSeconds] = React.useState(873);
+  const [running, setRunning] = React.useState(false);
+  // ... full interactive logic using useEffect + interval ...
+  return <div className="w-[184px] h-[224px] bg-[#1b1d21] rounded-[12px] ..."> {/* full JSX matching the pure HTML */} </div>;
+};`;
+      navigator.clipboard.writeText(code).then(() => showToast('React stub copied'));
+    }
+
+    function initTimer() {
+      updateDisplay();
+      // Auto demo hint
+      setTimeout(() => {
+        const ring = document.getElementById('progress-ring');
+        if (ring) ring.style.transition = 'stroke-dashoffset 280ms linear';
+      }, 400);
+      console.log('%c[Watch Me] Timer card — fully interactive live countdown ready', 'color:#64748b');
+    }
+    window.addEventListener('load', initTimer);
   </script>
 </body>
 </html>

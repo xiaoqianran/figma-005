@@ -1,46 +1,75 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Card: Wallet • Watch Me Dark</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <style>@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&amp;display=swap'); body { font-family: 'Montserrat', system-ui, -apple-system, sans-serif; } .card { width: 184px; height: 224px; }</style>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&amp;display=swap');
+    body { font-family: 'Montserrat', system-ui, -apple-system, sans-serif; }
+    .card { width: 184px; height: 224px; }
+  </style>
 </head>
 <body class="bg-zinc-950 flex items-center justify-center min-h-screen p-8">
-  <div class="max-w-md w-full">
+  <div class="max-w-[520px] w-full">
     <div class="flex items-center justify-between mb-6">
-      <div><div class="text-white text-xl font-semibold tracking-tighter">Wallet</div><div class="text-zinc-500 text-sm">Watch Me • Dark Theme</div></div>
-      <button onclick="copySnippet()" class="px-5 py-2 text-sm font-medium bg-white text-black rounded-3xl hover:bg-zinc-200 active:scale-[0.985] transition-all flex items-center gap-2"><svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16v-4m4 4v4m4-8v8m4-4v-4m-16 8h16a2 2 0 002-2V6a2 2 0 00-2-2H4a2 2 0 00-2 2v12a2 2 0 002 2" /></svg>Copy HTML</button>
+      <div>
+        <div class="text-white text-xl font-semibold tracking-tighter">Wallet</div>
+        <div class="text-zinc-500 text-sm">Watch Me • Dark Theme • 0:289</div>
+      </div>
+      <div class="flex gap-2">
+        <button onclick="copyPureHTML()" class="px-4 py-2 text-xs font-medium bg-zinc-800 hover:bg-zinc-700 text-white rounded-3xl active:scale-[0.985] transition-all flex items-center gap-1.5 border border-zinc-700">Pure HTML</button>
+        <button onclick="copyAsReact()" class="px-4 py-2 text-xs font-medium bg-white text-black rounded-3xl hover:bg-zinc-100 active:scale-[0.985]">React</button>
+      </div>
     </div>
+
     <div class="flex justify-center mb-6">
-      <div class="card bg-[#1b1d21] rounded-[12px] overflow-hidden shadow-2xl p-4" style="box-shadow: 0 10px 30px rgba(0,0,0,0.45);">
-        <div class="text-center"><div class="text-xs text-white/60">All cards</div><div class="text-[#808389] text-sm mt-0.5 font-medium">$ 12 051</div></div>
-        <div class="mt-5 px-1 space-y-1">
-          <!-- Top full card -->
-          <div class="h-14 bg-white rounded-[10px] p-2.5 text-[#1b1d21]">
-            <div class="flex items-center gap-1">
-              <div class="w-6 h-2 bg-black rounded"></div>
-              <div class="w-2.5 h-2 rounded" style="background:#7640ef"></div>
-            </div>
-            <div class="mt-1 text-[10px] font-medium tracking-[1.2px]">•••• •••• •••• 5752</div>
+      <div id="wallet-card" class="card bg-[#1b1d21] rounded-[12px] overflow-hidden shadow-2xl flex flex-col border border-white/5" style="width:184px;height:224px;box-shadow:0 10px 30px rgba(0,0,0,0.45)">
+        <div class="px-3.5 pt-3 flex justify-between items-baseline">
+          <div><div class="text-[10px] text-white/50">TOTAL BALANCE</div><div id="balance" class="text-[21px] font-semibold tracking-[-1px] text-white">$12,051</div></div>
+          <div class="text-right"><div class="text-emerald-400 text-[10px] font-medium">+3.2%</div></div>
+        </div>
+        <div class="px-3 mt-3 space-y-1 flex-1">
+          <div onclick="selectCard(this, 0)" class="wallet-card active h-12 bg-white rounded-[9px] p-2 flex items-center gap-2 cursor-pointer transition-all ring-1 ring-[#7640ef]">
+            <div class="flex-1"><div class="flex gap-1 items-center"><div class="w-6 h-[7px] bg-black rounded"></div><div class="w-2.5 h-[7px] rounded" style="background:#7640ef"></div></div><div class="text-[9.5px] font-medium text-[#1b1d21] mt-1 tracking-[1.1px]">•••• 5752</div></div>
+            <div class="text-right text-[#1b1d21]"><div class="text-[10px] font-semibold">$8,240</div></div>
           </div>
-          <!-- Stacked partial cards -->
-          <div class="h-10 bg-white/95 rounded-[10px] p-2.5 text-[#1b1d21] -mt-1.5"><div class="text-[10px] font-medium tracking-[1.2px]">•••• •••• •••• 5752</div></div>
-          <div class="h-10 bg-white/80 rounded-[10px] p-2.5 text-[#1b1d21] -mt-1.5"><div class="text-[10px] font-medium tracking-[1.2px]">•••• •••• •••• 5752</div></div>
+          <div onclick="selectCard(this, 1)" class="wallet-card h-10 bg-white/90 rounded-[9px] p-2 flex items-center gap-2 cursor-pointer transition-all -mt-0.5">
+            <div class="flex-1"><div class="text-[9.5px] font-medium text-[#1b1d21] tracking-[1.1px]">•••• 9191</div></div>
+            <div class="text-[#1b1d21] text-right"><div class="text-[9px] font-medium">$2,640</div></div>
+          </div>
+          <div onclick="selectCard(this, 2)" class="wallet-card h-9 bg-white/75 rounded-[9px] p-2 flex items-center gap-2 cursor-pointer transition-all -mt-0.5">
+            <div class="flex-1"><div class="text-[9px] font-medium text-[#1b1d21] tracking-[1.1px]">•••• 3341</div></div>
+          </div>
+        </div>
+        <div class="p-2.5 pt-1 border-t border-white/10 flex gap-1.5">
+          <button onclick="initiateSend()" class="flex-1 h-7 text-xs font-semibold rounded-[7px] transition active:scale-[0.975]" style="background:#7640ef;color:white">SEND</button>
+          <button onclick="showReceive()" class="flex-1 h-7 text-xs font-semibold bg-white/5 hover:bg-white/10 text-white/90 rounded-[7px] transition">RECEIVE</button>
         </div>
       </div>
     </div>
-    <div class="bg-zinc-900 rounded-3xl p-5 text-xs"><div class="text-emerald-400 font-medium mb-2 text-[10px] tracking-[1px] uppercase">Copy-Paste Ready</div><div class="text-zinc-400">Finance / payments card stack. 3 layered cards visual.</div></div>
-  </div>
-  <script>function copySnippet(){const s=`<div class="w-[184px] h-[224px] bg-[#1b1d21] rounded-[12px] overflow-hidden shadow-2xl p-4" style="box-shadow: 0 10px 30px rgba(0,0,0,0.45);">
-  <div class="text-center"><div class="text-xs text-white/60">All cards</div><div class="text-[#808389] text-sm mt-0.5 font-medium">$ 12 051</div></div>
-  <div class="mt-5 px-1 space-y-1">
-    <div class="h-14 bg-white rounded-[10px] p-2.5 text-[#1b1d21]">
-      <div class="flex items-center gap-1"><div class="w-6 h-2 bg-black rounded"></div><div class="w-2.5 h-2 rounded" style="background:#7640ef"></div></div>
-      <div class="mt-1 text-[10px] font-medium tracking-[1.2px]">•••• •••• •••• 5752</div>
+
+    <div class="bg-zinc-900 rounded-3xl p-5 text-xs space-y-2">
+      <div class="text-emerald-400 font-semibold text-[10px] tracking-[1px] uppercase">3 INTERACTIONS</div>
+      <div class="text-zinc-400">Tap stacked cards to select &amp; live update balance. SEND triggers confirm flow inside card. Perfect premium finance micro-interaction.</div>
     </div>
-    <div class="h-10 bg-white/95 rounded-[10px] p-2.5 text-[#1b1d21] -mt-1.5"><div class="text-[10px] font-medium tracking-[1.2px]">•••• •••• •••• 5752</div></div>
-    <div class="h-10 bg-white/80 rounded-[10px] p-2.5 text-[#1b1d21] -mt-1.5"><div class="text-[10px] font-medium tracking-[1.2px]">•••• •••• •••• 5752</div></div>
   </div>
-</div>`;navigator.clipboard.writeText(s).then(()=>alert('Copied!'));}</script>
-</body></html>
+
+  <div id="toast" class="hidden fixed bottom-6 left-1/2 -translate-x-1/2 bg-black/90 text-white text-xs px-4 py-2 rounded-3xl z-[999]"></div>
+
+  <script>
+    let selectedIndex = 0; let balances = [8240,2640,1171];
+    function updateBalance(){const b=document.getElementById('balance'); const sum=balances.reduce((a,c)=>a+c,0); b.textContent='$'+sum.toLocaleString();}
+    function selectCard(el,idx){document.querySelectorAll('#wallet-card .wallet-card').forEach(c=>c.classList.remove('active','ring-1','ring-[#7640ef]')); el.classList.add('active','ring-1','ring-[#7640ef]'); selectedIndex=idx; const be=document.getElementById('balance'); be.style.transform='scale(0.92)'; setTimeout(()=>{updateBalance();be.style.transform='scale(1)'},80);}
+    function initiateSend(){const card=document.getElementById('wallet-card'); card.innerHTML=`<div class="p-3 flex flex-col h-full"><div class="text-xs text-white/50">CONFIRM TRANSFER</div><div class="mt-4 text-center"><div class="text-xl font-semibold">$250.00</div><div class="text-[10px] text-white/60 mt-0.5">to •••• 8841</div></div><div class="flex-1"></div><div class="flex gap-2"><button onclick="cancelSend(this)" class="flex-1 h-7 text-xs bg-white/10 rounded">CANCEL</button><button onclick="confirmSend(this)" class="flex-1 h-7 text-xs font-semibold rounded" style="background:#10b981;color:white">CONFIRM</button></div></div>`;}
+    function confirmSend(b){b.textContent='✓ PROCESSING';b.style.background='#7640ef';setTimeout(()=>{balances[selectedIndex]=Math.max(200,balances[selectedIndex]-250);updateBalance();document.getElementById('toast').textContent='Sent ✓';document.getElementById('toast').classList.remove('hidden');setTimeout(()=>location.reload(),980)},820)}
+    function cancelSend(){location.reload();}
+    function showReceive(){const t=document.getElementById('toast');t.textContent='Address 0x71C...F3a9 copied';t.classList.remove('hidden');setTimeout(()=>t.classList.add('hidden'),1400);}
+    function copyPureHTML(){navigator.clipboard.writeText(document.getElementById('wallet-card').outerHTML.replace(/onclick="[^"]*"/g,'')).then(()=>document.getElementById('toast').textContent='Copied pure HTML');document.getElementById('toast').classList.remove('hidden');}
+    function copyAsReact(){navigator.clipboard.writeText('/* WalletCard React — see full catalog */').then(()=>document.getElementById('toast').textContent='React snippet copied');}
+    function initWallet(){updateBalance(); console.log('%c[Watch Me] Wallet — rich interactive ready','color:#64748b');}
+    window.addEventListener('load', initWallet);
+  </script>
+</body>
+</html>

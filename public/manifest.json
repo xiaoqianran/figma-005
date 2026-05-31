@@ -1,0 +1,19 @@
+{
+  "name": "Watch Me OS",
+  "short_name": "Watch Me",
+  "description": "The premium interactive smartwatch operating system experience. Luxury instrument, digital edition.",
+  "start_url": "/prototypes/watch-me-os.html",
+  "display": "standalone",
+  "background_color": "#0a0a0a",
+  "theme_color": "#c5a26f",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='46' fill='%231b1d21' stroke='%23c5a26f' stroke-width='3'/%3E%3Ccircle cx='50' cy='50' r='32' fill='none' stroke='%23c5a26f' stroke-width='2'/%3E%3Cpath d='M50 22 L50 50 L68 62' fill='none' stroke='%23c5a26f' stroke-width='4' stroke-linecap='round'/%3E%3C/svg%3E",
+      "sizes": "192x192",
+      "type": "image/svg+xml"
+    }
+  ],
+  "categories": ["productivity", "utilities", "lifestyle"],
+  "screenshots": []
+}

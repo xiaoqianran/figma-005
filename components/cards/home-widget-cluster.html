@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Composite: Home Widget Cluster • Watch Me</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&amp;display=swap');body{font-family:'Montserrat',system-ui,-apple-system,sans-serif}.card{width:184px;height:224px}</style>
+</head>
+<body class="bg-zinc-950 flex items-center justify-center min-h-screen p-8">
+  <div class="max-w-[520px] w-full">
+    <div class="flex items-center justify-between mb-6">
+      <div><div class="text-white text-xl font-semibold tracking-tighter">Home Widget Cluster</div><div class="text-zinc-500 text-sm">Composite • New</div></div>
+      <div class="flex gap-2"><button onclick="copyPureHTML()" class="px-4 py-2 text-xs bg-zinc-800 hover:bg-zinc-700 text-white rounded-3xl border border-zinc-700">Pure HTML</button><button onclick="copyAsReact()" class="px-4 py-2 text-xs bg-white text-black rounded-3xl">React</button></div>
+    </div>
+    <div class="flex justify-center mb-6">
+      <div id="cluster-card" class="card bg-[#1b1d21] rounded-[12px] overflow-hidden shadow-2xl flex flex-col border border-white/5 p-2.5" style="width:184px;height:224px;box-shadow:0 10px 30px rgba(0,0,0,0.45)">
+        <div class="flex justify-between items-center px-1 pt-0.5"><div class="text-[9px] font-medium text-white/60">TODAY</div><div class="text-[9px] text-[#ff4a8c]">LIVE</div></div>
+        <!-- Mini cluster: activity + quick timer + message -->
+        <div class="mt-1 flex gap-1">
+          <!-- Activity mini ring -->
+          <div onclick="animateMiniRing(this)" class="flex-1 bg-[#16171a] rounded-[9px] p-1.5 cursor-pointer"><div class="text-[8px] text-white/50">MOVE</div><div class="relative w-7 h-7 mx-auto my-0.5"><svg viewBox="0 0 28 28" class="w-7 h-7"><circle cx="14" cy="14" r="11" fill="none" stroke="#272a31" stroke-width="4"/><circle cx="14" cy="14" r="11" fill="none" stroke="#ffaa5c" stroke-width="4" stroke-dasharray="69" stroke-dashoffset="21"/></svg></div><div class="text-[9px] text-center font-semibold">7.2k</div></div>
+          <!-- Quick timer -->
+          <div onclick="quickTimer(this)" class="flex-1 bg-[#16171a] rounded-[9px] p-1.5 cursor-pointer"><div class="text-[8px] text-white/50">FOCUS</div><div class="text-center mt-1"><span class="font-mono text-lg font-semibold text-[#7640ef]">25</span><span class="text-[8px]">m</span></div><div class="text-[9px] text-center text-emerald-400">START</div></div>
+        </div>
+        <div onclick="sendQuickMsg(this)" class="mt-1.5 bg-[#16171a] rounded-[9px] p-2 text-[10px] cursor-pointer active:bg-white/5 transition">
+          <div class="flex items-center gap-1"><div class="w-2 h-2 bg-[#ff4a8c] rounded-full"></div><span class="text-white/80">Quick message to Oliver</span></div>
+        </div>
+        <div class="mt-auto text-[9px] px-1 text-white/40">3 widgets • tap to interact</div>
+      </div>
+    </div>
+    <div class="bg-zinc-900 rounded-3xl p-5 text-xs"><div class="text-emerald-400 font-medium tracking-[1px] text-[10px] uppercase">COMPOSITE CARD</div><div class="text-zinc-400">Mini cluster of 3 real interactive widgets. Use as home screen summary or dashboard extract.</div></div>
+  </div>
+  <script>
+    function animateMiniRing(el){const c=el.querySelector('circle:last-child'); if(c){c.setAttribute('stroke-dashoffset','5'); setTimeout(()=>c.setAttribute('stroke-dashoffset','21'),820);} el.style.transform='scale(0.96)';setTimeout(()=>el.style.transform='',200);}
+    function quickTimer(el){el.style.background='#7640ef'; el.style.color='white'; setTimeout(()=>{el.style.background='#16171a';el.style.color='';alert('Focus timer launched (demo)')},680);}
+    function sendQuickMsg(el){el.style.background='#ff4a8c'; setTimeout(()=>{el.style.background='#16171a'; alert('Message sent from cluster!')},450);}
+    function copyPureHTML(){navigator.clipboard.writeText(document.getElementById('cluster-card').outerHTML.replace(/onclick="[^"]*"/g,'')).then(()=>alert('Composite copied'));}
+    function copyAsReact(){navigator.clipboard.writeText('/* HomeWidgetCluster React */').then(()=>alert('React copied'));}
+  </script>
+</body></html>

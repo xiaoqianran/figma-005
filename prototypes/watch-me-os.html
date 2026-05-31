@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Watch Me OS • The Instrument</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Space+Grotesk:wght@500;600&amp;display=swap');
+    
+    :root {
+      --wm-bg: #0f1114;
+      --wm-surface: #1b1d21;
+      --wm-gold: #c5a26f;
+      --wm-purple: #7640ef;
+      --wm-pink: #ff4a8c;
+      --wm-text: #f2f2f2;
+      --wm-text-sec: #808389;
+    }
+    
+    [data-theme="light"] {
+      --wm-bg: #f4f4f6;
+      --wm-surface: #ffffff;
+      --wm-text: #111113;
+      --wm-text-sec: #5f6166;
+    }
+    
+    [data-theme="gold"] {
+      --wm-gold: #d4af37;
+      --wm-purple: #8b5cf6;
+    }
+
+    body { font-family: 'Inter', system-ui, sans-serif; background: #08090a; }
+    .display-font { font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600; letter-spacing: -0.04em; }
+
+    /* ==================== PREMIUM WATCH HARDWARE ==================== */
+    .watch-container {
+      width: 380px; height: 380px;
+      position: relative;
+      filter: drop-shadow(0 60px 140px rgba(0,0,0,0.9));
+    }
+    .watch-case {
+      width: 100%; height: 100%;
+      border-radius: 50%;
+      background: linear-gradient(145deg, #2a2a2e 0%, #161618 35%, #0c0c0e 70%, #1f1f22 100%);
+      box-shadow: 
+        inset 0 0 0 16px #0a0a0c,
+        inset 70px 70px 110px rgba(0,0,0,0.75),
+        inset -35px -35px 90px rgba(255,255,255,0.035),
+        0 0 0 1px #3a3a40,
+        0 50px 120px rgba(0,0,0,0.7);
+      position: relative; overflow: hidden;
+    }
+    .watch-bezel {
+      position: absolute; inset: 18px;
+      border-radius: 50%;
+      background: #121214;
+      box-shadow: inset 0 0 0 2px #29292e, inset 0 25px 70px rgba(0,0,0,0.85);
+    }
+    .watch-crystal {
+      position: absolute; inset: 32px;
+      border-radius: 50%;
+      background: #0a0b0d;
+      box-shadow: 
+        inset 0 0 0 1px rgba(255,255,255,0.12),
+        inset 0 28px 80px rgba(0,0,0,0.92),
+        inset 0 -12px 45px rgba(255,255,255,0.025),
+        0 0 0 1px rgba(197,162,111,0.1);
+      overflow: hidden; z-index: 10;
+    }
+    .crystal-reflection {
+      position: absolute; inset: 0; border-radius: 50%;
+      background: linear-gradient(135deg, rgba(255,255,255,0.32) 4%, transparent 22%, transparent 52%, rgba(255,255,255,0.06) 72%, transparent 88%);
+      mix-blend-mode: screen; z-index: 20; pointer-events: none;
+      transition: background 60ms linear;
+    }
+    .watch-screen {
+      position: absolute; inset: 44px;
+      width: 292px; height: 292px;
+      border-radius: 48px;
+      background: var(--wm-surface);
+      box-shadow: inset 0 0 0 1px rgba(0,0,0,0.6);
+      overflow: hidden; z-index: 30;
+      color: var(--wm-text);
+    }
+    .crown {
+      position: absolute; right: -11px; top: 50%; transform: translateY(-50%);
+      width: 22px; height: 58px;
+      background: linear-gradient(90deg, #2f2f33, #1a1a1d 40%, #2f2f33);
+      border-radius: 9999px;
+      box-shadow: 2px 0 6px rgba(0,0,0,0.6), inset -1px 0 3px rgba(255,255,255,0.1);
+      cursor: ns-resize; z-index: 50;
+      border: 1px solid #3a3a40;
+    }
+    .crown::after {
+      content: ''; position: absolute; inset: 8px 3px;
+      background: repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(0,0,0,0.25) 2px, rgba(0,0,0,0.25) 4px);
+      border-radius: 9999px;
+    }
+    .side-button {
+      position: absolute; left: -7px; top: 42%; width: 14px; height: 38px;
+      background: linear-gradient(#2a2a2e, #1a1a1d);
+      border-radius: 9999px 0 0 9999px;
+      box-shadow: -2px 0 5px rgba(0,0,0,0.5);
+      cursor: pointer; z-index: 50;
+      transition: transform 80ms ease;
+    }
+    .side-button:active { transform: translateX(-1px); }
+
+    /* Screen Content */
+    .screen { width: 100%; height: 100%; position: relative; overflow: hidden; }
+    .status-bar {
+      height: 28px; padding: 0 14px; display: flex; align-items: center; justify-content: space-between;
+      font-size: 10px; font-weight: 600; letter-spacing: 0.5px; background: rgba(0,0,0,0.25);
+      position: relative; z-index: 40;
+    }
+    .app-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; padding: 12px; }
+    .app-icon {
+      aspect-ratio: 1; border-radius: 18px; display: flex; flex-direction: column; align-items: center; justify-content: center;
+      background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06);
+      transition: all 0.1s cubic-bezier(0.23,1,0.32,1); cursor: pointer; font-size: 11px; gap: 4px;
+    }
+    .app-icon:hover { background: rgba(255,255,255,0.07); transform: translateY(-1px); }
+    .app-icon:active { transform: scale(0.94); }
+    .app-icon .fa { font-size: 18px; margin-bottom: 1px; }
+
+    /* App Styles */
+    .app-header { padding: 10px 16px 6px; font-weight: 600; font-size: 13px; display: flex; justify-content: space-between; align-items: center; }
+    .list-item {
+      padding: 9px 14px; margin: 2px 8px; border-radius: 12px; display: flex; align-items: center; gap: 10px;
+      background: rgba(255,255,255,0.025); transition: background 0.1s;
+    }
+    .list-item:active { background: rgba(255,255,255,0.08); }
+    .lux-button {
+      background: var(--wm-purple); color: white; font-weight: 600; font-size: 12px;
+      padding: 8px 18px; border-radius: 9999px; transition: all 0.1s;
+    }
+    .lux-button:active { transform: scale(0.96); background: #5f2fd1; }
+    .lux-button.secondary { background: #2a2c32; color: #d1d1d5; }
+
+    .ring { transition: stroke-dashoffset 400ms cubic-bezier(0.23,1,0.32,1); }
+    .wm-gold { color: var(--wm-gold); }
+    .wm-purple { color: var(--wm-purple); }
+
+    .toast {
+      position: absolute; bottom: 18px; left: 50%; transform: translateX(-50%);
+      background: #111; color: #eee; font-size: 11px; padding: 6px 14px; border-radius: 9999px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.4); opacity: 0; transition: all 0.2s; pointer-events: none;
+      white-space: nowrap; z-index: 100;
+    }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(-4px); }
+
+    .crown-active { box-shadow: 0 0 0 3px rgba(197,162,111,0.3); }
+  </style>
+</head>
+<body class="bg-[#08090a] flex items-center justify-center min-h-screen p-8">
+  <div class="flex flex-col items-center">
+    <!-- Header -->
+    <div class="mb-4 flex items-center gap-3 text-sm">
+      <div class="flex items-center gap-2">
+        <div class="w-2 h-2 rounded-full bg-emerald-400"></div>
+        <span class="text-[#808389] font-medium tracking-[1px] text-xs">WATCH ME OS v1.0</span>
+      </div>
+      <div class="h-3 w-px bg-white/10"></div>
+      <button onclick="resetAll()" 
+              class="text-[#808389] hover:text-white text-xs flex items-center gap-1.5 transition-colors">
+        <i class="fa-solid fa-undo text-[10px]"></i> RESET STATE
+      </button>
+      <button onclick="cycleTheme()" 
+              class="px-3 py-1 rounded-full bg-white/5 hover:bg-white/10 text-xs flex items-center gap-1.5 transition-all">
+        <i class="fa-solid fa-palette"></i> <span id="theme-label">DARK</span>
+      </button>
+    </div>
+
+    <!-- THE WATCH -->
+    <div class="watch-container" id="watch-container">
+      <div class="watch-case" id="watch-case">
+        <!-- Bezel -->
+        <div class="watch-bezel"></div>
+        
+        <!-- Crystal + Screen -->
+        <div class="watch-crystal" id="crystal">
+          <div class="crystal-reflection" id="reflection"></div>
+          
+          <!-- 292x292 Screen -->
+          <div class="watch-screen" id="screen">
+            <div id="screen-root" class="screen"></div>
+          </div>
+        </div>
+
+        <!-- Physical Crown -->
+        <div class="crown" id="crown" title="Digital Crown — drag vertically"></div>
+        
+        <!-- Side Button -->
+        <div class="side-button" id="side-btn" title="Side Button (short press = Home, long = Switcher)"></div>
+      </div>
+    </div>
+
+    <!-- Meta controls -->
+    <div class="mt-5 flex gap-2 text-xs">
+      <div onclick="navigate('home')" class="px-4 py-1.5 rounded-2xl bg-white/5 hover:bg-white/10 cursor-pointer flex items-center gap-2">
+        <i class="fa-solid fa-home"></i> <span>Home</span>
+      </div>
+      <div onclick="showAppSwitcher()" class="px-4 py-1.5 rounded-2xl bg-white/5 hover:bg-white/10 cursor-pointer flex items-center gap-2">
+        <i class="fa-solid fa-layer-group"></i> <span>Switcher</span>
+      </div>
+      <div onclick="postDemoNotification()" class="px-4 py-1.5 rounded-2xl bg-white/5 hover:bg-white/10 cursor-pointer flex items-center gap-2">
+        <i class="fa-solid fa-bell"></i> <span>Notify</span>
+      </div>
+    </div>
+
+    <div class="mt-3 text-[10px] text-[#505055] tracking-widest">DRAG CROWN • TAP ICONS • LONG-PRESS BUTTON</div>
+  </div>
+
+  <!-- Toast container -->
+  <div id="toast" class="toast"></div>
+
+  <script>
+    // ==================== WATCH ME OS — CORE ====================
+    const WM = window.WM = {
+      version: '1.0.0-redesign',
+      state: {
+        currentApp: 'home',
+        theme: 'dark',
+        battery: 87,
+        time: { h: 9, m: 41 },
+        notifications: [],
+        tasks: [
+          { id: 1, text: 'Drink 2 liters of water', done: false, due: 'Today' },
+          { id: 2, text: 'Call grandma at 8 AM', done: true, due: 'Today' },
+          { id: 3, text: 'Finish quarterly report', done: false, due: 'Tomorrow' }
+        ],
+        messages: [
+          { id: 1, from: 'Sarah Chen', text: 'Dinner at 7?', time: '09:12', me: false },
+          { id: 2, from: 'You', text: 'Perfect, see you then', time: '09:14', me: true }
+        ],
+        timer: { remaining: 0, running: false, preset: 300 },
+        health: { steps: 7420, move: 68, exercise: 41, stand: 12 },
+        music: { playing: false, track: 'Nocturne in C#', progress: 42, volume: 70 },
+        wallet: { balance: 2847.50, cards: 2 }
+      },
+      history: [],
+      crownValue: 0,
+      crownMomentum: 0
+    };
+
+    // Persistence
+    function loadState() {
+      try {
+        const saved = localStorage.getItem('wm_state_v1');
+        if (saved) Object.assign(WM.state, JSON.parse(saved));
+      } catch (e) {}
+    }
+    function saveState() {
+      localStorage.setItem('wm_state_v1', JSON.stringify(WM.state));
+    }
+
+    // Utilities
+    function showToast(msg, ms = 1600) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), ms);
+    }
+
+    function updateTime() {
+      const now = new Date();
+      WM.state.time.h = now.getHours();
+      WM.state.time.m = now.getMinutes();
+      // Update any visible clocks
+      const clocks = document.querySelectorAll('[data-live-time]');
+      clocks.forEach(el => {
+        el.textContent = `${String(WM.state.time.h).padStart(2,'0')}:${String(WM.state.time.m).padStart(2,'0')}`;
+      });
+    }
+
+    function cycleTheme() {
+      const themes = ['dark', 'light', 'gold'];
+      const idx = (themes.indexOf(WM.state.theme) + 1) % 3;
+      WM.state.theme = themes[idx];
+      document.documentElement.setAttribute('data-theme', WM.state.theme === 'dark' ? '' : WM.state.theme);
+      document.getElementById('theme-label').textContent = WM.state.theme.toUpperCase();
+      saveState();
+      // Re-render current app so colors update
+      if (WM.state.currentApp) renderApp(WM.state.currentApp);
+    }
+
+    // ==================== RENDER REGISTRY ====================
+    const Apps = {};
+
+    function registerApp(name, renderFn, icon = 'fa-square') {
+      Apps[name] = { render: renderFn, icon };
+    }
+
+    function navigate(app, props = {}) {
+      WM.state.currentApp = app;
+      WM.history.push(app);
+      if (WM.history.length > 6) WM.history.shift();
+      renderApp(app, props);
+      saveState();
+    }
+
+    function renderApp(name, props = {}) {
+      const root = document.getElementById('screen-root');
+      if (!root) return;
+      root.innerHTML = '';
+      root.dataset.app = name;
+
+      if (Apps[name]) {
+        Apps[name].render(root, props);
+      } else {
+        root.innerHTML = `
+          <div class="h-full flex flex-col items-center justify-center p-6 text-center">
+            <i class="fa-solid fa-rocket text-3xl mb-3 opacity-50"></i>
+            <div class="font-semibold text-sm">${name.toUpperCase()}</div>
+            <div class="text-xs text-[#808389] mt-1">App coming in next OTA</div>
+            <button onclick="navigate('home')" class="mt-6 lux-button text-xs px-5 py-1.5">Return Home</button>
+          </div>`;
+      }
+      // Live time in status if present
+      updateTime();
+    }
+
+    // ==================== CROWN PHYSICS ====================
+    let crownDragging = false;
+    let crownLastY = 0;
+    let crownLastTime = 0;
+
+    function initCrown() {
+      const crown = document.getElementById('crown');
+      const screen = document.getElementById('screen');
+
+      function onPointerDown(e) {
+        crownDragging = true;
+        crownLastY = e.clientY || (e.touches && e.touches[0].clientY);
+        crownLastTime = Date.now();
+        WM.crownMomentum = 0;
+        crown.classList.add('crown-active');
+        e.preventDefault();
+      }
+      function onPointerMove(e) {
+        if (!crownDragging) return;
+        const y = e.clientY || (e.touches && e.touches[0].clientY);
+        const delta = (y - crownLastY) * -1.2; // invert for natural feel
+        WM.crownValue += delta;
+        WM.crownMomentum = delta * 0.6;
+
+        crownLastY = y;
+        const now = Date.now();
+        if (now - crownLastTime > 40) {
+          applyCrownEffect(delta);
+          crownLastTime = now;
+        }
+      }
+      function onPointerUp() {
+        if (!crownDragging) return;
+        crownDragging = false;
+        crown.classList.remove('crown-active');
+        // Apply momentum decay
+        if (Math.abs(WM.crownMomentum) > 0.8) {
+          const decay = setInterval(() => {
+            WM.crownMomentum *= 0.86;
+            if (Math.abs(WM.crownMomentum) < 0.6) { clearInterval(decay); return; }
+            applyCrownEffect(WM.crownMomentum);
+          }, 32);
+        }
+      }
+
+      crown.addEventListener('pointerdown', onPointerDown);
+      window.addEventListener('pointermove', onPointerMove);
+      window.addEventListener('pointerup', onPointerUp);
+      // Touch
+      crown.addEventListener('touchstart', onPointerDown, {passive:false});
+      window.addEventListener('touchmove', onPointerMove, {passive:false});
+      window.addEventListener('touchend', onPointerUp);
+    }
+
+    function applyCrownEffect(delta) {
+      const root = document.getElementById('screen-root');
+      if (!root) return;
+      const app = root.dataset.app;
+
+      // Global crown behaviors
+      if (app === 'timer') {
+        const timerEl = root.querySelector('#timer-display');
+        if (timerEl && WM.state.timer.running) {
+          WM.state.timer.remaining = Math.max(0, WM.state.timer.remaining + Math.round(delta * 1.8));
+          timerEl.textContent = formatTime(WM.state.timer.remaining);
+        }
+      } else if (app === 'music') {
+        WM.state.music.progress = Math.max(0, Math.min(100, WM.state.music.progress + delta * 0.6));
+        const bar = root.querySelector('#music-progress');
+        if (bar) bar.style.width = WM.state.music.progress + '%';
+      } else if (app === 'tasks' || app === 'messages' || app === 'settings') {
+        // Scroll simulation
+        root.scrollTop = Math.max(0, root.scrollTop - delta * 2.4);
+      } else if (app === 'home') {
+        // Subtle scale feedback on grid
+        const grid = root.querySelector('.app-grid');
+        if (grid) grid.style.transform = `scale(${1 + Math.min(0.03, Math.abs(delta) / 420)})`;
+        setTimeout(() => { if (grid) grid.style.transform = 'scale(1)'; }, 120);
+      }
+      saveState();
+    }
+
+    // ==================== SIDE BUTTON ====================
+    function initSideButton() {
+      const btn = document.getElementById('side-btn');
+      let pressTimer = null;
+
+      btn.addEventListener('pointerdown', () => {
+        pressTimer = setTimeout(() => {
+          showAppSwitcher();
+        }, 620);
+      });
+      btn.addEventListener('pointerup', () => {
+        if (pressTimer) {
+          clearTimeout(pressTimer);
+          // Short press
+          if (WM.state.currentApp !== 'home') {
+            navigate('home');
+          } else {
+            // Wake / subtle animation
+            const screen = document.getElementById('screen');
+            screen.style.transition = 'transform 120ms';
+            screen.style.transform = 'scale(0.985)';
+            setTimeout(() => { screen.style.transform = 'scale(1)'; }, 180);
+          }
+        }
+      });
+      btn.addEventListener('pointerleave', () => clearTimeout(pressTimer));
+    }
+
+    function showAppSwitcher() {
+      const root = document.getElementById('screen-root');
+      const apps = Object.keys(Apps);
+      root.innerHTML = `
+        <div class="p-3 h-full overflow-auto">
+          <div class="text-xs uppercase tracking-widest text-[#808389] px-1 mb-2">APP SWITCHER</div>
+          <div class="grid grid-cols-4 gap-2">
+            ${apps.map(name => `
+              <div onclick="navigate('${name}');" 
+                   class="aspect-square flex flex-col items-center justify-center rounded-2xl bg-white/5 hover:bg-white/10 active:bg-white/15 cursor-pointer text-center p-1.5">
+                <i class="fa-solid ${Apps[name].icon} text-lg mb-1 wm-purple"></i>
+                <div class="text-[9px] leading-none text-[#c8c8cc]">${name}</div>
+              </div>
+            `).join('')}
+          </div>
+          <div class="text-center mt-4">
+            <button onclick="navigate('home')" class="text-xs px-4 py-1 rounded-full bg-white/10">Close</button>
+          </div>
+        </div>`;
+    }
+
+    // ==================== APP DEFINITIONS ====================
+    function formatTime(sec) {
+      const m = Math.floor(sec / 60);
+      const s = sec % 60;
+      return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+    }
+
+    // HOME
+    registerApp('home', (root) => {
+      const timeStr = `${String(WM.state.time.h).padStart(2,'0')}:${String(WM.state.time.m).padStart(2,'0')}`;
+      root.innerHTML = `
+        <div class="h-full flex flex-col">
+          <div class="status-bar px-3 text-[10px]">
+            <div>${timeStr}</div>
+            <div class="flex items-center gap-1"><i class="fa-solid fa-battery-three-quarters"></i> ${WM.state.battery}%</div>
+          </div>
+          <div class="flex-1 p-3 flex flex-col">
+            <div class="text-center pt-1">
+              <div class="text-5xl font-semibold tracking-tighter display-font">${timeStr}</div>
+              <div class="text-xs text-[#808389] -mt-0.5">Monday, 3 Feb</div>
+            </div>
+            <div class="mt-auto">
+              <div class="app-grid text-[10px]">
+                ${Object.keys(Apps).filter(n => n !== 'home').slice(0,12).map(n => `
+                  <div onclick="navigate('${n}')" class="app-icon">
+                    <i class="fa-solid ${Apps[n].icon}"></i>
+                    <span class="text-[9px] opacity-80">${n}</span>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          </div>
+        </div>`;
+    }, 'fa-home');
+
+    // CLOCK
+    registerApp('clock', (root) => {
+      root.innerHTML = `
+        <div class="h-full flex flex-col items-center justify-center bg-[#0a0b0e]">
+          <div class="relative w-52 h-52">
+            <svg width="208" height="208" class="rotate-[-90deg]">
+              <circle cx="104" cy="104" r="92" fill="none" stroke="#22252b" stroke-width="18"/>
+              <circle cx="104" cy="104" r="92" fill="none" stroke="var(--wm-gold)" stroke-width="18"
+                      stroke-dasharray="${(WM.state.time.m / 60) * 578} 578"/>
+            </svg>
+            <div class="absolute inset-0 flex items-center justify-center">
+              <div class="text-center">
+                <div class="text-[42px] font-semibold tabular-nums tracking-[-1.5px] display-font" data-live-time>
+                  ${String(WM.state.time.h).padStart(2,'0')}:${String(WM.state.time.m).padStart(2,'0')}
+                </div>
+                <div class="text-[10px] text-[#808389] tracking-[2px]">LUXE • 02</div>
+              </div>
+            </div>
+          </div>
+          <div onclick="navigate('settings')" class="mt-4 text-xs flex items-center gap-1.5 cursor-pointer text-[#c5a26f]">
+            <i class="fa-solid fa-cog"></i> <span>CHANGE FACE</span>
+          </div>
+        </div>`;
+    }, 'fa-clock');
+
+    // TIMER
+    registerApp('timer', (root) => {
+      const t = WM.state.timer;
+      root.innerHTML = `
+        <div class="h-full flex flex-col">
+          <div class="status-bar"><div class="px-3">TIMER</div><div class="px-3 text-emerald-400 text-xs">PRESET ${t.preset/60}m</div></div>
+          <div class="flex-1 flex flex-col items-center justify-center">
+            <div id="timer-display" class="text-6xl font-semibold tabular-nums tracking-[-2.5px] display-font">${formatTime(t.remaining || t.preset)}</div>
+            <div class="flex gap-3 mt-6">
+              <button onclick="toggleTimer(this)" class="lux-button px-8">${t.running ? 'PAUSE' : 'START'}</button>
+              <button onclick="resetTimer()" class="lux-button secondary px-6">RESET</button>
+            </div>
+          </div>
+          <div class="p-3 grid grid-cols-4 gap-2 text-xs">
+            ${[60,180,300,600].map(s => `<div onclick="setTimerPreset(${s}, this)" class="text-center py-1.5 rounded-xl bg-white/5 active:bg-white/10 cursor-pointer">${s/60}m</div>`).join('')}
+          </div>
+        </div>`;
+      if (t.running) startTimerLoop(root);
+    }, 'fa-hourglass-half');
+
+    function setTimerPreset(sec, el) {
+      WM.state.timer = { remaining: sec, running: false, preset: sec };
+      saveState();
+      navigate('timer');
+    }
+    function toggleTimer(btn) {
+      const t = WM.state.timer;
+      t.running = !t.running;
+      if (t.running && t.remaining === 0) t.remaining = t.preset;
+      saveState();
+      navigate('timer');
+    }
+    function resetTimer() {
+      WM.state.timer.running = false;
+      WM.state.timer.remaining = WM.state.timer.preset;
+      saveState();
+      navigate('timer');
+    }
+    let timerInterval = null;
+    function startTimerLoop(root) {
+      if (timerInterval) clearInterval(timerInterval);
+      timerInterval = setInterval(() => {
+        if (!WM.state.timer.running) { clearInterval(timerInterval); return; }
+        WM.state.timer.remaining = Math.max(0, WM.state.timer.remaining - 1);
+        const disp = root.querySelector('#timer-display');
+        if (disp) disp.textContent = formatTime(WM.state.timer.remaining);
+        if (WM.state.timer.remaining <= 0) {
+          WM.state.timer.running = false;
+          clearInterval(timerInterval);
+          showToast('Timer complete — well done');
+          saveState();
+        }
+      }, 1000);
+    }
+
+    // TASKS
+    registerApp('tasks', (root) => {
+      root.innerHTML = `
+        <div class="h-full flex flex-col text-sm">
+          <div class="app-header"><div>Tasks</div><div class="text-xs text-[#808389]">${WM.state.tasks.length} today</div></div>
+          <div class="flex-1 overflow-auto px-1 pb-2" style="scrollbar-width: none;">
+            ${WM.state.tasks.map((t, i) => `
+              <div class="list-item cursor-pointer" onclick="toggleTask(${t.id}, this)">
+                <div class="w-4 h-4 rounded border flex-shrink-0 flex items-center justify-center ${t.done ? 'bg-[#7640ef] border-[#7640ef]' : 'border-white/60'}">
+                  ${t.done ? '<i class="fa-solid fa-check text-[9px]"></i>' : ''}
+                </div>
+                <div class="flex-1 text-xs ${t.done ? 'line-through opacity-60' : ''}">${t.text}</div>
+                <div class="text-[10px] text-[#808389]">${t.due}</div>
+              </div>
+            `).join('')}
+          </div>
+          <div class="p-3 border-t border-white/10">
+            <input id="new-task" placeholder="New task..." class="w-full bg-transparent border border-white/20 rounded-xl px-3 py-2 text-xs placeholder:text-[#505055]" 
+                   onkeydown="if(event.key==='Enter') addTask(this)">
+          </div>
+        </div>`;
+    }, 'fa-list-check');
+
+    function toggleTask(id, el) {
+      const t = WM.state.tasks.find(x => x.id === id);
+      if (!t) return;
+      t.done = !t.done;
+      saveState();
+      // Quick visual
+      const check = el.querySelector('.w-4');
+      if (t.done) {
+        check.classList.add('bg-[#7640ef]', 'border-[#7640ef]');
+        check.innerHTML = '<i class="fa-solid fa-check text-[9px]"></i>';
+        el.querySelector('div.flex-1').classList.add('line-through', 'opacity-60');
+      } else {
+        check.classList.remove('bg-[#7640ef]', 'border-[#7640ef]');
+        check.innerHTML = '';
+        el.querySelector('div.flex-1').classList.remove('line-through', 'opacity-60');
+      }
+    }
+    function addTask(input) {
+      if (!input.value.trim()) return;
+      WM.state.tasks.unshift({ id: Date.now(), text: input.value.trim(), done: false, due: 'Today' });
+      saveState();
+      navigate('tasks');
+    }
+
+    // MESSAGES
+    registerApp('messages', (root) => {
+      root.innerHTML = `
+        <div class="h-full flex flex-col">
+          <div class="app-header"><div>Messages</div><div onclick="navigate('new-msg')" class="text-[#7640ef] text-xs cursor-pointer">NEW</div></div>
+          <div class="flex-1 overflow-auto px-2 space-y-px text-xs">
+            ${WM.state.messages.map(m => `
+              <div class="p-2.5 rounded-2xl ${m.me ? 'bg-[#7640ef]/80 ml-6' : 'bg-white/5 mr-6'}">
+                <div class="flex justify-between text-[10px] opacity-70"><div>${m.from}</div><div>${m.time}</div></div>
+                <div class="mt-0.5">${m.text}</div>
+              </div>
+            `).join('')}
+          </div>
+          <div class="p-2 border-t border-white/10 flex gap-2">
+            <input id="msg-input" placeholder="Reply..." class="flex-1 bg-white/5 rounded-2xl px-3 py-1.5 text-xs" 
+                   onkeydown="if(event.key==='Enter') sendMessage(this)">
+            <button onclick="sendMessage()" class="px-4 rounded-2xl bg-[#7640ef] text-xs font-medium">Send</button>
+          </div>
+        </div>`;
+    }, 'fa-comments');
+
+    function sendMessage(inputEl) {
+      const input = inputEl || document.getElementById('msg-input');
+      if (!input || !input.value.trim()) return;
+      WM.state.messages.push({ id: Date.now(), from: 'You', text: input.value.trim(), time: 'now', me: true });
+      saveState();
+      navigate('messages');
+    }
+
+    // WALLET
+    registerApp('wallet', (root) => {
+      root.innerHTML = `
+        <div class="h-full flex flex-col p-3">
+          <div class="text-xs text-[#808389]">WALLET</div>
+          <div class="mt-1 text-3xl font-semibold display-font">$${WM.state.wallet.balance}</div>
+          <div class="mt-4 text-xs">Cards • ${WM.state.wallet.cards}</div>
+          <div class="mt-auto grid grid-cols-2 gap-2">
+            <div onclick="simulateNFC()" class="lux-button flex items-center justify-center gap-2 text-sm py-3"><i class="fa-solid fa-wifi"></i> TAP TO PAY</div>
+            <div onclick="navigate('confirm-tx')" class="lux-button secondary flex items-center justify-center gap-2 text-sm py-3">SEND</div>
+          </div>
+        </div>`;
+    }, 'fa-wallet');
+
+    function simulateNFC() {
+      const root = document.getElementById('screen-root');
+      root.innerHTML = `<div class="h-full flex flex-col items-center justify-center">
+        <div class="w-20 h-20 rounded-full border-[6px] border-[#c5a26f] flex items-center justify-center animate-pulse">
+          <i class="fa-solid fa-wifi text-3xl text-[#c5a26f]"></i>
+        </div>
+        <div class="mt-4 text-sm">Payment approved</div>
+        <div class="text-xs text-[#808389] mt-0.5">- $42.00 • Coffee Lab</div>
+        <button onclick="navigate('wallet')" class="mt-8 text-xs px-5 py-2 rounded-full bg-white/10">Done</button>
+      </div>`;
+      setTimeout(() => { WM.state.wallet.balance -= 42; saveState(); }, 1800);
+    }
+
+    // HEALTH (with fake chart)
+    registerApp('health', (root) => {
+      root.innerHTML = `
+        <div class="h-full p-3 flex flex-col">
+          <div class="text-xs mb-1">TODAY • ${WM.state.health.steps.toLocaleString()} STEPS</div>
+          <div class="flex justify-between text-[10px] mb-1">
+            <div class="wm-purple">MOVE ${WM.state.health.move}%</div>
+            <div class="text-orange-400">EX ${WM.state.health.exercise}%</div>
+            <div class="text-emerald-400">STAND ${WM.state.health.stand}h</div>
+          </div>
+          <div class="flex-1 flex items-center justify-center">
+            <svg width="148" height="148">
+              <circle cx="74" cy="74" r="62" fill="none" stroke="#222" stroke-width="18"/>
+              <circle cx="74" cy="74" r="62" fill="none" stroke="#7640ef" stroke-width="18" 
+                      stroke-dasharray="${WM.state.health.move * 3.89} 389" transform="rotate(-90 74 74)"/>
+              <circle cx="74" cy="74" r="42" fill="none" stroke="#222" stroke-width="14"/>
+              <circle cx="74" cy="74" r="42" fill="none" stroke="#f59e0b" stroke-width="14" 
+                      stroke-dasharray="${WM.state.health.exercise * 2.64} 264" transform="rotate(-90 74 74)"/>
+            </svg>
+          </div>
+          <div onclick="navigate('settings')" class="text-center text-xs text-[#c5a26f] cursor-pointer">VIEW TRENDS →</div>
+        </div>`;
+    }, 'fa-heart-pulse');
+
+    // MUSIC
+    registerApp('music', (root) => {
+      const m = WM.state.music;
+      root.innerHTML = `
+        <div class="h-full flex flex-col p-3">
+          <div class="text-xs opacity-70">NOW PLAYING</div>
+          <div class="mt-2 text-lg font-medium leading-none">${m.track}</div>
+          <div class="text-xs text-[#808389]">Hania Rani • 2024</div>
+          <div class="mt-5">
+            <div class="h-0.5 bg-white/20 rounded">
+              <div id="music-progress" class="h-0.5 bg-[#c5a26f] rounded" style="width:${m.progress}%"></div>
+            </div>
+          </div>
+          <div class="flex justify-between text-[10px] text-[#808389] mt-0.5"><div>1:41</div><div>4:03</div></div>
+          <div class="mt-auto flex items-center justify-between px-2">
+            <i onclick="toggleMusic(this)" class="fa-solid ${m.playing ? 'fa-pause' : 'fa-play'} text-xl cursor-pointer"></i>
+            <div class="flex-1 mx-4">
+              <input type="range" min="0" max="100" value="${m.volume}" 
+                     oninput="WM.state.music.volume = +this.value; saveState()" class="w-full accent-[#c5a26f]">
+            </div>
+            <i class="fa-solid fa-volume-up"></i>
+          </div>
+        </div>`;
+    }, 'fa-music');
+
+    function toggleMusic(el) {
+      WM.state.music.playing = !WM.state.music.playing;
+      el.classList.toggle('fa-play', !WM.state.music.playing);
+      el.classList.toggle('fa-pause', WM.state.music.playing);
+      saveState();
+    }
+
+    // SETTINGS
+    registerApp('settings', (root) => {
+      root.innerHTML = `
+        <div class="h-full flex flex-col text-sm">
+          <div class="app-header">Settings</div>
+          <div class="px-2 flex-1 overflow-auto text-xs space-y-1">
+            <div class="list-item justify-between" onclick="cycleTheme()"><div>Theme</div><div class="text-[#c5a26f]">${WM.state.theme.toUpperCase()}</div></div>
+            <div class="list-item justify-between"><div>Always On Display</div><div class="text-emerald-400">ON</div></div>
+            <div class="list-item justify-between" onclick="WM.state.battery = Math.max(12, WM.state.battery-8); saveState(); navigate('settings')">
+              <div>Battery Saver</div><div>${WM.state.battery}%</div>
+            </div>
+            <div class="list-item justify-between"><div>Reduce Motion</div><div class="text-[#808389]">OFF</div></div>
+            <div class="list-item justify-between"><div>Crown Haptics</div><div class="text-emerald-400">ON</div></div>
+          </div>
+          <div class="p-3 text-center text-[10px] text-[#505055]">Watch Me OS 1.0 • Build 2026.06</div>
+        </div>`;
+    }, 'fa-cog');
+
+    // NEW MESSAGE (Figma card inspired)
+    registerApp('new-msg', (root) => {
+      root.innerHTML = `
+        <div class="p-3 h-full flex flex-col">
+          <div class="text-xs mb-1">NEW MESSAGE</div>
+          <input placeholder="To: " class="bg-white/5 rounded px-3 py-1 text-xs mb-2" value="Sarah Chen">
+          <textarea class="flex-1 bg-white/5 rounded-xl p-3 text-xs resize-none" placeholder="Type message..."></textarea>
+          <div class="flex gap-2 mt-2">
+            <button onclick="navigate('messages')" class="flex-1 py-2 rounded-2xl bg-white/10 text-xs">CANCEL</button>
+            <button onclick="sendQuickMessage(this)" class="flex-1 py-2 rounded-2xl lux-button text-xs">SEND</button>
+          </div>
+        </div>`;
+    }, 'fa-paper-plane');
+
+    function sendQuickMessage(btn) {
+      WM.state.messages.push({id: Date.now(), from:'You', text:'Quick reply sent', time:'now', me:true});
+      saveState();
+      showToast('Message sent');
+      navigate('messages');
+    }
+
+    // CONFIRM TX stub
+    registerApp('confirm-tx', (root) => {
+      root.innerHTML = `<div class="h-full flex flex-col items-center justify-center p-4 text-center">
+        <div class="text-2xl font-semibold display-font">-$180</div>
+        <div class="text-xs mt-1 opacity-70">to Atelier Reserve</div>
+        <button onclick="confirmTx(this)" class="mt-8 lux-button px-10">CONFIRM WITH CROWN</button>
+        <div class="text-[10px] text-[#808389] mt-3">Drag crown to authorize</div>
+      </div>`;
+    }, 'fa-credit-card');
+
+    function confirmTx(btn) {
+      btn.textContent = 'AUTHORIZED ✓';
+      btn.style.background = '#16a34a';
+      setTimeout(() => { WM.state.wallet.balance -= 180; saveState(); navigate('wallet'); }, 900);
+    }
+
+    // ==================== NOTIFICATIONS & DEMO ====================
+    function postDemoNotification() {
+      WM.state.notifications.unshift({ id: Date.now(), title: 'New activity ring closed', type: 'health' });
+      showToast('Notification posted');
+      if (WM.state.currentApp === 'notifications') renderApp('notifications');
+    }
+
+    registerApp('notifications', (root) => {
+      root.innerHTML = `
+        <div class="p-3">
+          <div class="text-xs mb-2">NOTIFICATIONS</div>
+          ${WM.state.notifications.length ? WM.state.notifications.map(n => `
+            <div class="list-item text-xs">${n.title}</div>
+          `).join('') : `<div class="text-center py-8 text-xs text-[#808389]">All caught up</div>`}
+        </div>`;
+    }, 'fa-bell');
+
+    // ==================== BOOT & INIT ====================
+    function bootWatch() {
+      loadState();
+      
+      // Initial theme
+      const th = WM.state.theme || 'dark';
+      if (th !== 'dark') document.documentElement.setAttribute('data-theme', th);
+      document.getElementById('theme-label').textContent = th.toUpperCase();
+
+      // Crystal reflection mouse follow
+      const crystal = document.getElementById('crystal');
+      const refl = document.getElementById('reflection');
+      crystal.addEventListener('mousemove', (e) => {
+        const r = crystal.getBoundingClientRect();
+        const x = ((e.clientX - r.left) / r.width) * 100;
+        const y = ((e.clientY - r.top) / r.height) * 100;
+        refl.style.background = `radial-gradient(circle at ${x}% ${y}%, rgba(255,255,255,0.38) 3%, transparent 26%, transparent 58%, rgba(255,255,255,0.05) 76%)`;
+      });
+      crystal.addEventListener('mouseleave', () => {
+        refl.style.background = `linear-gradient(135deg, rgba(255,255,255,0.32) 4%, transparent 22%, transparent 52%, rgba(255,255,255,0.06) 72%, transparent 88%)`;
+      });
+
+      initCrown();
+      initSideButton();
+
+      // Boot to home or last app
+      updateTime();
+      setInterval(updateTime, 30000); // every 30s
+
+      // Start on home
+      setTimeout(() => {
+        navigate(WM.state.currentApp || 'home');
+        showToast('Watch Me OS ready — crown is live');
+      }, 180);
+
+      // Expose powerful test API
+      window.WM.test = {
+        crown: (d = 80) => applyCrownEffect(d),
+        navigate: (a) => navigate(a),
+        notify: postDemoNotification,
+        persist: () => { saveState(); return 'saved'; },
+        reset: resetAll,
+        state: () => WM.state
+      };
+
+      // Keyboard support
+      document.addEventListener('keydown', (e) => {
+        if (e.key === '/' && document.activeElement.tagName === 'BODY') {
+          e.preventDefault();
+          navigate('messages');
+        }
+        if (e.key.toLowerCase() === 'h') navigate('home');
+      });
+
+      console.log('%c[Watch Me OS] Boot complete. window.WM.test.* available.', 'color:#c5a26f');
+    }
+
+    function resetAll() {
+      localStorage.removeItem('wm_state_v1');
+      location.reload();
+    }
+
+    // Register a few more for switcher completeness
+    registerApp('activity', (r) => { r.innerHTML = `<div class="p-4 text-xs">Activity rings live in Health app. <span onclick="navigate('health')" class="underline cursor-pointer">Open Health →</span></div>`; }, 'fa-chart-line');
+    registerApp('team', (r) => { r.innerHTML = `<div class="p-4"><div class="text-xs mb-2">TEAM</div><div class="flex -space-x-2">${[1,2,3,4].map(i=>`<div class="w-7 h-7 rounded-full bg-zinc-700 border border-[#1b1d21]"></div>`).join('')}</div></div>`; }, 'fa-users');
+    registerApp('add-contact', (r) => { r.innerHTML = `<div class="p-4 text-xs">Add contact form stub. <button onclick="navigate('messages')" class="underline">Done</button></div>`; }, 'fa-user-plus');
+
+    // Auto boot
+    window.onload = bootWatch;
+  </script>
+</body>
+</html>
