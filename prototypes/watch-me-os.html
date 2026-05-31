@@ -11,19 +11,23 @@
     
     :root {
       --wm-bg: #0f1114;
-      --wm-surface: #1b1d21;
+      --wm-surface: #1f2126;          /* lifted for better readability */
+      --wm-surface-2: #24272c;        /* cards / elevated surfaces */
       --wm-gold: #c5a26f;
       --wm-purple: #7640ef;
       --wm-pink: #ff4a8c;
       --wm-text: #f2f2f2;
-      --wm-text-sec: #808389;
+      --wm-text-sec: #a8acb3;         /* much better contrast */
+      --wm-border: rgba(255,255,255,0.08);
     }
     
     [data-theme="light"] {
       --wm-bg: #f4f4f6;
       --wm-surface: #ffffff;
+      --wm-surface-2: #f1f1f3;
       --wm-text: #111113;
       --wm-text-sec: #5f6166;
+      --wm-border: rgba(0,0,0,0.08);
     }
     
     [data-theme="gold"] {
@@ -126,8 +130,11 @@
     .screen { width: 100%; height: 100%; position: relative; overflow: hidden; }
     .status-bar {
       height: 28px; padding: 0 14px; display: flex; align-items: center; justify-content: space-between;
-      font-size: 10px; font-weight: 600; letter-spacing: 0.5px; background: rgba(0,0,0,0.25);
+      font-size: 10px; font-weight: 600; letter-spacing: 0.5px; 
+      background: rgba(0,0,0,0.4);
+      border-bottom: 1px solid var(--wm-border);
       position: relative; z-index: 40;
+      color: var(--wm-text-sec);
     }
     /* Better safe area + multi-page home like real smartwatches */
     .screen-content {
@@ -151,18 +158,19 @@
       flex-direction: column; 
       align-items: center; 
       justify-content: center;
-      background: rgba(255,255,255,0.05); 
-      border: 1px solid rgba(255,255,255,0.08);
+      background: var(--wm-surface-2); 
+      border: 1px solid var(--wm-border);
       transition: all 0.1s cubic-bezier(0.23,1,0.32,1); 
       cursor: pointer; 
       font-size: 12px; 
       gap: 5px;
-      min-height: 72px; /* much better tap target */
+      min-height: 72px;
+      color: var(--wm-text);
     }
-    .app-icon:hover { background: rgba(255,255,255,0.09); transform: translateY(-1px); }
+    .app-icon:hover { background: #2a2d33; border-color: rgba(255,255,255,0.14); }
     .app-icon:active { transform: scale(0.93); }
-    .app-icon .fa { font-size: 22px; margin-bottom: 2px; }
-    .app-icon span { font-size: 10px; opacity: 0.85; }
+    .app-icon .fa { font-size: 22px; margin-bottom: 2px; color: var(--wm-gold); }
+    .app-icon span { font-size: 10px; opacity: 0.92; }
 
     /* Simple page indicator */
     .page-dots {
@@ -180,12 +188,31 @@
     .page-dot.active { background: var(--wm-gold); }
 
     /* App Styles */
-    .app-header { padding: 12px 16px 8px; font-weight: 600; font-size: 13px; display: flex; justify-content: space-between; align-items: center; }
-    .list-item {
-      padding: 11px 16px; margin: 3px 10px; border-radius: 14px; display: flex; align-items: center; gap: 12px;
-      background: rgba(255,255,255,0.03); transition: background 0.1s; min-height: 44px; /* proper tap target */
+    .app-header { 
+      padding: 12px 16px 8px; 
+      font-weight: 600; 
+      font-size: 13px; 
+      display: flex; 
+      justify-content: space-between; 
+      align-items: center; 
+      color: var(--wm-text);
+      border-bottom: 1px solid var(--wm-border);
     }
-    .list-item:active { background: rgba(255,255,255,0.09); }
+    .list-item {
+      padding: 11px 16px; 
+      margin: 3px 10px; 
+      border-radius: 14px; 
+      display: flex; 
+      align-items: center; 
+      gap: 12px;
+      background: var(--wm-surface-2); 
+      border: 1px solid var(--wm-border);
+      transition: all 0.1s; 
+      min-height: 44px;
+      color: var(--wm-text);
+    }
+    .list-item:hover { background: #2a2d33; }
+    .list-item:active { background: #32353b; transform: scale(0.985); }
     .lux-button {
       background: var(--wm-purple); color: white; font-weight: 600; font-size: 12px;
       padding: 8px 18px; border-radius: 9999px; transition: all 0.1s;
@@ -224,15 +251,15 @@
     <div class="mb-4 flex items-center gap-3 text-sm">
       <div class="flex items-center gap-2">
         <div class="w-2 h-2 rounded-full bg-emerald-400"></div>
-        <span class="text-[#808389] font-medium tracking-[1px] text-xs">WATCH ME OS v1.0</span>
+        <span class="text-[#a8acb3] font-medium tracking-[1px] text-xs">WATCH ME OS v1.0</span>
       </div>
       <div class="h-3 w-px bg-white/10"></div>
       <button onclick="resetAll()" 
-              class="text-[#808389] hover:text-white text-xs flex items-center gap-1.5 transition-colors">
+              class="text-[#a8acb3] hover:text-white text-xs flex items-center gap-1.5 transition-colors">
         <i class="fa-solid fa-undo text-[10px]"></i> RESET STATE
       </button>
       <button onclick="cycleTheme()" 
-              class="px-3 py-1 rounded-full bg-white/5 hover:bg-white/10 text-xs flex items-center gap-1.5 transition-all">
+              class="px-3 py-1 rounded-full bg-white/10 hover:bg-white/10 text-xs flex items-center gap-1.5 transition-all">
         <i class="fa-solid fa-palette"></i> <span id="theme-label">DARK</span>
       </button>
     </div>
@@ -263,13 +290,13 @@
 
     <!-- Meta controls -->
     <div class="mt-5 flex gap-2 text-xs">
-      <div onclick="navigate('home')" class="px-4 py-1.5 rounded-2xl bg-white/5 hover:bg-white/10 cursor-pointer flex items-center gap-2">
+      <div onclick="navigate('home')" class="px-4 py-1.5 rounded-2xl bg-white/10 hover:bg-white/10 cursor-pointer flex items-center gap-2">
         <i class="fa-solid fa-home"></i> <span>Home</span>
       </div>
-      <div onclick="showAppSwitcher()" class="px-4 py-1.5 rounded-2xl bg-white/5 hover:bg-white/10 cursor-pointer flex items-center gap-2">
+      <div onclick="showAppSwitcher()" class="px-4 py-1.5 rounded-2xl bg-white/10 hover:bg-white/10 cursor-pointer flex items-center gap-2">
         <i class="fa-solid fa-layer-group"></i> <span>Switcher</span>
       </div>
-      <div onclick="postDemoNotification()" class="px-4 py-1.5 rounded-2xl bg-white/5 hover:bg-white/10 cursor-pointer flex items-center gap-2">
+      <div onclick="postDemoNotification()" class="px-4 py-1.5 rounded-2xl bg-white/10 hover:bg-white/10 cursor-pointer flex items-center gap-2">
         <i class="fa-solid fa-bell"></i> <span>Notify</span>
       </div>
     </div>
@@ -380,7 +407,7 @@
           <div class="h-full flex flex-col items-center justify-center p-6 text-center">
             <i class="fa-solid fa-rocket text-3xl mb-3 opacity-50"></i>
             <div class="font-semibold text-sm">${name.toUpperCase()}</div>
-            <div class="text-xs text-[#808389] mt-1">App coming in next OTA</div>
+            <div class="text-xs text-[#a8acb3] mt-1">App coming in next OTA</div>
             <button onclick="navigate('home')" class="mt-6 lux-button text-xs px-5 py-1.5">Return Home</button>
           </div>`;
       }
@@ -517,11 +544,11 @@
       const apps = Object.keys(Apps);
       root.innerHTML = `
         <div class="p-3 h-full overflow-auto">
-          <div class="text-xs uppercase tracking-widest text-[#808389] px-1 mb-2">APP SWITCHER</div>
+          <div class="text-xs uppercase tracking-widest text-[#a8acb3] px-1 mb-2">APP SWITCHER</div>
           <div class="grid grid-cols-4 gap-2">
             ${apps.map(name => `
               <div onclick="navigate('${name}');" 
-                   class="aspect-square flex flex-col items-center justify-center rounded-2xl bg-white/5 hover:bg-white/10 active:bg-white/15 cursor-pointer text-center p-1.5">
+                   class="aspect-square flex flex-col items-center justify-center rounded-2xl bg-white/10 hover:bg-white/10 active:bg-white/15 cursor-pointer text-center p-1.5">
                 <i class="fa-solid ${Apps[name].icon} text-lg mb-1 wm-purple"></i>
                 <div class="text-[9px] leading-none text-[#c8c8cc]">${name}</div>
               </div>
@@ -566,7 +593,7 @@
             <!-- Big time + date -->
             <div class="text-center pt-2 pb-3">
               <div class="text-5xl font-semibold tracking-tighter display-font">${timeStr}</div>
-              <div class="text-xs text-[#808389] -mt-0.5">Monday, 3 Feb</div>
+              <div class="text-xs text-[#a8acb3] -mt-0.5">Monday, 3 Feb</div>
             </div>
 
             <!-- App grid - larger, usable targets, only 8 per page -->
@@ -580,7 +607,7 @@
             </div>
 
             <!-- Bottom Dock (real smartwatch pattern) -->
-            <div class="mt-1 flex justify-around items-center bg-white/5 rounded-2xl py-1.5 px-2">
+            <div class="mt-1 flex justify-around items-center bg-white/10 rounded-2xl py-1.5 px-2">
               <div onclick="navigate('clock')" class="text-center px-3 py-0.5 cursor-pointer"><i class="fa-solid fa-clock text-lg"></i></div>
               <div onclick="navigate('messages')" class="text-center px-3 py-0.5 cursor-pointer"><i class="fa-solid fa-comments text-lg"></i></div>
               <div onclick="navigate('health')" class="text-center px-3 py-0.5 cursor-pointer"><i class="fa-solid fa-heart-pulse text-lg"></i></div>
@@ -614,7 +641,7 @@
     // CLOCK
     registerApp('clock', (root) => {
       root.innerHTML = `
-        <div class="h-full flex flex-col items-center justify-center bg-[#0a0b0e]">
+        <div class="h-full flex flex-col items-center justify-center bg-[#1a1c20]">
           <div class="relative w-52 h-52">
             <svg width="208" height="208" class="rotate-[-90deg]">
               <circle cx="104" cy="104" r="92" fill="none" stroke="#22252b" stroke-width="18"/>
@@ -626,7 +653,7 @@
                 <div class="text-[42px] font-semibold tabular-nums tracking-[-1.5px] display-font" data-live-time>
                   ${String(WM.state.time.h).padStart(2,'0')}:${String(WM.state.time.m).padStart(2,'0')}
                 </div>
-                <div class="text-[10px] text-[#808389] tracking-[2px]">LUXE • 02</div>
+                <div class="text-[10px] text-[#a8acb3] tracking-[2px]">LUXE • 02</div>
               </div>
             </div>
           </div>
@@ -650,7 +677,7 @@
             </div>
           </div>
           <div class="p-3 grid grid-cols-4 gap-2 text-xs">
-            ${[60,180,300,600].map(s => `<div onclick="setTimerPreset(${s}, this)" class="text-center py-1.5 rounded-xl bg-white/5 active:bg-white/10 cursor-pointer">${s/60}m</div>`).join('')}
+            ${[60,180,300,600].map(s => `<div onclick="setTimerPreset(${s}, this)" class="text-center py-1.5 rounded-xl bg-white/10 active:bg-white/10 cursor-pointer">${s/60}m</div>`).join('')}
           </div>
         </div>`;
       if (t.running) startTimerLoop(root);
@@ -695,7 +722,7 @@
     registerApp('tasks', (root) => {
       root.innerHTML = `
         <div class="h-full flex flex-col text-sm">
-          <div class="app-header"><div>Tasks</div><div class="text-xs text-[#808389]">${WM.state.tasks.length} today</div></div>
+          <div class="app-header"><div>Tasks</div><div class="text-xs text-[#a8acb3]">${WM.state.tasks.length} today</div></div>
           <div class="flex-1 overflow-auto px-1 pb-2" style="scrollbar-width: none;">
             ${WM.state.tasks.map((t, i) => `
               <div class="list-item cursor-pointer" onclick="toggleTask(${t.id}, this)">
@@ -703,7 +730,7 @@
                   ${t.done ? '<i class="fa-solid fa-check text-[9px]"></i>' : ''}
                 </div>
                 <div class="flex-1 text-xs ${t.done ? 'line-through opacity-60' : ''}">${t.text}</div>
-                <div class="text-[10px] text-[#808389]">${t.due}</div>
+                <div class="text-[10px] text-[#a8acb3]">${t.due}</div>
               </div>
             `).join('')}
           </div>
@@ -745,14 +772,14 @@
           <div class="app-header"><div>Messages</div><div onclick="navigate('new-msg')" class="text-[#7640ef] text-xs cursor-pointer">NEW</div></div>
           <div class="flex-1 overflow-auto px-2 space-y-px text-xs">
             ${WM.state.messages.map(m => `
-              <div class="p-2.5 rounded-2xl ${m.me ? 'bg-[#7640ef]/80 ml-6' : 'bg-white/5 mr-6'}">
+              <div class="p-2.5 rounded-2xl ${m.me ? 'bg-[#7640ef]/80 ml-6' : 'bg-white/10 mr-6'}">
                 <div class="flex justify-between text-[10px] opacity-70"><div>${m.from}</div><div>${m.time}</div></div>
                 <div class="mt-0.5">${m.text}</div>
               </div>
             `).join('')}
           </div>
           <div class="p-2 border-t border-white/10 flex gap-2">
-            <input id="msg-input" placeholder="Reply..." class="flex-1 bg-white/5 rounded-2xl px-3 py-1.5 text-xs" 
+            <input id="msg-input" placeholder="Reply..." class="flex-1 bg-white/10 rounded-2xl px-3 py-1.5 text-xs" 
                    onkeydown="if(event.key==='Enter') sendMessage(this)">
             <button onclick="sendMessage()" class="px-4 rounded-2xl bg-[#7640ef] text-xs font-medium">Send</button>
           </div>
@@ -771,7 +798,7 @@
     registerApp('wallet', (root) => {
       root.innerHTML = `
         <div class="h-full flex flex-col p-3">
-          <div class="text-xs text-[#808389]">WALLET</div>
+          <div class="text-xs text-[#a8acb3]">WALLET</div>
           <div class="mt-1 text-3xl font-semibold display-font">$${WM.state.wallet.balance}</div>
           <div class="mt-4 text-xs">Cards • ${WM.state.wallet.cards}</div>
           <div class="mt-auto grid grid-cols-2 gap-2">
@@ -788,7 +815,7 @@
           <i class="fa-solid fa-wifi text-3xl text-[#c5a26f]"></i>
         </div>
         <div class="mt-4 text-sm">Payment approved</div>
-        <div class="text-xs text-[#808389] mt-0.5">- $42.00 • Coffee Lab</div>
+        <div class="text-xs text-[#a8acb3] mt-0.5">- $42.00 • Coffee Lab</div>
         <button onclick="navigate('wallet')" class="mt-8 text-xs px-5 py-2 rounded-full bg-white/10">Done</button>
       </div>`;
       setTimeout(() => { WM.state.wallet.balance -= 42; saveState(); }, 1800);
@@ -825,13 +852,13 @@
         <div class="h-full flex flex-col p-3">
           <div class="text-xs opacity-70">NOW PLAYING</div>
           <div class="mt-2 text-lg font-medium leading-none">${m.track}</div>
-          <div class="text-xs text-[#808389]">Hania Rani • 2024</div>
+          <div class="text-xs text-[#a8acb3]">Hania Rani • 2024</div>
           <div class="mt-5">
             <div class="h-0.5 bg-white/20 rounded">
               <div id="music-progress" class="h-0.5 bg-[#c5a26f] rounded" style="width:${m.progress}%"></div>
             </div>
           </div>
-          <div class="flex justify-between text-[10px] text-[#808389] mt-0.5"><div>1:41</div><div>4:03</div></div>
+          <div class="flex justify-between text-[10px] text-[#a8acb3] mt-0.5"><div>1:41</div><div>4:03</div></div>
           <div class="mt-auto flex items-center justify-between px-2">
             <i onclick="toggleMusic(this)" class="fa-solid ${m.playing ? 'fa-pause' : 'fa-play'} text-xl cursor-pointer"></i>
             <div class="flex-1 mx-4">
@@ -861,7 +888,7 @@
             <div class="list-item justify-between" onclick="WM.state.battery = Math.max(12, WM.state.battery-8); saveState(); navigate('settings')">
               <div>Battery Saver</div><div>${WM.state.battery}%</div>
             </div>
-            <div class="list-item justify-between"><div>Reduce Motion</div><div class="text-[#808389]">OFF</div></div>
+            <div class="list-item justify-between"><div>Reduce Motion</div><div class="text-[#a8acb3]">OFF</div></div>
             <div class="list-item justify-between"><div>Crown Haptics</div><div class="text-emerald-400">ON</div></div>
           </div>
           <div class="p-3 text-center text-[10px] text-[#505055]">Watch Me OS 1.0 • Build 2026.06</div>
@@ -873,8 +900,8 @@
       root.innerHTML = `
         <div class="p-3 h-full flex flex-col">
           <div class="text-xs mb-1">NEW MESSAGE</div>
-          <input placeholder="To: " class="bg-white/5 rounded px-3 py-1 text-xs mb-2" value="Sarah Chen">
-          <textarea class="flex-1 bg-white/5 rounded-xl p-3 text-xs resize-none" placeholder="Type message..."></textarea>
+          <input placeholder="To: " class="bg-white/10 rounded px-3 py-1 text-xs mb-2" value="Sarah Chen">
+          <textarea class="flex-1 bg-white/10 rounded-xl p-3 text-xs resize-none" placeholder="Type message..."></textarea>
           <div class="flex gap-2 mt-2">
             <button onclick="navigate('messages')" class="flex-1 py-2 rounded-2xl bg-white/10 text-xs">CANCEL</button>
             <button onclick="sendQuickMessage(this)" class="flex-1 py-2 rounded-2xl lux-button text-xs">SEND</button>
@@ -895,7 +922,7 @@
         <div class="text-2xl font-semibold display-font">-$180</div>
         <div class="text-xs mt-1 opacity-70">to Atelier Reserve</div>
         <button onclick="confirmTx(this)" class="mt-8 lux-button px-10">CONFIRM WITH CROWN</button>
-        <div class="text-[10px] text-[#808389] mt-3">Drag crown to authorize</div>
+        <div class="text-[10px] text-[#a8acb3] mt-3">Drag crown to authorize</div>
       </div>`;
     }, 'fa-credit-card');
 
@@ -918,7 +945,7 @@
           <div class="text-xs mb-2">NOTIFICATIONS</div>
           ${WM.state.notifications.length ? WM.state.notifications.map(n => `
             <div class="list-item text-xs">${n.title}</div>
-          `).join('') : `<div class="text-center py-8 text-xs text-[#808389]">All caught up</div>`}
+          `).join('') : `<div class="text-center py-8 text-xs text-[#a8acb3]">All caught up</div>`}
         </div>`;
     }, 'fa-bell');
 
