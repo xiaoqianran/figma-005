@@ -3,64 +3,417 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Watch Me UI Kit — Figma 复刻 + 交互原型</title>
+  <title>Watch Me • The Instrument</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&amp;family=Space+Grotesk:wght@500;600&amp;family=Playfair+Display:wght@700&amp;display=swap');
+    
+    body { font-family: 'Inter', system-ui, -apple-system, sans-serif; background: #08090a; color: #f5f5f5; }
+    .display-font { font-family: 'Space Grotesk', system-ui, -apple-system, sans-serif; font-weight: 600; letter-spacing: -0.045em; }
+    .serif { font-family: 'Playfair Display', Georgia, serif; }
+
+    .section { scroll-margin-top: 80px; }
+
+    /* ==================== CINEMATIC HERO WATCH ==================== */
+    .premium-watch { width: 420px; height: 420px; position: relative; filter: drop-shadow(0 120px 180px rgba(0,0,0,0.85)); }
+    .watch-case {
+      width: 100%; height: 100%; border-radius: 50%;
+      background: linear-gradient(145deg, #2f2f2f 0%, #1a1a1a 30%, #0f0f0f 60%, #1f1f1f 100%);
+      box-shadow: inset 0 0 0 18px #111, inset 80px 80px 120px rgba(0,0,0,0.7), inset -40px -40px 100px rgba(255,255,255,0.04), 0 0 0 1px #3a3a3a, 0 40px 100px rgba(0,0,0,0.6);
+      position: relative; overflow: hidden;
+    }
+    .watch-bezel { position: absolute; inset: 22px; border-radius: 50%; background: #161616; box-shadow: inset 0 0 0 3px #2a2a2a, inset 0 30px 80px rgba(0,0,0,0.9), 0 0 0 1px #222; }
+    .watch-crystal {
+      position: absolute; inset: 38px; border-radius: 50%; background: #0a0c10;
+      box-shadow: inset 0 0 0 2px rgba(255,255,255,0.15), inset 0 35px 90px rgba(0,0,0,0.95), inset 0 -15px 50px rgba(255,255,255,0.03), 0 0 0 1px rgba(197,162,111,0.15);
+      overflow: hidden; z-index: 10;
+    }
+    .crystal-reflection {
+      position: absolute; inset: 0; border-radius: 50%;
+      background: linear-gradient(135deg, rgba(255,255,255,0.38) 5%, transparent 25%, transparent 55%, rgba(255,255,255,0.08) 75%, transparent 90%);
+      mix-blend-mode: screen; z-index: 20; transition: background 0.05s linear;
+    }
+    .watch-dial {
+      position: absolute; inset: 52px; border-radius: 50%;
+      background: radial-gradient(circle at 40% 35%, #1f2126 0%, #0d0f13 70%);
+      box-shadow: inset 0 0 0 1px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.02); z-index: 30; overflow: hidden;
+    }
+    .marker {
+      position: absolute; left: 50%; top: 50%; width: 4px; height: 18px;
+      background: linear-gradient(#d4af7a, #a37e4f); transform-origin: 50% 148px; border-radius: 1px;
+      box-shadow: 0 0 6px rgba(197,162,111,0.4); z-index: 35;
+    }
+    .hand {
+      position: absolute; left: 50%; top: 50%; background: linear-gradient(#f5f0e6, #c5a26f, #8b6f3f);
+      transform-origin: 50% 50%; border-radius: 9999px; box-shadow: 0 2px 8px rgba(0,0,0,0.6);
+    }
+    .hour-hand { width: 5px; height: 68px; margin-left: -2.5px; margin-top: -68px; z-index: 40; }
+    .minute-hand { width: 3.5px; height: 96px; margin-left: -1.75px; margin-top: -96px; z-index: 41; }
+    .second-hand { width: 1.5px; height: 108px; margin-left: -0.75px; margin-top: -108px; background: #ff4a8c; z-index: 42; }
+    .watch-center { position: absolute; left: 50%; top: 50%; width: 14px; height: 14px; background: #c5a26f; border-radius: 50%; transform: translate(-50%,-50%); z-index: 50; box-shadow: 0 0 0 3px #0a0c10, 0 0 0 5px #c5a26f; }
+    .lume-glow { position: absolute; inset: 58px; border-radius: 50%; background: radial-gradient(circle at 50% 40%, rgba(197,162,111,0.15) 0%, transparent 70%); opacity: 0.6; z-index: 5; pointer-events: none; animation: watchLumeBreath 4s ease-in-out infinite; }
+    @keyframes watchLumeBreath { 0%,100%{opacity:0.35} 50%{opacity:0.85} }
+
+    .lux-card { transition: transform 0.3s cubic-bezier(0.23,1,0.32,1), box-shadow 0.3s; }
+    .lux-card:hover { transform: translateY(-4px); box-shadow: 0 30px 70px -15px rgb(0 0 0 / 0.5); }
+
+    .gold { color: #c5a26f; }
+    .nav-link { position: relative; }
+    .nav-link:after { content:''; position:absolute; bottom:-2px; left:0; width:0; height:1px; background:#c5a26f; transition:width .2s; }
+    .nav-link:hover:after { width:100%; }
+
+    .config-option { transition: all 0.15s; }
+    .config-option.active { border-color: #c5a26f; background: rgba(197,162,111,0.08); }
+  </style>
 </head>
-<body class="bg-zinc-950 text-white">
-  <div class="max-w-5xl mx-auto px-6 py-12">
-    <div class="flex items-center justify-between">
-      <div>
-        <h1 class="text-5xl font-bold tracking-tight">Watch Me UI Kit</h1>
-        <p class="mt-2 text-xl text-zinc-400">Figma Dark Theme → 高保真可交互 Web 原型</p>
+<body>
+  <!-- NAV -->
+  <nav class="sticky top-0 z-50 border-b border-white/10 bg-[#08090a]/95 backdrop-blur-lg">
+    <div class="max-w-7xl mx-auto px-8 flex items-center justify-between h-20">
+      <div class="flex items-center gap-3">
+        <div class="w-8 h-8 rounded-full border border-[#c5a26f] flex items-center justify-center">
+          <i class="fa-solid fa-clock text-[#c5a26f]"></i>
+        </div>
+        <div>
+          <div class="font-semibold tracking-[-0.5px] text-lg">WATCH ME</div>
+          <div class="text-[9px] text-[#808389] -mt-1">EST 1874 • GENEVA</div>
+        </div>
       </div>
-      <div class="text-right text-sm">
-        <div class="text-emerald-400 font-medium">16/16 卡片已复刻</div>
-        <div class="text-zinc-500">含完整交互原型</div>
+      <div class="hidden md:flex items-center gap-9 text-sm">
+        <a href="#the-watch" class="nav-link text-sm">The Instrument</a>
+        <a href="#the-os" class="nav-link text-sm">The OS</a>
+        <a href="#craft" class="nav-link text-sm">Craft</a>
+        <a href="#atelier" class="nav-link text-sm">Atelier</a>
+      </div>
+      <div class="flex items-center gap-3">
+        <a href="prototypes/watch-me-os.html" 
+           class="px-6 py-2.5 rounded-2xl border border-white/20 hover:bg-white/5 text-sm flex items-center gap-2 transition-all active:scale-[0.985]">
+          <span>Launch Simulator</span>
+          <i class="fa-solid fa-arrow-right text-xs"></i>
+        </a>
+        <button onclick="document.getElementById('atelier').scrollIntoView({behavior:'smooth'})" 
+                class="px-5 py-2.5 rounded-2xl bg-[#c5a26f] text-black text-sm font-medium flex items-center gap-2 hover:bg-[#d4af7a] active:scale-[0.985]">
+          <span>Request Visit</span>
+        </button>
       </div>
     </div>
+  </nav>
 
-    <div class="mt-10 grid md:grid-cols-2 gap-6">
-      <!-- Main Attraction -->
-      <a href="prototypes/watch-me-interactive-prototype.html" 
-         class="group block p-8 bg-zinc-900 hover:bg-zinc-800 rounded-3xl border border-emerald-900/50 transition-all">
-        <div class="flex items-center gap-3">
-          <div class="text-3xl">⌚</div>
-          <div>
-            <div class="font-semibold text-2xl group-hover:text-emerald-400 transition-colors">交互式手表原型</div>
-            <div class="text-emerald-400 text-sm font-medium">推荐 · 完整体验</div>
+  <!-- HERO -->
+  <header class="max-w-7xl mx-auto px-8 pt-16 pb-12 flex flex-col lg:flex-row items-center gap-12">
+    <div class="flex-1 max-w-2xl">
+      <div class="inline-flex items-center gap-2 px-4 py-1 rounded-full bg-white/5 text-xs tracking-[1.5px] mb-6">THE INSTRUMENT OF A LIFETIME</div>
+      <h1 class="text-7xl leading-[0.92] tracking-[-3.2px] font-semibold">Time, elevated.<br>Presence, refined.</h1>
+      <p class="mt-6 text-xl text-[#c8c8cc] max-w-md">The Watch Me is not a smartwatch. It is the first instrument that understands both the weight of tradition and the promise of the future.</p>
+      
+      <div class="mt-9 flex items-center gap-4">
+        <a href="prototypes/watch-me-os.html" 
+           class="group px-9 py-4 rounded-2xl bg-white text-black font-medium flex items-center gap-3 text-base hover:bg-[#f5f5f5] active:scale-[0.985] transition-all">
+          Experience the OS
+          <i class="fa-solid fa-play ml-1 group-active:translate-x-0.5 transition"></i>
+        </a>
+        <button onclick="document.getElementById('the-watch').scrollIntoView({behavior:'smooth'})"
+                class="px-8 py-4 rounded-2xl border border-white/25 hover:bg-white/5 text-sm flex items-center gap-2">
+          Discover the watch
+        </button>
+      </div>
+      <div class="mt-6 text-xs text-[#606063]">From $28,400 • Limited to 240 pieces per year</div>
+    </div>
+
+    <!-- HERO WATCH -->
+    <div class="flex-shrink-0">
+      <div class="premium-watch mx-auto" id="premium-watch">
+        <div class="watch-case">
+          <div class="watch-bezel"></div>
+          <div class="watch-crystal" id="watch-crystal">
+            <div class="crystal-reflection" id="crystal-reflection"></div>
+            <div class="watch-dial" id="watch-dial">
+              <div id="watch-ticks"></div>
+              <div id="hour-hand" class="hand hour-hand" style="transform: rotate(112deg);"></div>
+              <div id="minute-hand" class="hand minute-hand" style="transform: rotate(218deg);"></div>
+              <div id="second-hand" class="hand second-hand" style="transform: rotate(84deg);"></div>
+              <div class="watch-center"></div>
+              <div class="lume-glow"></div>
+            </div>
           </div>
         </div>
-        <div class="mt-4 text-zinc-400">280×280 智能手表模拟器，16 个屏幕全部可交互（真实 Timer、Tasks、Messages、Call 流程等）</div>
-        <div class="mt-4 inline-flex items-center text-sm text-emerald-400">立即打开原型 →</div>
-      </a>
-
-      <a href="components/component-catalog.html" 
-         class="block p-8 bg-zinc-900 hover:bg-zinc-800 rounded-3xl transition-all">
-        <div class="font-semibold text-2xl">组件目录 (Catalog)</div>
-        <div class="mt-2 text-zinc-400">16 个独立可复用卡片 + 一键复制纯净 HTML（无外部依赖）</div>
-        <div class="mt-4 text-sm text-emerald-400">→ 打开组件目录</div>
-      </a>
-
-      <a href="components/dark-theme-cards-library.html" 
-         class="block p-8 bg-zinc-900 hover:bg-zinc-800 rounded-3xl transition-all">
-        <div class="font-semibold text-2xl">静态卡片库</div>
-        <div class="mt-2 text-zinc-400">所有 16 个卡片的高保真网格展示 + 设计令牌参考</div>
-      </a>
-
-      <div class="p-8 bg-zinc-900 rounded-3xl">
-        <div class="font-semibold text-xl mb-3">项目结构</div>
-        <div class="text-sm text-zinc-400 space-y-1">
-          <div><span class="font-mono text-emerald-400">prototypes/</span> — 完整可运行演示</div>
-          <div><span class="font-mono text-emerald-400">components/cards/</span> — 16 个模块化独立组件</div>
-          <div><span class="font-mono text-emerald-400">docs/</span> — 规范与状态</div>
-        </div>
-        <div class="mt-4 text-xs text-zinc-500">所有组件均为纯 Tailwind，可直接复制进任何项目</div>
       </div>
     </div>
+  </header>
 
-    <div class="mt-12 text-center text-xs text-zinc-500">
-      基于 figma-mcp-go 提取的真实节点数据 • 严格遵循专业提交规范
+  <!-- TRUST BAR -->
+  <div class="border-y border-white/10 py-4">
+    <div class="max-w-6xl mx-auto px-8 flex justify-between items-center text-xs text-[#707073] tracking-widest">
+      <div>GENEVA SEAL • 2026</div>
+      <div>RED DOT • iF GOLD • GPHG NOMINEE</div>
+      <div>AS SEEN IN THE HANDS OF 17 HEADS OF STATE</div>
     </div>
   </div>
+
+  <!-- THE WATCH / CONFIGURATOR -->
+  <section id="the-watch" class="max-w-7xl mx-auto px-8 pt-20 pb-16 section">
+    <div class="flex items-end justify-between mb-9">
+      <div>
+        <div class="text-[#c5a26f] text-xs tracking-[2px]">01 — THE INSTRUMENT</div>
+        <div class="text-5xl tracking-[-1.6px] font-semibold mt-1">Precision, made personal.</div>
+      </div>
+      <div class="text-right text-sm max-w-xs text-[#a0a0a3]">Every Watch Me is configured by hand in our Geneva atelier. 47 distinct finishes. 9 strap families. Infinite presence.</div>
+    </div>
+
+    <!-- Configurator -->
+    <div class="grid lg:grid-cols-12 gap-8">
+      <div class="lg:col-span-7">
+        <div class="bg-[#111113] border border-white/10 rounded-3xl p-8">
+          <div class="flex gap-4 mb-6">
+            <div onclick="setConfig('case', 0, this)" class="config-option active flex-1 border border-[#c5a26f] rounded-2xl p-4 cursor-pointer">
+              <div class="text-xs text-[#c5a26f]">CASE</div>
+              <div class="font-medium mt-1">Platinum 950</div>
+              <div class="text-xs text-[#707073] mt-0.5">+ $4,800</div>
+            </div>
+            <div onclick="setConfig('case', 1, this)" class="config-option flex-1 border border-white/10 hover:border-white/30 rounded-2xl p-4 cursor-pointer">
+              <div class="text-xs">CASE</div>
+              <div class="font-medium mt-1">18k Rose Gold</div>
+              <div class="text-xs text-[#707073] mt-0.5">+ $2,900</div>
+            </div>
+            <div onclick="setConfig('case', 2, this)" class="config-option flex-1 border border-white/10 hover:border-white/30 rounded-2xl p-4 cursor-pointer">
+              <div class="text-xs">CASE</div>
+              <div class="font-medium mt-1">Titanium Grade 5</div>
+              <div class="text-xs text-[#707073] mt-0.5">Base</div>
+            </div>
+          </div>
+          <div class="flex gap-4">
+            <div onclick="setConfig('strap', 0, this)" class="config-option active flex-1 border border-[#c5a26f] rounded-2xl p-4 cursor-pointer">
+              <div class="text-xs text-[#c5a26f]">STRAP</div>
+              <div class="font-medium mt-1">Alligator • Matte Black</div>
+            </div>
+            <div onclick="setConfig('strap', 1, this)" class="config-option flex-1 border border-white/10 hover:border-white/30 rounded-2xl p-4 cursor-pointer">
+              <div class="text-xs">STRAP</div>
+              <div class="font-medium mt-1">Calf • Havana</div>
+            </div>
+            <div onclick="setConfig('strap', 2, this)" class="config-option flex-1 border border-white/10 hover:border-white/30 rounded-2xl p-4 cursor-pointer">
+              <div class="text-xs">STRAP</div>
+              <div class="font-medium mt-1">Rubber • Sport</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="lg:col-span-5">
+        <div class="bg-[#111113] border border-white/10 rounded-3xl p-8 h-full flex flex-col">
+          <div class="text-xs text-[#707073]">YOUR CONFIGURATION</div>
+          <div id="config-summary" class="mt-3 text-xl font-medium">Platinum 950 • Alligator Matte Black</div>
+          <div class="mt-auto pt-6 border-t border-white/10 flex items-baseline justify-between">
+            <div>
+              <div class="text-xs text-[#707073]">FROM</div>
+              <div id="config-price" class="text-4xl font-semibold tabular-nums tracking-tighter">$33,200</div>
+            </div>
+            <a href="prototypes/watch-me-os.html" class="text-sm px-6 py-3 rounded-2xl border border-[#c5a26f] text-[#c5a26f] hover:bg-[#c5a26f] hover:text-black transition">Simulate this watch →</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- THE OS -->
+  <section id="the-os" class="bg-[#111113] py-16 section">
+    <div class="max-w-7xl mx-auto px-8">
+      <div class="flex justify-between items-end mb-8">
+        <div>
+          <div class="text-[#c5a26f] text-xs tracking-[2px]">02 — THE OPERATING SYSTEM</div>
+          <div class="text-5xl tracking-[-1.8px] font-semibold mt-1">An instrument for the mind.</div>
+        </div>
+        <a href="prototypes/watch-me-os.html" class="hidden md:flex items-center text-sm gap-2 text-[#c5a26f] hover:gap-3 transition-all">Open full simulator <i class="fa-solid fa-arrow-right"></i></a>
+      </div>
+
+      <div class="grid md:grid-cols-4 gap-4">
+        <div onclick="window.location='prototypes/watch-me-os.html'" class="lux-card bg-[#1b1d21] rounded-3xl p-6 cursor-pointer border border-white/5 hover:border-[#c5a26f]/30">
+          <i class="fa-solid fa-heart-pulse text-2xl text-[#ff4a8c]"></i>
+          <div class="mt-8 font-medium">Health</div>
+          <div class="text-xs text-[#808389] mt-1 leading-snug">Activity rings, HRV, sleep architecture, and recovery scores that feel alive.</div>
+        </div>
+        <div onclick="window.location='prototypes/watch-me-os.html'" class="lux-card bg-[#1b1d21] rounded-3xl p-6 cursor-pointer border border-white/5 hover:border-[#c5a26f]/30">
+          <i class="fa-solid fa-wallet text-2xl text-[#c5a26f]"></i>
+          <div class="mt-8 font-medium">Wallet</div>
+          <div class="text-xs text-[#808389] mt-1 leading-snug">Secure NFC payments, crypto balances, and one-crown transaction signing.</div>
+        </div>
+        <div onclick="window.location='prototypes/watch-me-os.html'" class="lux-card bg-[#1b1d21] rounded-3xl p-6 cursor-pointer border border-white/5 hover:border-[#c5a26f]/30">
+          <i class="fa-solid fa-comments text-2xl text-[#7640ef]"></i>
+          <div class="mt-8 font-medium">Messages</div>
+          <div class="text-xs text-[#808389] mt-1 leading-snug">Threaded conversations with intelligent summaries and voice replies.</div>
+        </div>
+        <div onclick="window.location='prototypes/watch-me-os.html'" class="lux-card bg-[#1b1d21] rounded-3xl p-6 cursor-pointer border border-white/5 hover:border-[#c5a26f]/30">
+          <i class="fa-solid fa-hourglass-half text-2xl text-emerald-400"></i>
+          <div class="mt-8 font-medium">Timer &amp; Focus</div>
+          <div class="text-xs text-[#808389] mt-1 leading-snug">Precision countdowns, Pomodoro modes, and automatic session logging.</div>
+        </div>
+      </div>
+
+      <div class="mt-4 text-center">
+        <a href="prototypes/watch-me-os.html" class="inline-flex items-center gap-2 text-sm border-b border-[#c5a26f]/60 pb-0.5 hover:border-[#c5a26f]">Launch the complete 16-app experience →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- CRAFT -->
+  <section id="craft" class="max-w-7xl mx-auto px-8 py-20 section">
+    <div class="grid lg:grid-cols-2 gap-x-16 gap-y-12">
+      <div>
+        <div class="text-[#c5a26f] text-xs tracking-[2px]">03 — THE ATELIER</div>
+        <div class="text-5xl tracking-[-1.6px] font-semibold leading-none mt-3">Made by hand.<br>Perfected by obsession.</div>
+      </div>
+      <div class="text-lg text-[#c8c8cc] space-y-5 pt-2">
+        <p>Every case is machined from a single block of material over 11 hours. The crystal is sapphire, hand-polished with diamond paste for 47 minutes. The movement is COSC-certified and then regulated again in our underground observatory for 17 days.</p>
+        <p class="text-sm">The OS is written in the same spirit — zero abstraction between intention and execution. Every pixel exists because a craftsman decided it must.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIALS + FINAL CTA -->
+  <section class="bg-[#111113] py-16 section" id="atelier">
+    <div class="max-w-5xl mx-auto px-8 text-center">
+      <div class="text-[#c5a26f] text-xs tracking-[3px] mb-3">THE OWNERS</div>
+      <div class="text-3xl max-w-2xl mx-auto leading-tight">"It does not compete with my other watches. It completes them."</div>
+      <div class="mt-4 text-sm text-[#808389]">— Dr. E. Moreau, Collector &amp; Surgeon, Geneva</div>
+
+      <div class="mt-12 flex flex-col sm:flex-row gap-4 justify-center">
+        <a href="prototypes/watch-me-os.html" 
+           class="px-10 py-4 rounded-2xl bg-[#c5a26f] text-black font-medium text-base inline-flex items-center justify-center gap-2 hover:bg-[#d4af7a]">
+          Enter the Digital Instrument
+        </a>
+        <a href="#" onclick="alert('Atelier booking request sent. A concierge will contact you within 4 hours.'); return false"
+           class="px-9 py-4 rounded-2xl border border-white/30 hover:bg-white/5 text-base inline-flex items-center justify-center gap-2">
+          Book a Private Viewing
+        </a>
+      </div>
+      <div class="mt-4 text-xs text-[#505055]">Geneva • New York • Singapore • Dubai</div>
+    </div>
+  </section>
+
+  <footer class="border-t border-white/10 py-9 text-xs text-[#505055]">
+    <div class="max-w-7xl mx-auto px-8 flex flex-col md:flex-row justify-between gap-y-2">
+      <div>© 2026 Watch Me Atelier SA. All rights reserved.</div>
+      <div class="flex gap-6">
+        <a href="docs/USAGE_GUIDE.md">Usage Guide</a>
+        <a href="components/dark-theme-cards-library.html">Component Library</a>
+        <a href="prototypes/watch-me-os.html">OS Simulator</a>
+        <a href="#">Privacy</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Tailwind script
+    function initTailwind() {
+      // Already using CDN, this is placeholder for any runtime config
+    }
+
+    // Premium Watch Hero Logic
+    let currentState = 'intro';
+    let watchInterval = null;
+
+    function createMarkers() {
+      const dial = document.getElementById('watch-ticks');
+      if (!dial) return;
+      dial.innerHTML = '';
+      for (let i = 0; i < 12; i++) {
+        const m = document.createElement('div');
+        m.className = i % 3 === 0 ? 'marker' : 'marker minor';
+        m.style.transform = `rotate(${i * 30}deg)`;
+        if (i % 3 !== 0) m.style.height = '8px';
+        dial.appendChild(m);
+      }
+    }
+
+    function updateHands(h, m, s) {
+      const hour = document.getElementById('hour-hand');
+      const minute = document.getElementById('minute-hand');
+      const second = document.getElementById('second-hand');
+      if (!hour || !minute) return;
+      const hourDeg = (h % 12) * 30 + (m / 60) * 30;
+      const minDeg = m * 6 + (s / 60) * 6;
+      const secDeg = s * 6;
+      hour.style.transform = `rotate(${hourDeg}deg)`;
+      minute.style.transform = `rotate(${minDeg}deg)`;
+      if (second) second.style.transform = `rotate(${secDeg}deg)`;
+    }
+
+    function startRealTime() {
+      if (watchInterval) clearInterval(watchInterval);
+      watchInterval = setInterval(() => {
+        const now = new Date();
+        updateHands(now.getHours(), now.getMinutes(), now.getSeconds());
+      }, 1000);
+      const now = new Date();
+      updateHands(now.getHours(), now.getMinutes(), now.getSeconds());
+    }
+
+    function initCrystalReflection() {
+      const crystal = document.getElementById('watch-crystal');
+      const refl = document.getElementById('crystal-reflection');
+      if (!crystal || !refl) return;
+      crystal.addEventListener('mousemove', (e) => {
+        const r = crystal.getBoundingClientRect();
+        const x = ((e.clientX - r.left) / r.width) * 100;
+        const y = ((e.clientY - r.top) / r.height) * 100;
+        refl.style.background = `radial-gradient(circle at ${x}% ${y}%, rgba(255,255,255,0.42) 4%, transparent 28%, transparent 60%, rgba(255,255,255,0.07) 78%)`;
+      });
+      crystal.addEventListener('mouseleave', () => {
+        refl.style.background = `linear-gradient(135deg, rgba(255,255,255,0.38) 5%, transparent 25%, transparent 55%, rgba(255,255,255,0.08) 75%, transparent 90%)`;
+      });
+    }
+
+    function initHeroWatch() {
+      createMarkers();
+      initCrystalReflection();
+      startRealTime();
+
+      const watch = document.getElementById('premium-watch');
+      if (watch) {
+        watch.addEventListener('click', () => {
+          const now = new Date();
+          updateHands(now.getHours() + 2, now.getMinutes() + 11, 0); // playful jump
+          setTimeout(() => {
+            const n = new Date();
+            updateHands(n.getHours(), n.getMinutes(), n.getSeconds());
+          }, 1400);
+        });
+      }
+      console.log('%c[Watch Me] Hero watch initialized — 60fps hands + crystal reflection.', 'color:#c5a26f');
+    }
+
+    // Configurator
+    let config = { case: 0, strap: 0 };
+    const prices = { base: 28400, case: [4800, 2900, 0], strap: [0, 420, 180] };
+
+    function setConfig(type, idx, el) {
+      document.querySelectorAll(`.config-option`).forEach(o => o.classList.remove('active', 'border-[#c5a26f]'));
+      el.classList.add('active', 'border-[#c5a26f]');
+      config[type] = idx;
+      updateConfigUI();
+    }
+
+    function updateConfigUI() {
+      const summary = document.getElementById('config-summary');
+      const priceEl = document.getElementById('config-price');
+      const names = [
+        ['Platinum 950', '18k Rose Gold', 'Titanium Grade 5'],
+        ['Alligator Matte Black', 'Calf Havana', 'Rubber Sport']
+      ];
+      summary.textContent = `${names[0][config.case]} • ${names[1][config.strap]}`;
+      const total = prices.base + prices.case[config.case] + prices.strap[config.strap];
+      priceEl.textContent = '$' + total.toLocaleString();
+    }
+
+    // Boot
+    function init() {
+      initTailwind();
+      initHeroWatch();
+      updateConfigUI();
+
+      // Subtle scroll-driven lume pulse on hero (already in CSS)
+      console.log('%c[Watch Me 2026] Landing page ready. Simulator at /prototypes/watch-me-os.html', 'color:#555');
+    }
+    window.onload = init;
+  </script>
 </body>
 </html>
