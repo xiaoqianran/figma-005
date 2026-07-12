@@ -2,6 +2,20 @@
 
 All notable changes to this project.
 
+## [1.0.2] — 2026-07-12 — UX hierarchy & states (landing + OS)
+
+### Changed — Landing (`index.html`)
+- Responsive type scale, mobile nav drawer, skip-link, focus-visible.
+- Clear primary CTA (Experience OS) vs secondary paths (story, UI kit, catalog).
+- Explore section for secondary destinations; reduced equal-weight CTA noise.
+- DESIGN.md color blocks preserved; no new dependencies.
+
+### Changed — OS shell / apps (`prototypes/watch-me-os.html`)
+- Responsive shell chrome; compact home hierarchy (time secondary to app grid).
+- Empty / success / error toasts for tasks, messages, wallet, contacts.
+- Boot splash; semantic buttons; fixed toast visibility; keyboard focus styles.
+- Business logic remains in `scripts/os-core.js` (unchanged contracts).
+
 ## [1.0.1] — 2026-07-12 — Harden OS, kit, and verification
 
 ### Fixed — Watch Me OS (`prototypes/watch-me-os.html`)
