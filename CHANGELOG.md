@@ -2,6 +2,29 @@
 
 All notable changes to this project.
 
+## [1.0.1] — 2026-07-12 — Harden OS, kit, and verification
+
+### Fixed — Watch Me OS (`prototypes/watch-me-os.html`)
+- Boot no longer crashes on missing `#crystal` / `#reflection` (null-guarded).
+- Side button (`#side-pusher`) restored; short = home, long = switcher without double-firing home.
+- Timer: default remaining matches preset; crown scrubs while Timer is active (idle or running).
+- New Message SEND uses textarea text (not a hard-coded string).
+- Keyboard shortcuts ignore focused inputs/textareas.
+- Theme cycle applies real CSS (`dark` / `light` / `gold`); default theme is `light` (matches Figma canvas).
+- Wallet NFC / confirm debit once immediately; add-contact form appends contacts to Team.
+- All home-grid apps render real UI (no “coming in next OTA” for listed apps).
+
+### Fixed — Component kit
+- Library DEMO links resolve for all 16 core cards + `home-widget-cluster.html`.
+- Single `.watch-card` frame (no nested double wrappers).
+- Catalog playground covers 17 cards with live preview source.
+
+### Added — QA
+- Shipped pure helpers `scripts/os-core.js` (shared by OS + tests).
+- `npm test` / `scripts/test-os.mjs` exercises timer/tasks/messages/wallet/theme/persistence/side-button.
+- Expanded `npm run verify` (structure + DEMO paths + unit suite).
+- Optional `npm run launch:smoke` (Playwright) when Chromium system libs are available.
+
 ## [1.0.0] — 2026-06-01 — Complete Redesign (Ground-Up)
 
 ### Breaking / Strategic

@@ -9,6 +9,9 @@
     "preview": "npx live-server --port=8080 --open=/index.html 2>/dev/null || npx http-server -p 8080 -o index.html -c-1",
     "dev": "npx http-server -p 5173 -c-1 --cors",
     "verify": "node scripts/verify.js",
+    "test": "node scripts/test-os.mjs",
+    "test:os": "node scripts/test-os.mjs",
+    "launch:smoke": "node scripts/launch-smoke.mjs",
     "lint:html": "npx html-validate index.html prototypes/*.html components/**/*.html 2>/dev/null || echo 'html-validate not installed or no issues reported'",
     "build:info": "echo 'Watch Me 2026 - static artifacts ready. No build step required for core deliverables.'"
   },
