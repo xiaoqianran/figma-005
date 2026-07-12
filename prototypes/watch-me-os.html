@@ -63,14 +63,77 @@
       --wm-button-fg: #1f1a14;
     }
 
-    body { font-family: 'Inter', system-ui, sans-serif; background: var(--wm-page-bg); color: var(--wm-ink); }
+    body { font-family: 'Inter', system-ui, sans-serif; background: var(--wm-page-bg); color: var(--wm-ink); margin: 0; }
     .display-font { font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600; letter-spacing: -0.04em; }
 
+    :focus { outline: none; }
+    :focus-visible {
+      outline: 2px solid var(--wm-magenta);
+      outline-offset: 2px;
+    }
+    button:focus-visible,
+    .lux-button:focus-visible,
+    .meta-chip:focus-visible,
+    .app-icon:focus-visible,
+    .side-pusher:focus-visible,
+    .crown:focus-visible {
+      outline: 2px solid var(--wm-magenta);
+      outline-offset: 2px;
+    }
+
+    .os-page {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 12px 12px 28px;
+      box-sizing: border-box;
+    }
+    @media (min-width: 640px) {
+      .os-page { padding: 24px 24px 40px; }
+    }
+
+    .os-toolbar {
+      width: min(100%, 520px);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px 12px;
+      margin-bottom: 12px;
+      font-size: 13px;
+    }
+    .os-toolbar .spacer { flex: 1 1 auto; min-width: 4px; }
+    .os-toolbar button {
+      min-height: 36px;
+      font-size: 12px;
+      padding: 6px 12px;
+      border-radius: 9999px;
+      border: 1px solid var(--wm-border);
+      background: var(--wm-surface-2);
+      color: var(--wm-ink);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .os-toolbar button:hover { filter: brightness(0.97); }
+
     .watch-container {
-      width: 420px;
-      height: 520px;
+      width: min(100%, 420px);
+      aspect-ratio: 420 / 520;
+      height: auto;
+      max-height: min(70vh, 560px);
       position: relative;
-      filter: drop-shadow(0 40px 100px rgba(0,0,0,0.25));
+      filter: drop-shadow(0 16px 40px rgba(0,0,0,0.18));
+    }
+    @media (min-width: 640px) {
+      .watch-container {
+        width: 420px;
+        height: 520px;
+        max-height: none;
+        aspect-ratio: auto;
+        filter: drop-shadow(0 24px 48px rgba(0,0,0,0.2));
+      }
     }
 
     .watch-frame {
@@ -164,20 +227,24 @@
     }
     .app-icon {
       aspect-ratio: 1; 
-      border-radius: 20px; 
+      border-radius: 16px; 
       display: flex; 
       flex-direction: column; 
       align-items: center; 
       justify-content: center;
       background: var(--wm-surface-2);
       border: 1px solid var(--wm-border);
-      transition: all 0.1s cubic-bezier(0.23,1,0.32,1); 
+      transition: transform 0.1s ease, filter 0.1s ease; 
       cursor: pointer; 
-      font-size: 13px; 
-      gap: 6px;
-      min-height: 78px;
+      font-size: 12px; 
+      gap: 4px;
+      min-height: 64px;
       color: var(--wm-ink);
+      font-family: inherit;
+      padding: 6px;
+      width: 100%;
     }
+    button.app-icon { appearance: none; -webkit-appearance: none; }
     .app-icon:hover { filter: brightness(0.97); }
     .app-icon:active { transform: scale(0.93); }
     .app-icon .fa { font-size: 26px; margin-bottom: 2px; color: var(--wm-magenta); }
@@ -237,77 +304,131 @@
     .wm-purple { color: var(--wm-purple); }
 
     .toast {
-      position: absolute; bottom: 18px; left: 50%; transform: translateX(-50%);
-      background: var(--wm-surface); color: var(--wm-ink); font-size: 14px; padding: 8px 16px; border-radius: 9999px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.1); border: 1px solid var(--wm-border);
-      opacity: 0; transition: all 0.2s; pointer-events: none;
-      white-space: nowrap; z-index: 100;
+      position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(8px);
+      background: var(--wm-surface); color: var(--wm-ink); font-size: 14px; padding: 10px 18px; border-radius: 9999px;
+      border: 1px solid var(--wm-border);
+      opacity: 0; transition: opacity 0.2s, transform 0.2s; pointer-events: none;
+      white-space: nowrap; z-index: 200; max-width: min(92vw, 360px); overflow: hidden; text-overflow: ellipsis;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.08);
     }
-    .toast.show { opacity: 1; transform: translateX(-50%) translateY(-4px); }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+    .toast.toast-error { border-color: #e11d48; color: #9f1239; }
+    .toast.toast-success { border-color: #1ea64a; }
 
     .crown-active { box-shadow: 0 0 0 3px rgba(197,162,111,0.3); }
 
     .dev-harness {
       margin-top: 12px; background: var(--wm-surface); border: 1px solid var(--wm-border); border-radius: 12px;
-      font-size: 12px; padding: 10px 12px; color: var(--wm-ink-soft); width: 480px;
+      font-size: 12px; padding: 10px 12px; color: var(--wm-ink-soft); width: min(100%, 520px);
     }
     .dev-harness button {
-      font-size: 11px; padding: 3px 10px; background: var(--wm-surface-2); border: 1px solid var(--wm-border); border-radius: 6px; margin: 2px; color: var(--wm-ink);
+      font-size: 11px; padding: 6px 10px; min-height: 32px; background: var(--wm-surface-2); border: 1px solid var(--wm-border); border-radius: 6px; margin: 2px; color: var(--wm-ink); cursor: pointer;
     }
     .dev-harness button:hover { background: var(--wm-magenta); color: #fff; border-color: var(--wm-magenta); }
 
-    .meta-chip {
-      padding: 6px 16px; border-radius: 16px; background: var(--wm-surface-2); cursor: pointer;
-      display: flex; align-items: center; gap: 8px; color: var(--wm-ink); border: 1px solid var(--wm-border);
+    .meta-row {
+      margin-top: 16px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 8px;
+      width: min(100%, 520px);
     }
+    .meta-chip {
+      padding: 8px 14px; border-radius: 16px; background: var(--wm-surface-2); cursor: pointer;
+      display: inline-flex; align-items: center; gap: 8px; color: var(--wm-ink); border: 1px solid var(--wm-border);
+      font-size: 13px; min-height: 40px; font-family: inherit;
+    }
+    .meta-chip:hover { filter: brightness(0.97); }
+
+    .os-hint {
+      margin-top: 10px;
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--wm-ink-soft);
+      text-align: center;
+      max-width: 520px;
+      line-height: 1.4;
+    }
+
+    /* Empty / boot states inside watch screen */
+    .empty-state {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      text-align: center; padding: 24px 16px; gap: 8px; flex: 1;
+    }
+    .empty-state .empty-title { font-weight: 600; font-size: 14px; color: var(--wm-ink); }
+    .empty-state .empty-desc { font-size: 12px; color: var(--wm-ink-soft); line-height: 1.4; max-width: 200px; }
+    .boot-splash {
+      height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center;
+      background: var(--wm-bg); gap: 10px;
+    }
+    .boot-splash .pulse-dot {
+      width: 10px; height: 10px; border-radius: 50%; background: var(--wm-magenta);
+      animation: bootPulse 1s ease-in-out infinite;
+    }
+    @keyframes bootPulse {
+      0%, 100% { opacity: 0.35; transform: scale(0.9); }
+      50% { opacity: 1; transform: scale(1); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .boot-splash .pulse-dot { animation: none; opacity: 1; }
+      .toast { transition: none; }
+    }
+
+    .lux-button { cursor: pointer; border: none; font-family: inherit; min-height: 40px; }
+    .lux-button.secondary { cursor: pointer; }
   </style>
 </head>
-<body class="flex items-center justify-center min-h-screen p-8">
-  <div class="flex flex-col items-center">
-    <div class="mb-4 flex items-center gap-3 text-sm">
-      <div class="flex items-center gap-2">
-        <div class="w-2 h-2 rounded-full bg-emerald-400"></div>
-        <span class="font-medium tracking-[1px] text-sm" style="color:var(--wm-ink-soft)">WATCH ME OS v1.0</span>
+<body>
+  <div class="os-page">
+    <header class="os-toolbar" role="banner">
+      <div class="flex items-center gap-2" style="display:flex;align-items:center;gap:8px">
+        <span class="w-2 h-2 rounded-full bg-emerald-400" style="width:8px;height:8px;border-radius:50%;background:#34d399" aria-hidden="true"></span>
+        <span class="font-medium tracking-[1px]" style="color:var(--wm-ink-soft)">WATCH ME OS v1.0</span>
+        <span class="px-2 py-0.5 text-xs rounded font-mono" style="background:var(--wm-lime);color:#000">SQUARE</span>
       </div>
-      <div class="h-3 w-px" style="background:var(--wm-border)"></div>
-      <div class="px-2 py-0.5 text-sm rounded font-mono tracking-wider" style="background:var(--wm-lime);color:#000">SQUARE</div>
-      <button onclick="resetAll()" class="text-sm flex items-center gap-1.5 transition-colors" style="color:var(--wm-ink-soft)">
-        <i class="fa-solid fa-undo text-sm"></i> RESET STATE
+      <span class="spacer" aria-hidden="true"></span>
+      <button type="button" onclick="resetAll()" aria-label="Reset persisted state">
+        <i class="fa-solid fa-undo" aria-hidden="true"></i> Reset
       </button>
-      <button onclick="cycleTheme()" 
-              class="px-3 py-1 rounded-full text-sm flex items-center gap-1.5 transition-all"
-              style="background:var(--wm-surface-2);color:var(--wm-ink);border:1px solid var(--wm-border)">
-        <i class="fa-solid fa-palette"></i> <span id="theme-label">LIGHT</span>
+      <button type="button" onclick="cycleTheme()" aria-label="Cycle theme">
+        <i class="fa-solid fa-palette" aria-hidden="true"></i> <span id="theme-label">LIGHT</span>
       </button>
-    </div>
+    </header>
 
     <div class="watch-container" id="watch-container">
       <div class="watch-frame">
-        <div class="watch-screen" id="screen">
-          <div id="screen-root" class="screen"></div>
+        <div class="watch-screen" id="screen" role="application" aria-label="Watch Me OS screen">
+          <div id="screen-root" class="screen" aria-live="polite">
+            <div class="boot-splash" data-boot="1">
+              <div class="pulse-dot" aria-hidden="true"></div>
+              <div class="text-sm" style="color:var(--wm-ink-soft)">Starting…</div>
+            </div>
+          </div>
         </div>
       </div>
 
-      <div class="side-pusher" id="side-pusher" title="Side button — short: Home · long: Switcher" role="button" aria-label="Side button"></div>
-      <div class="crown" id="crown" title="Digital Crown — drag vertically"></div>
+      <div class="side-pusher" id="side-pusher" title="Side button — short: Home · long: Switcher" role="button" tabindex="0" aria-label="Side button: short press home, long press app switcher"></div>
+      <div class="crown" id="crown" title="Digital Crown — drag vertically" role="slider" aria-label="Digital crown" tabindex="0"></div>
     </div>
 
-    <div class="mt-5 flex gap-2 text-sm">
-      <div onclick="navigate('home')" class="meta-chip">
-        <i class="fa-solid fa-home"></i> <span>Home</span>
-      </div>
-      <div onclick="showAppSwitcher()" class="meta-chip">
-        <i class="fa-solid fa-layer-group"></i> <span>Switcher</span>
-      </div>
-      <div onclick="postDemoNotification()" class="meta-chip">
-        <i class="fa-solid fa-bell"></i> <span>Notify</span>
-      </div>
-    </div>
+    <nav class="meta-row" aria-label="Simulator controls">
+      <button type="button" onclick="navigate('home')" class="meta-chip">
+        <i class="fa-solid fa-home" aria-hidden="true"></i> <span>Home</span>
+      </button>
+      <button type="button" onclick="showAppSwitcher()" class="meta-chip">
+        <i class="fa-solid fa-layer-group" aria-hidden="true"></i> <span>Switcher</span>
+      </button>
+      <button type="button" onclick="postDemoNotification()" class="meta-chip">
+        <i class="fa-solid fa-bell" aria-hidden="true"></i> <span>Notify</span>
+      </button>
+    </nav>
 
-    <div class="mt-3 text-sm tracking-widest" style="color:var(--wm-ink-soft)">DRAG CROWN • TAP ICONS • LONG-PRESS SIDE BUTTON</div>
+    <p class="os-hint">Drag crown · Tap icons · Long-press side button for switcher</p>
   </div>
 
-  <div id="toast" class="toast"></div>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
   <script>
     // ==================== WATCH ME OS — CORE ====================
@@ -339,12 +460,29 @@
       } catch (e) {}
     }
 
-    function showToast(msg, ms = 1600) {
+    function showToast(msg, ms = 1600, kind) {
       const t = document.getElementById('toast');
       if (!t) return;
       t.textContent = msg;
+      t.classList.remove('toast-error', 'toast-success');
+      if (kind === 'error') t.classList.add('toast-error');
+      if (kind === 'success') t.classList.add('toast-success');
       t.classList.add('show');
-      setTimeout(() => t.classList.remove('show'), ms);
+      clearTimeout(showToast._tid);
+      showToast._tid = setTimeout(() => {
+        t.classList.remove('show', 'toast-error', 'toast-success');
+      }, ms);
+    }
+
+    function emptyStateHtml(title, desc, actionLabel, actionNav) {
+      const action = actionLabel && actionNav
+        ? `<button type="button" onclick="navigate('${actionNav}')" class="lux-button text-sm px-5 py-2 mt-2">${actionLabel}</button>`
+        : '';
+      return `<div class="empty-state" role="status">
+        <div class="empty-title">${title}</div>
+        <div class="empty-desc">${desc}</div>
+        ${action}
+      </div>`;
     }
 
     function applyThemeToDom(theme) {
@@ -576,31 +714,31 @@
           </div>
 
           <div class="screen-content flex-1 flex flex-col">
-            <div class="text-center pt-2 pb-3">
-              <div class="text-6xl font-semibold tracking-tighter display-font" style="color:var(--wm-ink)">${timeStr}</div>
-              <div class="text-sm" style="color:var(--wm-ink-soft); margin-top:-2px">Monday, 3 Feb</div>
+            <div class="text-center pt-1 pb-2">
+              <div class="text-4xl font-semibold tracking-tighter display-font" style="color:var(--wm-ink)">${timeStr}</div>
+              <div class="text-xs" style="color:var(--wm-ink-soft); margin-top:2px">Monday, 3 Feb · Page ${homePage + 1}/${totalPages}</div>
             </div>
 
-            <div class="app-grid flex-1" id="home-grid">
+            <div class="app-grid flex-1" id="home-grid" role="list" aria-label="Apps">
               ${appsOnPage.map(n => `
-                <div onclick="navigate('${n}')" class="app-icon">
-                  <i class="fa-solid ${Apps[n] ? Apps[n].icon : 'fa-square'}"></i>
+                <button type="button" onclick="navigate('${n}')" class="app-icon" role="listitem" aria-label="Open ${n}">
+                  <i class="fa-solid ${Apps[n] ? Apps[n].icon : 'fa-square'}" aria-hidden="true"></i>
                   <span>${n}</span>
-                </div>
+                </button>
               `).join('')}
             </div>
 
-            <div class="mt-1 flex justify-around items-center rounded-2xl py-1.5 px-2" style="background:var(--wm-surface-2);border:1px solid var(--wm-border)">
-              <div onclick="navigate('clock')" class="text-center px-3 py-0.5 cursor-pointer"><i class="fa-solid fa-clock text-lg" style="color:var(--wm-ink)"></i></div>
-              <div onclick="navigate('messages')" class="text-center px-3 py-0.5 cursor-pointer"><i class="fa-solid fa-comments text-lg" style="color:var(--wm-ink)"></i></div>
-              <div onclick="navigate('health')" class="text-center px-3 py-0.5 cursor-pointer"><i class="fa-solid fa-heart-pulse text-lg" style="color:var(--wm-ink)"></i></div>
-              <div onclick="navigate('timer')" class="text-center px-3 py-0.5 cursor-pointer"><i class="fa-solid fa-hourglass-half text-lg" style="color:var(--wm-ink)"></i></div>
+            <div class="mt-1 flex justify-around items-center rounded-2xl py-1.5 px-2" style="background:var(--wm-surface-2);border:1px solid var(--wm-border)" role="toolbar" aria-label="Quick apps">
+              <button type="button" onclick="navigate('clock')" class="text-center px-3 py-1 cursor-pointer bg-transparent border-0" aria-label="Clock" style="color:var(--wm-ink)"><i class="fa-solid fa-clock text-lg" aria-hidden="true"></i></button>
+              <button type="button" onclick="navigate('messages')" class="text-center px-3 py-1 cursor-pointer bg-transparent border-0" aria-label="Messages" style="color:var(--wm-ink)"><i class="fa-solid fa-comments text-lg" aria-hidden="true"></i></button>
+              <button type="button" onclick="navigate('health')" class="text-center px-3 py-1 cursor-pointer bg-transparent border-0" aria-label="Health" style="color:var(--wm-ink)"><i class="fa-solid fa-heart-pulse text-lg" aria-hidden="true"></i></button>
+              <button type="button" onclick="navigate('timer')" class="text-center px-3 py-1 cursor-pointer bg-transparent border-0" aria-label="Timer" style="color:var(--wm-ink)"><i class="fa-solid fa-hourglass-half text-lg" aria-hidden="true"></i></button>
             </div>
           </div>
 
-          <div class="page-dots">
+          <div class="page-dots" role="tablist" aria-label="Home pages">
             ${Array.from({length: totalPages}).map((_, i) => 
-              `<div class="page-dot ${i === homePage ? 'active' : ''}" onclick="switchHomePage(${i})" style="background:${i === homePage ? 'var(--wm-magenta)' : 'var(--wm-border)'}"></div>`
+              `<button type="button" class="page-dot ${i === homePage ? 'active' : ''}" onclick="switchHomePage(${i})" aria-label="Page ${i + 1}" aria-selected="${i === homePage}" style="background:${i === homePage ? 'var(--wm-magenta)' : 'var(--wm-border)'};border:0;padding:0;cursor:pointer"></button>`
             ).join('')}
           </div>
         </div>
@@ -700,24 +838,31 @@
     }
 
     registerApp('tasks', (root) => {
-      root.innerHTML = `
-        <div class="h-full flex flex-col text-sm" style="background:var(--wm-bg)">
-          <div class="app-header"><div>Tasks</div><div class="text-sm" style="color:var(--wm-ink-soft)">${WM.state.tasks.length} today</div></div>
-          <div class="flex-1 overflow-auto px-1 pb-2" style="scrollbar-width: none;">
-            ${WM.state.tasks.map((t) => `
-              <div class="list-item cursor-pointer" onclick="toggleTask(${t.id}, this)">
-                <div class="w-4 h-4 rounded border flex-shrink-0 flex items-center justify-center ${t.done ? '' : ''}"
-                     style="${t.done ? 'background:var(--wm-magenta);border-color:var(--wm-magenta)' : 'border-color:var(--wm-border)'}">
+      const list = WM.state.tasks || [];
+      const openCount = list.filter((t) => !t.done).length;
+      const body = list.length
+        ? list.map((t) => `
+              <button type="button" class="list-item cursor-pointer w-[calc(100%-24px)] text-left" onclick="toggleTask(${t.id}, this)" aria-pressed="${t.done}">
+                <div class="w-4 h-4 rounded border flex-shrink-0 flex items-center justify-center"
+                     style="${t.done ? 'background:var(--wm-magenta);border-color:var(--wm-magenta)' : 'border-color:var(--wm-border)'}" aria-hidden="true">
                   ${t.done ? '<i class="fa-solid fa-check text-[9px]"></i>' : ''}
                 </div>
                 <div class="flex-1 text-sm ${t.done ? 'line-through opacity-60' : ''}" style="color:var(--wm-ink)">${t.text}</div>
                 <div class="text-sm" style="color:var(--wm-ink-soft)">${t.due}</div>
-              </div>
-            `).join('')}
+              </button>
+            `).join('')
+        : emptyStateHtml('No tasks', 'Add something for today. Tasks sync to local storage.', null, null);
+      root.innerHTML = `
+        <div class="h-full flex flex-col text-sm" style="background:var(--wm-bg)">
+          <div class="app-header"><div>Tasks</div><div class="text-sm" style="color:var(--wm-ink-soft)">${openCount} open · ${list.length} total</div></div>
+          <div class="flex-1 overflow-auto px-1 pb-2 flex flex-col" style="scrollbar-width: none;">
+            ${body}
           </div>
           <div class="p-3" style="border-top:1px solid var(--wm-border)">
-            <input id="new-task" placeholder="New task..." class="w-full rounded-xl px-3 py-2 text-sm"
+            <label class="sr-only" for="new-task" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)">New task</label>
+            <input id="new-task" placeholder="New task…" class="w-full rounded-xl px-3 py-2 text-sm"
                    style="background:var(--wm-surface-2);border:1px solid var(--wm-border);color:var(--wm-ink)"
+                   autocomplete="off"
                    onkeydown="if(event.key==='Enter') addTask(this)">
           </div>
         </div>`;
@@ -725,44 +870,50 @@
 
     function toggleTask(id, el) {
       const t = Core.toggleTask(WM.state, id);
-      if (!t) return;
-      saveState();
-      const check = el.querySelector('.w-4');
-      if (t.done) {
-        check.style.background = 'var(--wm-magenta)';
-        check.style.borderColor = 'var(--wm-magenta)';
-        check.innerHTML = '<i class="fa-solid fa-check text-[9px]"></i>';
-        el.querySelector('div.flex-1').classList.add('line-through', 'opacity-60');
-      } else {
-        check.style.background = 'transparent';
-        check.style.borderColor = 'var(--wm-border)';
-        check.innerHTML = '';
-        el.querySelector('div.flex-1').classList.remove('line-through', 'opacity-60');
+      if (!t) {
+        showToast('Task not found', 1600, 'error');
+        return;
       }
+      saveState();
+      showToast(t.done ? 'Marked done' : 'Reopened', 1200, 'success');
+      // Re-render for consistent empty/count header
+      navigate('tasks');
     }
     function addTask(input) {
-      if (!Core.addTask(WM.state, input.value)) return;
+      if (!Core.addTask(WM.state, input.value)) {
+        showToast('Enter a task first', 1600, 'error');
+        return;
+      }
       saveState();
+      showToast('Task added', 1400, 'success');
       navigate('tasks');
     }
 
     registerApp('messages', (root) => {
+      const msgs = WM.state.messages || [];
+      const thread = msgs.length
+        ? msgs.map(m => `
+              <div class="p-2.5 rounded-2xl ${m.me ? 'ml-6' : 'mr-6'}" style="${m.me ? 'background:var(--wm-lilac)' : 'background:var(--wm-surface-2)'}">
+                <div class="flex justify-between text-xs" style="color:var(--wm-ink-soft);opacity:0.85"><div>${m.from}</div><div>${m.time}</div></div>
+                <div class="mt-0.5 text-sm" style="color:var(--wm-ink)">${m.text}</div>
+              </div>
+            `).join('')
+        : emptyStateHtml('No messages', 'Start a thread or compose a new message.', 'New message', 'new-msg');
       root.innerHTML = `
         <div class="h-full flex flex-col" style="background:var(--wm-bg)">
-          <div class="app-header"><div>Messages</div><div onclick="navigate('new-msg')" class="text-sm cursor-pointer" style="color:var(--wm-magenta)">NEW</div></div>
-          <div class="flex-1 overflow-auto px-2 space-y-px text-sm">
-            ${WM.state.messages.map(m => `
-              <div class="p-2.5 rounded-2xl ${m.me ? 'ml-6' : 'mr-6'}" style="${m.me ? 'background:var(--wm-lilac)' : 'background:var(--wm-surface-2)'}">
-                <div class="flex justify-between text-sm" style="color:var(--wm-ink-soft);opacity:0.85"><div>${m.from}</div><div>${m.time}</div></div>
-                <div class="mt-0.5" style="color:var(--wm-ink)">${m.text}</div>
-              </div>
-            `).join('')}
+          <div class="app-header">
+            <div>Messages</div>
+            <button type="button" onclick="navigate('new-msg')" class="text-sm cursor-pointer bg-transparent border-0 font-medium" style="color:var(--wm-magenta)">NEW</button>
+          </div>
+          <div class="flex-1 overflow-auto px-2 space-y-1 text-sm flex flex-col" style="gap:4px">
+            ${thread}
           </div>
           <div class="p-2 flex gap-2" style="border-top:1px solid var(--wm-border)">
-            <input id="msg-input" placeholder="Reply..." class="flex-1 rounded-2xl px-3 py-1.5 text-sm"
-                   style="background:var(--wm-surface-2);color:var(--wm-ink)"
+            <label class="sr-only" for="msg-input" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)">Reply</label>
+            <input id="msg-input" placeholder="Reply…" class="flex-1 rounded-2xl px-3 py-2 text-sm"
+                   style="background:var(--wm-surface-2);color:var(--wm-ink);border:1px solid var(--wm-border)"
                    onkeydown="if(event.key==='Enter') sendMessage(this)">
-            <button onclick="sendMessage()" class="px-4 rounded-2xl text-sm font-medium" style="background:var(--wm-magenta);color:#fff">Send</button>
+            <button type="button" onclick="sendMessage()" class="px-4 rounded-2xl text-sm font-medium" style="background:var(--wm-magenta);color:#fff;min-height:40px;border:0">Send</button>
           </div>
         </div>`;
     }, 'fa-comments');
@@ -770,20 +921,26 @@
     function sendMessage(inputEl) {
       const input = inputEl || document.getElementById('msg-input');
       if (!input) return;
-      if (!Core.sendMessage(WM.state, input.value)) return;
+      if (!Core.sendMessage(WM.state, input.value)) {
+        showToast('Type a reply first', 1600, 'error');
+        return;
+      }
       saveState();
+      showToast('Message sent', 1400, 'success');
       navigate('messages');
     }
 
     registerApp('wallet', (root) => {
+      const bal = Number(WM.state.wallet.balance);
       root.innerHTML = `
         <div class="h-full flex flex-col p-3" style="background:var(--wm-bg)">
-          <div class="text-sm" style="color:var(--wm-ink-soft)">WALLET</div>
-          <div class="mt-1 text-3xl font-semibold display-font" style="color:var(--wm-ink)">$${Number(WM.state.wallet.balance).toFixed(2)}</div>
-          <div class="mt-4 text-sm" style="color:var(--wm-ink-soft)">Cards • ${WM.state.wallet.cards}</div>
+          <div class="text-xs font-medium tracking-wide" style="color:var(--wm-ink-soft)">AVAILABLE BALANCE</div>
+          <div class="mt-1 text-3xl font-semibold display-font" style="color:var(--wm-ink)">$${bal.toFixed(2)}</div>
+          <div class="mt-3 text-sm" style="color:var(--wm-ink-soft)">Cards · ${WM.state.wallet.cards}</div>
+          <p class="text-xs mt-2" style="color:var(--wm-ink-soft)">Local demo only — no real payment network.</p>
           <div class="mt-auto grid grid-cols-2 gap-2">
-            <div onclick="simulateNFC()" class="lux-button flex items-center justify-center gap-2 text-sm py-3"><i class="fa-solid fa-wifi"></i> TAP TO PAY</div>
-            <div onclick="navigate('confirm-tx')" class="lux-button secondary flex items-center justify-center gap-2 text-sm py-3">SEND</div>
+            <button type="button" onclick="simulateNFC()" class="lux-button flex items-center justify-center gap-2 text-sm py-3"><i class="fa-solid fa-wifi" aria-hidden="true"></i> Tap to pay</button>
+            <button type="button" onclick="navigate('confirm-tx')" class="lux-button secondary flex items-center justify-center gap-2 text-sm py-3">Send</button>
           </div>
         </div>`;
     }, 'fa-wallet');
@@ -791,17 +948,21 @@
     function simulateNFC() {
       // Debit once immediately (durable), then show confirmation UI
       const bal = Core.nfcPay(WM.state);
-      if (bal == null) return;
+      if (bal == null) {
+        showToast('Payment failed', 1800, 'error');
+        return;
+      }
       saveState();
+      showToast('Payment approved', 1600, 'success');
       const root = document.getElementById('screen-root');
-      root.innerHTML = `<div class="h-full flex flex-col items-center justify-center" style="background:var(--wm-bg)">
-        <div class="w-20 h-20 rounded-full border-[6px] flex items-center justify-center animate-pulse" style="border-color:var(--wm-magenta)">
-          <i class="fa-solid fa-wifi text-3xl" style="color:var(--wm-magenta)"></i>
+      root.innerHTML = `<div class="h-full flex flex-col items-center justify-center" style="background:var(--wm-bg)" role="status">
+        <div class="w-16 h-16 rounded-full border-[4px] flex items-center justify-center" style="border-color:var(--wm-magenta)">
+          <i class="fa-solid fa-check text-2xl" style="color:var(--wm-magenta)" aria-hidden="true"></i>
         </div>
-        <div class="mt-4 text-sm" style="color:var(--wm-ink)">Payment approved</div>
-        <div class="text-sm mt-0.5" style="color:var(--wm-ink-soft)">- $${Core.NFC_AMOUNT.toFixed(2)} • Coffee Lab</div>
+        <div class="mt-4 text-sm font-medium" style="color:var(--wm-ink)">Payment approved</div>
+        <div class="text-sm mt-0.5" style="color:var(--wm-ink-soft)">−$${Core.NFC_AMOUNT.toFixed(2)} · Coffee Lab</div>
         <div class="text-sm mt-2" style="color:var(--wm-ink)">Balance $${Number(WM.state.wallet.balance).toFixed(2)}</div>
-        <button onclick="navigate('wallet')" class="mt-8 text-sm px-5 py-2 rounded-full" style="background:var(--wm-surface-2);color:var(--wm-ink)">Done</button>
+        <button type="button" onclick="navigate('wallet')" class="mt-8 text-sm px-5 py-2 rounded-full" style="background:var(--wm-surface-2);color:var(--wm-ink);border:1px solid var(--wm-border);min-height:40px">Done</button>
       </div>`;
     }
 
@@ -895,20 +1056,22 @@
       const body = document.getElementById('new-msg-body');
       const text = body ? body.value : '';
       if (!Core.sendMessage(WM.state, text)) {
-        showToast('Type a message first');
+        showToast('Type a message first', 1600, 'error');
         return;
       }
       saveState();
-      showToast('Message sent');
+      showToast('Message sent', 1400, 'success');
       navigate('messages');
     }
 
     registerApp('confirm-tx', (root) => {
       root.innerHTML = `<div class="h-full flex flex-col items-center justify-center p-4 text-center" style="background:var(--wm-bg)">
-        <div class="text-2xl font-semibold display-font" style="color:var(--wm-ink)">-$${Core.CONFIRM_TX_AMOUNT}</div>
+        <div class="text-xs tracking-wide" style="color:var(--wm-ink-soft)">CONFIRM TRANSFER</div>
+        <div class="text-2xl font-semibold display-font mt-1" style="color:var(--wm-ink)">−$${Core.CONFIRM_TX_AMOUNT}</div>
         <div class="text-sm mt-1" style="color:var(--wm-ink-soft)">to Atelier Reserve</div>
-        <button id="confirm-tx-btn" onclick="confirmTx(this)" class="mt-8 lux-button px-10">CONFIRM WITH CROWN</button>
-        <div class="text-sm mt-3" style="color:var(--wm-ink-soft)">Tap to authorize once</div>
+        <button type="button" id="confirm-tx-btn" onclick="confirmTx(this)" class="mt-8 lux-button px-10">Confirm once</button>
+        <div class="text-xs mt-3" style="color:var(--wm-ink-soft)">Single authorization · demo balance only</div>
+        <button type="button" onclick="navigate('wallet')" class="mt-4 text-xs underline bg-transparent border-0 cursor-pointer" style="color:var(--wm-ink-soft)">Cancel</button>
       </div>`;
     }, 'fa-credit-card');
 
@@ -916,54 +1079,72 @@
       if (btn.dataset.done === '1') return;
       btn.dataset.done = '1';
       const bal = Core.confirmTransaction(WM.state);
-      if (bal == null) return;
+      if (bal == null) {
+        showToast('Authorization failed', 1800, 'error');
+        btn.dataset.done = '0';
+        return;
+      }
       saveState();
-      btn.textContent = 'AUTHORIZED ✓';
+      btn.textContent = 'Authorized ✓';
       btn.style.background = '#16a34a';
       btn.style.color = '#fff';
+      showToast('Transfer complete', 1600, 'success');
       setTimeout(() => { navigate('wallet'); }, 900);
     }
 
     function postDemoNotification() {
       WM.state.notifications.unshift({ id: Date.now(), title: 'New activity ring closed', type: 'health' });
       saveState();
-      showToast('Notification posted');
+      showToast('Notification posted', 1400, 'success');
       if (WM.state.currentApp === 'notifications') renderApp('notifications');
     }
 
     registerApp('notifications', (root) => {
+      const notes = WM.state.notifications || [];
       root.innerHTML = `
-        <div class="p-3 h-full" style="background:var(--wm-bg)">
-          <div class="text-sm mb-2" style="color:var(--wm-ink)">NOTIFICATIONS</div>
-          ${WM.state.notifications.length ? WM.state.notifications.map(n => `
+        <div class="p-3 h-full flex flex-col" style="background:var(--wm-bg)">
+          <div class="text-sm font-medium mb-2" style="color:var(--wm-ink)">Notifications</div>
+          <div class="flex-1 overflow-auto">
+          ${notes.length ? notes.map(n => `
             <div class="list-item text-sm" style="color:var(--wm-ink)">${n.title}</div>
-          `).join('') : `<div class="text-center py-8 text-sm" style="color:var(--wm-ink-soft)">All caught up</div>`}
+          `).join('') : emptyStateHtml('All caught up', 'Use Notify outside the watch to post a demo alert.', null, null)}
+          </div>
         </div>`;
     }, 'fa-bell');
 
     registerApp('activity', (r) => {
-      r.innerHTML = `<div class="p-4 text-sm h-full" style="background:var(--wm-bg);color:var(--wm-ink)">Activity rings live in Health app. <span onclick="navigate('health')" class="underline cursor-pointer" style="color:var(--wm-magenta)">Open Health →</span></div>`;
+      r.innerHTML = `<div class="p-4 text-sm h-full flex flex-col justify-center" style="background:var(--wm-bg);color:var(--wm-ink)">
+        <div class="font-medium mb-1">Activity</div>
+        <p class="text-sm mb-4" style="color:var(--wm-ink-soft)">Rings and steps live in the Health app.</p>
+        <button type="button" onclick="navigate('health')" class="lux-button text-sm px-5 py-2 self-start">Open Health</button>
+      </div>`;
     }, 'fa-chart-line');
 
     registerApp('team', (r) => {
       const contacts = WM.state.contacts || [];
-      r.innerHTML = `<div class="p-4 h-full overflow-auto" style="background:var(--wm-bg)">
-        <div class="text-sm mb-2" style="color:var(--wm-ink)">TEAM</div>
-        <div class="flex -space-x-2 mb-3">${['#dceeb1','#c5b0f4','#c8e6cd','#f3c9b6'].map(c=>`<div class="w-7 h-7 rounded-full" style="background:${c};border:1px solid var(--wm-border)"></div>`).join('')}</div>
-        <div class="text-sm mb-2" style="color:var(--wm-ink-soft)">4 members online${contacts.length ? ` · ${contacts.length} added` : ''}</div>
-        ${contacts.map(c => `<div class="list-item text-sm" style="color:var(--wm-ink)">${c.name}</div>`).join('')}
-        <button onclick="navigate('add-contact')" class="mt-3 lux-button text-sm px-4 py-2">Add contact</button>
+      const list = contacts.length
+        ? contacts.map(c => `<div class="list-item text-sm" style="color:var(--wm-ink)">${c.name}</div>`).join('')
+        : emptyStateHtml('No contacts yet', 'Add someone to your team. Names stay on this device.', 'Add contact', 'add-contact');
+      r.innerHTML = `<div class="p-3 h-full overflow-auto flex flex-col" style="background:var(--wm-bg)">
+        <div class="text-sm font-medium mb-2" style="color:var(--wm-ink)">Team</div>
+        <div class="flex -space-x-2 mb-2" aria-hidden="true">${['#dceeb1','#c5b0f4','#c8e6cd','#f3c9b6'].map(c=>`<div class="w-7 h-7 rounded-full" style="background:${c};border:1px solid var(--wm-border)"></div>`).join('')}</div>
+        <div class="text-xs mb-2" style="color:var(--wm-ink-soft)">4 members online${contacts.length ? ` · ${contacts.length} added` : ''}</div>
+        <div class="flex-1">${list}</div>
+        ${contacts.length ? `<button type="button" onclick="navigate('add-contact')" class="mt-3 lux-button text-sm px-4 py-2">Add contact</button>` : ''}
       </div>`;
     }, 'fa-users');
 
     registerApp('add-contact', (r) => {
       r.innerHTML = `<div class="p-4 h-full flex flex-col text-sm" style="background:var(--wm-bg);color:var(--wm-ink)">
-        <div class="font-semibold mb-3">Add Contact</div>
-        <div class="w-14 h-14 rounded-full mx-auto mb-3" style="background:var(--wm-surface-2);border:1px solid var(--wm-border)"></div>
+        <div class="font-semibold mb-3">Add contact</div>
+        <div class="w-14 h-14 rounded-full mx-auto mb-3" style="background:var(--wm-surface-2);border:1px solid var(--wm-border)" aria-hidden="true"></div>
+        <label for="contact-name" class="text-xs mb-1" style="color:var(--wm-ink-soft)">Name</label>
         <input id="contact-name" placeholder="Name" class="w-full rounded-xl px-3 py-2 mb-2"
                style="background:var(--wm-surface-2);border:1px solid var(--wm-border);color:var(--wm-ink)"
+               autocomplete="name"
                onkeydown="if(event.key==='Enter') submitContact()">
-        <button onclick="submitContact()" class="lux-button w-full py-2 mt-auto">ADD TO TEAM</button>
+        <button type="button" onclick="submitContact()" class="lux-button w-full py-2 mt-auto">Add to team</button>
+        <button type="button" onclick="navigate('team')" class="mt-2 text-xs underline bg-transparent border-0 cursor-pointer" style="color:var(--wm-ink-soft)">Cancel</button>
       </div>`;
     }, 'fa-user-plus');
 
@@ -972,11 +1153,11 @@
       const name = input ? input.value : '';
       const c = Core.addContact(WM.state, name);
       if (!c) {
-        showToast('Enter a name');
+        showToast('Enter a name', 1600, 'error');
         return;
       }
       saveState();
-      showToast(`Added ${c.name}`);
+      showToast(`Added ${c.name}`, 1400, 'success');
       navigate('team');
     }
 
@@ -1006,10 +1187,11 @@
       updateTime();
       setInterval(updateTime, 30000);
 
+      // Boot splash already in #screen-root; replace after short load affordance
       setTimeout(() => {
         navigate(WM.state.currentApp || 'home');
-        showToast('Watch Me OS ready — crown is live');
-      }, 180);
+        showToast('Watch Me OS ready — crown is live', 1600, 'success');
+      }, 280);
 
       window.WM.test = {
         crown: (d = 80) => applyCrownEffect(d),
