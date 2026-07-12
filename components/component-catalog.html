@@ -9,13 +9,11 @@
     @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&amp;display=swap');
     body { font-family: 'Montserrat', system-ui, -apple-system, sans-serif; }
     .preview-frame { width: 184px; height: 224px; background: #1b1d21; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.45); overflow: hidden; border: 1px solid rgba(255,255,255,.08); }
-    .prop-label { font-size: 10px; letter-spacing: .5px; color: #888; }
     .source-panel { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 11px; }
   </style>
 </head>
 <body class="bg-zinc-950 text-white">
   <div class="flex h-screen overflow-hidden">
-    <!-- Sidebar: Card Picker + Props -->
     <div class="w-72 border-r border-white/10 flex flex-col bg-zinc-900">
       <div class="p-5 border-b border-white/10">
         <div class="uppercase text-xs tracking-[2px] text-white/50">WATCH ME UI KIT</div>
@@ -33,7 +31,6 @@
       </div>
     </div>
 
-    <!-- Center: Live Preview -->
     <div class="flex-1 flex flex-col items-center justify-center p-8 bg-[#111113]">
       <div class="mb-4 flex items-center gap-3">
         <div class="text-sm text-white/60">LIVE PREVIEW</div>
@@ -49,10 +46,9 @@
         <div id="live-preview" class="preview-frame flex items-center justify-center text-white/60 text-xs">Select a card</div>
       </div>
       
-      <div id="preview-note" class="mt-3 text-center text-xs text-white/40 max-w-xs">Interact directly in the preview pane. Props on the left drive re-renders.</div>
+      <div id="preview-note" class="mt-3 text-center text-xs text-white/40 max-w-xs">Double-click preview to edit props live.</div>
     </div>
 
-    <!-- Right: Dynamic Source + Export -->
     <div class="w-80 border-l border-white/10 bg-zinc-900 flex flex-col">
       <div class="p-4 border-b border-white/10 flex justify-between">
         <div class="font-semibold text-sm">Source (Live)</div>
@@ -69,32 +65,136 @@
   </div>
 
   <script>
+    function frame(inner) {
+      return `<div style="width:184px;height:224px;background:#1b1d21;border-radius:12px;overflow:hidden;border:1px solid rgba(255,255,255,.06);box-shadow:0 10px 30px rgba(0,0,0,.45);display:flex;flex-direction:column;box-sizing:border-box">${inner}</div>`;
+    }
+
+    // 16 core Figma cards + home widgets — each produces live preview source
     const CARDS = {
-      'new-message': { name: 'New Message', render: (p) => `<div style="width:184px;height:224px;background:#1b1d21;border-radius:12px;overflow:hidden;border:1px solid rgba(255,255,255,.06);box-shadow:0 10px 30px rgba(0,0,0,.45);display:flex;flex-direction:column">
+      'new-message': { name: 'New Message', render: (p) => frame(`
         <div style="padding:8px 12px 0;display:flex;justify-content:space-between;font-size:9px;color:#888">09:41 • 100%</div>
         <div style="display:flex;justify-content:center;padding-top:8px"><div style="width:68px;height:68px;border-radius:999px;background:${p.accent};display:flex;align-items:center;justify-content:center"><div style="width:32px;height:32px;background:white;border-radius:10px;display:flex;align-items:center;justify-content:center">💬</div></div></div>
         <div style="flex:1;padding:8px 14px 0"><div style="font-size:11px;color:#fff;margin-bottom:4px">To: <strong>${p.recipient}</strong></div><div contenteditable style="font-size:11px;background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.1);padding:6px 8px;border-radius:6px;min-height:42px">${p.message}</div></div>
-        <div style="padding:8px 12px"><button style="width:100%;height:26px;border-radius:7px;background:#7640ef;color:white;font-size:11px;font-weight:600">SEND</button></div></div>`, props: { accent: '#7640ef', recipient: 'Oliver Adams', message: 'Quick update on the prototype...' } },
-      
-      'timer': { name: 'Timer', render: (p) => `<div style="width:184px;height:224px;background:#1b1d21;border-radius:12px;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,.45);display:flex;flex-direction:column;padding:10px 12px">
-        <div style="font-size:10px;color:#888;text-align:center">TIMER</div>
-        <div style="font-family:monospace;font-size:38px;font-weight:700;text-align:center;margin:8px 0;color:white">${p.duration}</div>
-        <div style="text-align:center;font-size:9px;color:#ff4a8c">COUNTDOWN • ${p.showSeconds ? 'SEC' : 'MIN'}</div>
-        <div style="margin-top:auto;display:flex;gap:6px"><button style="flex:1;height:26px;border-radius:7px;background:${p.accent};color:white;font-size:11px">START</button></div></div>`, props: { duration: '14:33', accent: '#7640ef', showSeconds: true } },
-      
-      'wallet': { name: 'Wallet', render: (p) => `<div style="width:184px;height:224px;background:#1b1d21;border-radius:12px;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,.45);padding:12px 14px;display:flex;flex-direction:column">
-        <div style="font-size:10px;color:#888">BALANCE</div><div style="font-size:22px;font-weight:700;color:white">$${p.balance}</div>
-        <div style="margin-top:14px;font-size:11px">•••• 5752 • ${p.cardBrand}</div><div style="margin-top:auto"><button style="width:100%;height:28px;border-radius:8px;background:#7640ef;color:white;font-size:11px">SEND</button></div></div>`, props: { balance: '12051', cardBrand: 'VISA' } },
-      
-      'activity': { name: 'Activity', render: (p) => `<div style="width:184px;height:224px;background:#1b1d21;border-radius:12px;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;flex-direction:column;padding:12px">
-        <div style="font-size:12px;font-weight:600">Activity</div>
-        <div style="margin:12px 0;position:relative;width:92px;height:92px"><svg width="92" height="92" style="transform:rotate(-90deg)"><circle cx="46" cy="46" r="38" fill="none" stroke="#272a31" stroke-width="9"/><circle cx="46" cy="46" r="38" fill="none" stroke="${p.accent}" stroke-width="9" stroke-dasharray="238" stroke-dashoffset="${238*(1-p.progress/100)}"/></svg><div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:19px;font-weight:700">${p.progress}%</div></div>
-        <div style="font-size:10px;color:#808389">${p.steps} steps</div></div>`, props: { progress: 68, accent: '#ffaa5c', steps: '6820' } },
-      
-      'add-contact': { name: 'Add Contact', render: (p) => `<div style="width:184px;height:224px;background:#1b1d21;border-radius:12px;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,.45);display:flex;flex-direction:column;align-items:center;padding:16px 12px">
-        <div style="width:62px;height:62px;background:#272a31;border-radius:50%;margin-top:12px"></div>
-        <input value="${p.name}" style="margin-top:10px;background:transparent;border-bottom:1px solid #333;color:white;text-align:center;font-weight:600;width:80%;font-size:13px;outline:none">
-        <button style="margin-top:auto;width:100%;height:28px;background:#7640ef;border-radius:8px;font-size:11px;color:white">${p.buttonLabel}</button></div>`, props: { name: 'Kira Valakas', buttonLabel: 'ADD TO TEAM' } }
+        <div style="padding:8px 12px"><button style="width:100%;height:26px;border-radius:7px;background:#7640ef;color:white;font-size:11px;font-weight:600">SEND</button></div>`), props: { accent: '#7640ef', recipient: 'Oliver Adams', message: 'Quick update on the prototype...' } },
+
+      'voice-message': { name: 'Voice Message', render: (p) => frame(`
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center">
+          <div style="font-size:13px;font-weight:600;text-align:center;color:#fff">Leave<br>voice message</div>
+          <div style="margin-top:16px;width:56px;height:56px;border-radius:999px;border:5px solid ${p.accent};display:flex;align-items:center;justify-content:center"><div style="width:24px;height:24px;background:#16171a;border-radius:999px"></div></div>
+          <div style="margin-top:12px;font-size:10px;color:#808389">${p.hint}</div>
+        </div>`), props: { accent: '#7d3ef3', hint: 'Tap & hold' } },
+
+      'timer': { name: 'Timer', render: (p) => frame(`
+        <div style="padding:10px 12px;flex:1;display:flex;flex-direction:column">
+          <div style="font-size:10px;color:#888;text-align:center">TIMER</div>
+          <div style="font-family:monospace;font-size:38px;font-weight:700;text-align:center;margin:8px 0;color:white">${p.duration}</div>
+          <div style="text-align:center;font-size:9px;color:#ff4a8c">COUNTDOWN • ${p.showSeconds ? 'SEC' : 'MIN'}</div>
+          <div style="margin-top:auto;display:flex;gap:6px"><button style="flex:1;height:26px;border-radius:7px;background:${p.accent};color:white;font-size:11px">START</button></div>
+        </div>`), props: { duration: '14:33', accent: '#7640ef', showSeconds: true } },
+
+      'wallet': { name: 'Wallet', render: (p) => frame(`
+        <div style="padding:12px 14px;flex:1;display:flex;flex-direction:column">
+          <div style="font-size:10px;color:#888">BALANCE</div><div style="font-size:22px;font-weight:700;color:white">$${p.balance}</div>
+          <div style="margin-top:14px;font-size:11px;color:#fff">•••• 5752 • ${p.cardBrand}</div>
+          <div style="margin-top:auto"><button style="width:100%;height:28px;border-radius:8px;background:#7640ef;color:white;font-size:11px">SEND</button></div>
+        </div>`), props: { balance: '12051', cardBrand: 'VISA' } },
+
+      'overall-progress': { name: 'Overall Progress', render: (p) => frame(`
+        <div style="padding:12px;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center">
+          <div style="font-size:10px;color:#888;align-self:flex-start">20:00</div>
+          <div style="position:relative;width:92px;height:92px;margin:12px 0">
+            <svg width="92" height="92" style="transform:rotate(-90deg)"><circle cx="46" cy="46" r="38" fill="none" stroke="#272a31" stroke-width="9"/><circle cx="46" cy="46" r="38" fill="none" stroke="${p.accent}" stroke-width="9" stroke-dasharray="238" stroke-dashoffset="${238*(1-p.progress/100)}"/></svg>
+            <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:19px;font-weight:700;color:#fff">${p.progress}%</div>
+          </div>
+        </div>`), props: { progress: 40, accent: '#7640ef' } },
+
+      'clock': { name: 'Clock', render: (p) => frame(`
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center">
+          <div style="width:80px;height:80px;border-radius:999px;border:5px solid rgba(255,255,255,.1);position:relative"></div>
+          <div style="margin-top:8px;font-size:12px;color:#fff">${p.time}</div>
+        </div>`), props: { time: '09:41' } },
+
+      'confirm-transaction': { name: 'Confirm Transaction', render: (p) => frame(`
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center">
+          <div style="width:64px;height:64px;border-radius:999px;background:${p.accent};display:flex;align-items:center;justify-content:center;color:#fff;font-size:28px">✓</div>
+          <div style="margin-top:12px;font-size:12px;color:#fff">$${p.amount} • CONFIRMED</div>
+        </div>`), props: { amount: '1,250', accent: '#7640ef' } },
+
+      'call': { name: 'Call', render: (p) => frame(`
+        <div style="padding:12px;flex:1;display:flex;flex-direction:column">
+          <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center">
+            <div style="width:48px;height:48px;border-radius:999px;background:#753fed"></div>
+            <div style="margin-top:8px;font-weight:600;font-size:13px;color:#fff">${p.name}</div>
+            <div style="font-size:11px;color:#808389">${p.duration}</div>
+          </div>
+          <div style="display:flex;justify-content:space-around;font-size:14px"><span>🔇</span><span style="color:#ff4a8c">📞</span><span>🔊</span></div>
+        </div>`), props: { name: 'Barbara Payne', duration: '59:00' } },
+
+      'tasks': { name: 'Tasks', render: (p) => frame(`
+        <div style="padding:12px;flex:1">
+          <div style="font-size:12px;font-weight:600;color:#fff">Tasks</div>
+          <div style="margin-top:8px;font-size:11px;color:#ccc">☑ ${p.doneItem}<br>☐ ${p.openItem}</div>
+        </div>`), props: { doneItem: 'Call grandma', openItem: 'Drink water' } },
+
+      'message': { name: 'Message', render: (p) => frame(`
+        <div style="padding:12px;flex:1;display:flex;flex-direction:column">
+          <div style="font-size:10px;color:#888">MESSAGE</div>
+          <div style="margin-top:8px;font-size:11px;background:#272a31;border-radius:6px;padding:8px;color:#fff;line-height:1.35">${p.body}</div>
+          <div style="margin-top:auto;text-align:center;font-size:11px;padding:6px;background:#7640ef;border-radius:6px;color:#fff">DELETE</div>
+        </div>`), props: { body: 'Congratulations, Pavel just purchased the Skeo kit...' } },
+
+      'notifications': { name: 'Notifications', render: (p) => frame(`
+        <div style="padding:12px;flex:1">
+          <div style="font-size:13px;font-weight:600;color:#fff;margin-bottom:8px">Notifications</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+            ${['📅','🔔','✉️','👥'].map(i=>`<div style="height:36px;background:#16171a;border-radius:8px;display:flex;align-items:center;justify-content:center">${i}</div>`).join('')}
+          </div>
+        </div>`), props: {} },
+
+      'activity': { name: 'Activity', render: (p) => frame(`
+        <div style="padding:12px;flex:1;display:flex;align-items:center;justify-content:center;flex-direction:column">
+          <div style="font-size:12px;font-weight:600;color:#fff">Activity</div>
+          <div style="margin:12px 0;position:relative;width:92px;height:92px"><svg width="92" height="92" style="transform:rotate(-90deg)"><circle cx="46" cy="46" r="38" fill="none" stroke="#272a31" stroke-width="9"/><circle cx="46" cy="46" r="38" fill="none" stroke="${p.accent}" stroke-width="9" stroke-dasharray="238" stroke-dashoffset="${238*(1-p.progress/100)}"/></svg><div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:19px;font-weight:700;color:#fff">${p.progress}%</div></div>
+          <div style="font-size:10px;color:#808389">${p.steps} steps</div>
+        </div>`), props: { progress: 68, accent: '#ffaa5c', steps: '6820' } },
+
+      'team': { name: 'Team', render: (p) => frame(`
+        <div style="padding:12px;flex:1">
+          <div style="font-size:13px;font-weight:600;color:#fff">Team</div>
+          <div style="margin-top:24px;text-align:center;font-size:11px;color:#808389">${p.count} members</div>
+        </div>`), props: { count: 4 } },
+
+      'card': { name: 'Card', render: (p) => frame(`
+        <div style="padding:12px;flex:1;display:flex;flex-direction:column;align-items:center">
+          <div style="font-size:11px;color:#fff;text-align:center">Hold Near Reader</div>
+          <div style="margin-top:16px;width:138px;background:white;color:#1b1d21;border-radius:12px;padding:8px;font-size:11px">
+            <div style="font-weight:600;letter-spacing:2px">•••• ${p.last4}</div>
+          </div>
+        </div>`), props: { last4: '5752' } },
+
+      'messages': { name: 'Messages', render: (p) => frame(`
+        <div style="padding:12px;flex:1">
+          <div style="font-size:11px;color:#fff">${p.from}</div>
+          <div style="margin-top:8px;font-size:10px;background:#7640ef;padding:4px 8px;border-radius:12px;display:inline-block;color:#fff">${p.incoming}</div>
+          <div style="margin-top:4px;font-size:10px;background:#ff4a8c;padding:4px 8px;border-radius:12px;display:block;width:fit-content;margin-left:auto;color:#fff">${p.outgoing}</div>
+        </div>`), props: { from: 'Barbara Payne', incoming: 'Hello! How are you?', outgoing: 'What did you say?' } },
+
+      'add-contact': { name: 'Add Contact', render: (p) => frame(`
+        <div style="padding:16px 12px;flex:1;display:flex;flex-direction:column;align-items:center">
+          <div style="width:62px;height:62px;background:#272a31;border-radius:50%;margin-top:12px"></div>
+          <div style="margin-top:10px;color:white;text-align:center;font-weight:600;font-size:13px">${p.name}</div>
+          <button style="margin-top:auto;width:100%;height:28px;background:#7640ef;border-radius:8px;font-size:11px;color:white">${p.buttonLabel}</button>
+        </div>`), props: { name: 'Kira Valakas', buttonLabel: 'ADD TO TEAM' } },
+
+      'home-widgets': { name: 'Home Widgets', render: (p) => frame(`
+        <div style="padding:8px;flex:1;font-size:11px;color:#fff">
+          <div style="font-weight:600">${p.title}</div>
+          <div style="display:flex;gap:4px;margin-top:6px">
+            <div style="flex:1;background:#16171a;border-radius:6px;padding:6px">${p.steps}</div>
+            <div style="flex:1;background:#16171a;border-radius:6px;padding:6px">${p.focus}</div>
+          </div>
+          <div style="margin-top:6px;background:#16171a;border-radius:6px;padding:6px">${p.quick}</div>
+        </div>`), props: { title: 'Today', steps: '7.2k steps', focus: '25m focus', quick: 'Quick msg → Oliver' } }
     };
 
     let currentCard = 'new-message';
@@ -125,6 +225,11 @@
       wrapper.innerHTML = def.render(currentProps);
       wrapper.style.background = '#1b1d21';
       document.getElementById('source-panel').textContent = generateSource();
+      const note = document.getElementById('preview-note');
+      const keys = Object.keys(currentProps);
+      note.innerHTML = keys.length
+        ? `Double-click preview to edit props. Current: <span class="font-mono">${keys.join(', ')}</span>`
+        : 'No editable props for this card.';
     }
 
     function updateProp(prop, value) {
@@ -134,7 +239,7 @@
 
     function generateSource() {
       const def = CARDS[currentCard];
-      return `<!-- ${def.name} Card (184×224) -->\n` + def.render(currentProps).replace(/</g,'&lt;').replace(/>/g,'&gt;');
+      return `<!-- ${def.name} Card (184×224) -->\n` + def.render(currentProps);
     }
 
     function setPreviewTheme(mode) {
@@ -146,7 +251,7 @@
 
     function copyCurrentPreview() {
       const html = document.getElementById('live-preview').innerHTML;
-      navigator.clipboard.writeText(`<div class="w-[184px] h-[224px] bg-[#1b1d21] rounded-[12px] overflow-hidden shadow-2xl" style="box-shadow:0 10px 30px rgba(0,0,0,.45)">${html}</div>`).then(() => alert('Preview HTML copied'));
+      navigator.clipboard.writeText(html).then(() => alert('Preview HTML copied'));
     }
 
     function copySource() {
@@ -155,8 +260,7 @@
 
     function exportReact() {
       const name = CARDS[currentCard].name.replace(/\s/g,'') + 'Card';
-      alert(`React component for ${name} exported to clipboard (full implementation in real usage)`);
-      navigator.clipboard.writeText(`export const ${name} = (props) => { /* use ${JSON.stringify(currentProps)} */ return <div className="w-[184px] h-[224px] ...">...</div>; }`);
+      navigator.clipboard.writeText(`export const ${name} = (props) => (\n  <div className="w-[184px] h-[224px] bg-[#1b1d21] rounded-[12px] overflow-hidden">\n    {/* ${name} — props: ${JSON.stringify(currentProps)} */}\n  </div>\n);`).then(() => alert(`React stub for ${name} copied`));
     }
 
     function exportTailwind() {
@@ -164,25 +268,22 @@
     }
 
     function buildPropControls() {
-      // Dynamic right sidebar is replaced by the source panel; props are in a floating control for selected card
-      // For brevity in this build we use simple prompt-based prop editing on double click of preview
       const prev = document.getElementById('live-preview');
       prev.ondblclick = () => {
-        const key = prompt('Prop key to edit (e.g. accent, progress, name):');
-        if (!key || !currentProps.hasOwnProperty(key)) return;
+        const keys = Object.keys(currentProps);
+        if (!keys.length) return;
+        const key = prompt('Prop key to edit (' + keys.join(', ') + '):');
+        if (!key || !Object.prototype.hasOwnProperty.call(currentProps, key)) return;
         const val = prompt(`New value for ${key}:`, currentProps[key]);
         if (val !== null) updateProp(key, val);
       };
-      // Also inject small inline prop panel for the 4-6 main props
-      const note = document.getElementById('preview-note');
-      note.innerHTML = `Double-click preview to edit props live. Current: <span class="font-mono">${Object.keys(currentProps).join(', ')}</span>`;
     }
 
     function initCatalog() {
       renderCardList();
       selectCard('new-message');
       buildPropControls();
-      console.log('%c[Watch Me] Full interactive catalog/playground ready', 'color:#10b981');
+      console.log('%c[Watch Me] Full interactive catalog/playground ready — ' + Object.keys(CARDS).length + ' cards', 'color:#10b981');
     }
     window.addEventListener('load', initCatalog);
   </script>

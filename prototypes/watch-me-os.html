@@ -6,37 +6,66 @@
   <title>Watch Me OS • Square Edition • The Instrument</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <script src="../scripts/os-core.js"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Space+Grotesk:wght@500;600&amp;display=swap');
     
-    :root {
-      /* Figma design system - FULL LIGHT THEME for watch screen UI (per user request) */
-      --wm-bg: #ffffff;                    /* Figma canvas - white */
-      --wm-surface: #ffffff;               /* Figma canvas */
-      --wm-surface-2: #f7f7f5;             /* Figma surface-soft */
-      --wm-ink: #000000;                   /* Figma ink - black */
-      --wm-ink-soft: #5f6166;              /* Figma secondary */
-      --wm-border: #e6e6e6;                /* Figma hairline */
-
-      /* Figma pastel color blocks as accents */
-      --wm-magenta: #ff3d8b;               /* accent-magenta */
+    :root, [data-theme="light"] {
+      --wm-bg: #ffffff;
+      --wm-surface: #ffffff;
+      --wm-surface-2: #f7f7f5;
+      --wm-ink: #000000;
+      --wm-ink-soft: #5f6166;
+      --wm-border: #e6e6e6;
+      --wm-magenta: #ff3d8b;
       --wm-lime: #dceeb1;
       --wm-lilac: #c5b0f4;
-      --wm-purple: #c5b0f4;                /* lilac as the purple-ish accent for legacy wm-purple */
+      --wm-purple: #c5b0f4;
       --wm-mint: #c8e6cd;
       --wm-cream: #f4ecd6;
       --wm-pink: #efd4d4;
       --wm-coral: #f3c9b6;
-      --wm-navy: #1f1d3d;                  /* for dark text on light or inverse elements */
-
-      /* Watch hardware heritage accents (minimal) */
+      --wm-navy: #1f1d3d;
       --wm-gold: #c5a26f;
+      --wm-page-bg: #f4f4f6;
+      --wm-frame: #111111;
+      --wm-button-bg: #000000;
+      --wm-button-fg: #ffffff;
     }
 
-    body { font-family: 'Inter', system-ui, sans-serif; background: #f4f4f6; } /* Figma light canvas */
+    [data-theme="dark"] {
+      --wm-bg: #1b1d21;
+      --wm-surface: #1b1d21;
+      --wm-surface-2: #272a31;
+      --wm-ink: #ffffff;
+      --wm-ink-soft: #808389;
+      --wm-border: #33363d;
+      --wm-magenta: #ff4a8c;
+      --wm-purple: #7640ef;
+      --wm-page-bg: #0c0c0e;
+      --wm-frame: #0a0a0a;
+      --wm-button-bg: #7640ef;
+      --wm-button-fg: #ffffff;
+    }
+
+    [data-theme="gold"] {
+      --wm-bg: #1f1a14;
+      --wm-surface: #1f1a14;
+      --wm-surface-2: #2a231a;
+      --wm-ink: #f5e8c7;
+      --wm-ink-soft: #a38f6f;
+      --wm-border: #3d3428;
+      --wm-magenta: #ff8f4d;
+      --wm-purple: #c5a26f;
+      --wm-page-bg: #12100c;
+      --wm-frame: #0f0c08;
+      --wm-button-bg: #c5a26f;
+      --wm-button-fg: #1f1a14;
+    }
+
+    body { font-family: 'Inter', system-ui, sans-serif; background: var(--wm-page-bg); color: var(--wm-ink); }
     .display-font { font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600; letter-spacing: -0.04em; }
 
-    /* ==================== CLEAN DEVICE FRAME (no heavy watch shell) ==================== */
     .watch-container {
       width: 420px;
       height: 520px;
@@ -44,13 +73,12 @@
       filter: drop-shadow(0 40px 100px rgba(0,0,0,0.25));
     }
 
-    /* Simple clean rectangular frame focused on the internal UI */
     .watch-frame {
       width: 100%;
       height: 100%;
-      background: #111111;
+      background: var(--wm-frame);
       border-radius: 48px;
-      padding: 12px;                  /* thin bezel */
+      padding: 12px;
       box-shadow: 
         0 0 0 1px #333,
         0 10px 30px rgba(0,0,0,0.2);
@@ -68,7 +96,7 @@
       z-index: 10;
       color: var(--wm-ink);
     }
-    /* Digital Crown as a separate control (no longer part of physical shell) */
+
     .crown {
       position: absolute;
       right: -28px;
@@ -91,7 +119,26 @@
       border-radius: 6px;
     }
 
-    /* Screen Content */
+    /* Side pusher — short = home, long = app switcher */
+    .side-pusher {
+      position: absolute;
+      left: -18px;
+      top: 42%;
+      transform: translateY(-50%);
+      width: 14px;
+      height: 44px;
+      background: linear-gradient(90deg, #a3a3a3, #e5e5e5 50%, #737373);
+      border-radius: 4px 2px 2px 4px;
+      box-shadow: -2px 0 6px rgba(0,0,0,0.25);
+      cursor: pointer;
+      z-index: 50;
+      border: 1px solid #d4d4d8;
+      touch-action: none;
+    }
+    .side-pusher:active {
+      transform: translateY(-50%) translateX(-1px);
+    }
+
     .screen { width: 100%; height: 100%; position: relative; overflow: hidden; }
     .status-bar {
       height: 32px; padding: 0 16px; display: flex; align-items: center; justify-content: space-between;
@@ -101,9 +148,8 @@
       position: relative; z-index: 40;
       color: var(--wm-ink-soft);
     }
-    /* Better safe area + multi-page home like real smartwatches */
     .screen-content {
-      padding-top: 28px; /* below status bar */
+      padding-top: 28px;
       padding-left: 16px;
       padding-right: 16px;
       padding-bottom: 18px;
@@ -132,12 +178,11 @@
       min-height: 78px;
       color: var(--wm-ink);
     }
-    .app-icon:hover { background: #f1f1f3; border-color: #d1d1d1; }
+    .app-icon:hover { filter: brightness(0.97); }
     .app-icon:active { transform: scale(0.93); }
     .app-icon .fa { font-size: 26px; margin-bottom: 2px; color: var(--wm-magenta); }
     .app-icon span { font-size: 12px; opacity: 0.9; color: var(--wm-ink); font-weight: 500; }
 
-    /* Simple page indicator */
     .page-dots {
       position: absolute;
       bottom: 8px;
@@ -152,7 +197,6 @@
     }
     .page-dot.active { background: var(--wm-magenta); }
 
-    /* App Styles */
     .app-header { 
       padding: 14px 18px 10px; 
       font-weight: 600; 
@@ -170,7 +214,7 @@
       display: flex; 
       align-items: center; 
       gap: 14px;
-      background: #ffffff; 
+      background: var(--wm-surface); 
       border: 1px solid var(--wm-border);
       transition: all 0.1s; 
       min-height: 48px;
@@ -178,13 +222,15 @@
       font-size: 14px;
     }
     .list-item:hover { background: var(--wm-surface-2); }
-    .list-item:active { background: #f1f1f3; transform: scale(0.985); }
+    .list-item:active { transform: scale(0.985); }
     .lux-button {
-      background: #000000; color: #ffffff; font-weight: 600; font-size: 14px;
+      background: var(--wm-button-bg); color: var(--wm-button-fg); font-weight: 600; font-size: 14px;
       padding: 10px 20px; border-radius: 9999px; transition: all 0.1s;
     }
     .lux-button:active { transform: scale(0.96); }
-    .lux-button.secondary { background: #ffffff; color: #000000; border: 1px solid #000000; font-size: 14px; }
+    .lux-button.secondary {
+      background: var(--wm-surface); color: var(--wm-ink); border: 1px solid var(--wm-ink); font-size: 14px;
+    }
 
     .ring { transition: stroke-dashoffset 400ms cubic-bezier(0.23,1,0.32,1); }
     .wm-gold { color: var(--wm-gold); }
@@ -192,8 +238,8 @@
 
     .toast {
       position: absolute; bottom: 18px; left: 50%; transform: translateX(-50%);
-      background: #ffffff; color: #000000; font-size: 14px; padding: 8px 16px; border-radius: 9999px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.1); border: 1px solid #e6e6e6;
+      background: var(--wm-surface); color: var(--wm-ink); font-size: 14px; padding: 8px 16px; border-radius: 9999px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1); border: 1px solid var(--wm-border);
       opacity: 0; transition: all 0.2s; pointer-events: none;
       white-space: nowrap; z-index: 100;
     }
@@ -201,123 +247,117 @@
 
     .crown-active { box-shadow: 0 0 0 3px rgba(197,162,111,0.3); }
 
-    /* Visible dev harness - light Figma style */
     .dev-harness {
-      margin-top: 12px; background: #ffffff; border: 1px solid #e6e6e6; border-radius: 12px;
-      font-size: 12px; padding: 10px 12px; color: #5f6166; width: 480px;
+      margin-top: 12px; background: var(--wm-surface); border: 1px solid var(--wm-border); border-radius: 12px;
+      font-size: 12px; padding: 10px 12px; color: var(--wm-ink-soft); width: 480px;
     }
     .dev-harness button {
-      font-size: 11px; padding: 3px 10px; background: #f7f7f5; border: 1px solid #e6e6e6; border-radius: 6px; margin: 2px; color: #000;
+      font-size: 11px; padding: 3px 10px; background: var(--wm-surface-2); border: 1px solid var(--wm-border); border-radius: 6px; margin: 2px; color: var(--wm-ink);
     }
-    .dev-harness button:hover { background: #ff3d8b; color: #fff; border-color: #ff3d8b; }
+    .dev-harness button:hover { background: var(--wm-magenta); color: #fff; border-color: var(--wm-magenta); }
+
+    .meta-chip {
+      padding: 6px 16px; border-radius: 16px; background: var(--wm-surface-2); cursor: pointer;
+      display: flex; align-items: center; gap: 8px; color: var(--wm-ink); border: 1px solid var(--wm-border);
+    }
   </style>
 </head>
-<body class="bg-[#f4f4f6] flex items-center justify-center min-h-screen p-8">
+<body class="flex items-center justify-center min-h-screen p-8">
   <div class="flex flex-col items-center">
-    <!-- Header -->
     <div class="mb-4 flex items-center gap-3 text-sm">
       <div class="flex items-center gap-2">
         <div class="w-2 h-2 rounded-full bg-emerald-400"></div>
-        <span class="text-[#5f6166] font-medium tracking-[1px] text-sm">WATCH ME OS v1.0</span>
+        <span class="font-medium tracking-[1px] text-sm" style="color:var(--wm-ink-soft)">WATCH ME OS v1.0</span>
       </div>
-      <div class="h-3 w-px bg-[#e6e6e6]"></div>
-      <div class="px-2 py-0.5 text-sm rounded bg-[#dceeb1] text-[#000] font-mono tracking-wider">SQUARE</div>
-      <button onclick="resetAll()" 
-              class="text-[#5f6166] hover:text-black text-sm flex items-center gap-1.5 transition-colors">
+      <div class="h-3 w-px" style="background:var(--wm-border)"></div>
+      <div class="px-2 py-0.5 text-sm rounded font-mono tracking-wider" style="background:var(--wm-lime);color:#000">SQUARE</div>
+      <button onclick="resetAll()" class="text-sm flex items-center gap-1.5 transition-colors" style="color:var(--wm-ink-soft)">
         <i class="fa-solid fa-undo text-sm"></i> RESET STATE
       </button>
       <button onclick="cycleTheme()" 
-              class="px-3 py-1 rounded-full bg-[#f7f7f5] hover:bg-[#f1f1f3] text-sm flex items-center gap-1.5 transition-all" style="color:#000">
+              class="px-3 py-1 rounded-full text-sm flex items-center gap-1.5 transition-all"
+              style="background:var(--wm-surface-2);color:var(--wm-ink);border:1px solid var(--wm-border)">
         <i class="fa-solid fa-palette"></i> <span id="theme-label">LIGHT</span>
       </button>
     </div>
 
-    <!-- Clean rectangular screen frame (hardware shell removed per request) -->
     <div class="watch-container" id="watch-container">
       <div class="watch-frame">
-        <!-- The actual screen content area -->
         <div class="watch-screen" id="screen">
           <div id="screen-root" class="screen"></div>
         </div>
       </div>
 
-      <!-- Digital Crown as standalone control -->
+      <div class="side-pusher" id="side-pusher" title="Side button — short: Home · long: Switcher" role="button" aria-label="Side button"></div>
       <div class="crown" id="crown" title="Digital Crown — drag vertically"></div>
     </div>
 
-    <!-- Meta controls -->
     <div class="mt-5 flex gap-2 text-sm">
-      <div onclick="navigate('home')" class="px-4 py-1.5 rounded-2xl bg-[#f7f7f5] hover:bg-[#f1f1f3] cursor-pointer flex items-center gap-2" style="color:#000">
+      <div onclick="navigate('home')" class="meta-chip">
         <i class="fa-solid fa-home"></i> <span>Home</span>
       </div>
-      <div onclick="showAppSwitcher()" class="px-4 py-1.5 rounded-2xl bg-[#f7f7f5] hover:bg-[#f1f1f3] cursor-pointer flex items-center gap-2" style="color:#000">
+      <div onclick="showAppSwitcher()" class="meta-chip">
         <i class="fa-solid fa-layer-group"></i> <span>Switcher</span>
       </div>
-      <div onclick="postDemoNotification()" class="px-4 py-1.5 rounded-2xl bg-[#f7f7f5] hover:bg-[#f1f1f3] cursor-pointer flex items-center gap-2" style="color:#000">
+      <div onclick="postDemoNotification()" class="meta-chip">
         <i class="fa-solid fa-bell"></i> <span>Notify</span>
       </div>
     </div>
 
-    <div class="mt-3 text-sm text-[#5f6166] tracking-widest">DRAG CROWN • TAP ICONS • LONG-PRESS BUTTON</div>
+    <div class="mt-3 text-sm tracking-widest" style="color:var(--wm-ink-soft)">DRAG CROWN • TAP ICONS • LONG-PRESS SIDE BUTTON</div>
   </div>
 
-  <!-- Toast container -->
   <div id="toast" class="toast"></div>
 
   <script>
     // ==================== WATCH ME OS — CORE ====================
+    const Core = window.WMCore;
+    if (!Core) {
+      console.error('[Watch Me OS] WMCore missing — load scripts/os-core.js');
+    }
+
     const WM = window.WM = {
-      version: '1.0.0-redesign',
-      state: {
-        currentApp: 'home',
-        theme: 'dark',
-        battery: 87,
-        time: { h: 9, m: 41 },
-        notifications: [],
-        tasks: [
-          { id: 1, text: 'Drink 2 liters of water', done: false, due: 'Today' },
-          { id: 2, text: 'Call grandma at 8 AM', done: true, due: 'Today' },
-          { id: 3, text: 'Finish quarterly report', done: false, due: 'Tomorrow' }
-        ],
-        messages: [
-          { id: 1, from: 'Sarah Chen', text: 'Dinner at 7?', time: '09:12', me: false },
-          { id: 2, from: 'You', text: 'Perfect, see you then', time: '09:14', me: true }
-        ],
-        timer: { remaining: 0, running: false, preset: 300 },
-        health: { steps: 7420, move: 68, exercise: 41, stand: 12 },
-        music: { playing: false, track: 'Nocturne in C#', progress: 42, volume: 70 },
-        wallet: { balance: 2847.50, cards: 2 }
-      },
+      version: '1.0.1-hardened',
+      state: Core ? Core.createDefaultState() : {},
       history: [],
       crownValue: 0,
       crownMomentum: 0
     };
 
-    // Persistence
+    // Persistence key: wm_state_v1 (also Core.STORAGE_KEY)
     function loadState() {
       try {
-        const saved = localStorage.getItem('wm_state_v1');
-        if (saved) Object.assign(WM.state, JSON.parse(saved));
-        if (!WM.state.prefs) WM.state.prefs = { haptics: true, reduceMotion: false };
-      } catch (e) {}
+        const saved = localStorage.getItem(Core.STORAGE_KEY); // wm_state_v1
+        WM.state = Core.parseStoredState(saved, Core.createDefaultState());
+      } catch (e) {
+        WM.state = Core.createDefaultState();
+      }
     }
     function saveState() {
-      localStorage.setItem('wm_state_v1', JSON.stringify(WM.state));
+      try {
+        localStorage.setItem(Core.STORAGE_KEY /* wm_state_v1 */, Core.serializeState(WM.state));
+      } catch (e) {}
     }
 
-    // Utilities
     function showToast(msg, ms = 1600) {
       const t = document.getElementById('toast');
+      if (!t) return;
       t.textContent = msg;
       t.classList.add('show');
       setTimeout(() => t.classList.remove('show'), ms);
+    }
+
+    function applyThemeToDom(theme) {
+      const t = theme || WM.state.theme || 'light';
+      document.documentElement.setAttribute('data-theme', t);
+      const label = document.getElementById('theme-label');
+      if (label) label.textContent = t.toUpperCase();
     }
 
     function updateTime() {
       const now = new Date();
       WM.state.time.h = now.getHours();
       WM.state.time.m = now.getMinutes();
-      // Update any visible clocks
       const clocks = document.querySelectorAll('[data-live-time]');
       clocks.forEach(el => {
         el.textContent = `${String(WM.state.time.h).padStart(2,'0')}:${String(WM.state.time.m).padStart(2,'0')}`;
@@ -325,14 +365,9 @@
     }
 
     function cycleTheme() {
-      const themes = ['dark', 'light', 'gold'];
-      const idx = (themes.indexOf(WM.state.theme) + 1) % 3;
-      WM.state.theme = themes[idx];
-      document.documentElement.setAttribute('data-theme', WM.state.theme === 'dark' ? '' : WM.state.theme);
-      document.getElementById('theme-label').textContent = WM.state.theme.toUpperCase();
-      if (!WM.state.prefs) WM.state.prefs = { haptics: true, reduceMotion: false };
+      Core.cycleTheme(WM.state);
+      applyThemeToDom(WM.state.theme);
       saveState();
-      // Re-render current app so colors update
       if (WM.state.currentApp) renderApp(WM.state.currentApp);
     }
 
@@ -361,14 +396,13 @@
         Apps[name].render(root, props);
       } else {
         root.innerHTML = `
-          <div class="h-full flex flex-col items-center justify-center p-6 text-center bg-[#ffffff]">
-            <i class="fa-solid fa-rocket text-3xl mb-3 opacity-50" style="color:#5f6166"></i>
-            <div class="font-semibold text-sm" style="color:#000">${name.toUpperCase()}</div>
-            <div class="text-sm text-[#5f6166] mt-1">App coming in next OTA</div>
+          <div class="h-full flex flex-col items-center justify-center p-6 text-center" style="background:var(--wm-bg)">
+            <i class="fa-solid fa-rocket text-3xl mb-3 opacity-50" style="color:var(--wm-ink-soft)"></i>
+            <div class="font-semibold text-sm" style="color:var(--wm-ink)">${String(name).toUpperCase()}</div>
+            <div class="text-sm mt-1" style="color:var(--wm-ink-soft)">App coming in next OTA</div>
             <button onclick="navigate('home')" class="mt-6 lux-button text-sm px-5 py-1.5">Return Home</button>
           </div>`;
       }
-      // Live time in status if present
       updateTime();
     }
 
@@ -379,7 +413,7 @@
 
     function initCrown() {
       const crown = document.getElementById('crown');
-      const screen = document.getElementById('screen');
+      if (!crown) return;
 
       function onPointerDown(e) {
         crownDragging = true;
@@ -392,10 +426,9 @@
       function onPointerMove(e) {
         if (!crownDragging) return;
         const y = e.clientY || (e.touches && e.touches[0].clientY);
-        const delta = (y - crownLastY) * -1.2; // invert for natural feel
+        const delta = (y - crownLastY) * -1.2;
         WM.crownValue += delta;
         WM.crownMomentum = delta * 0.6;
-
         crownLastY = y;
         const now = Date.now();
         if (now - crownLastTime > 40) {
@@ -407,7 +440,6 @@
         if (!crownDragging) return;
         crownDragging = false;
         crown.classList.remove('crown-active');
-        // Apply momentum decay
         if (Math.abs(WM.crownMomentum) > 0.8) {
           const decay = setInterval(() => {
             WM.crownMomentum *= 0.86;
@@ -420,7 +452,6 @@
       crown.addEventListener('pointerdown', onPointerDown);
       window.addEventListener('pointermove', onPointerMove);
       window.addEventListener('pointerup', onPointerUp);
-      // Touch
       crown.addEventListener('touchstart', onPointerDown, {passive:false});
       window.addEventListener('touchmove', onPointerMove, {passive:false});
       window.addEventListener('touchend', onPointerUp);
@@ -431,25 +462,20 @@
       if (!root) return;
       const app = root.dataset.app;
 
-      // Trigger luxury detent click on meaningful movement
       if (Math.abs(delta) > 2.5 && WM.playDetent) WM.playDetent();
 
-      // Global crown behaviors
       if (app === 'timer') {
+        // Crown scrubs remaining while Timer is active (idle or running)
+        const next = Core.scrubTimer(WM.state, delta * 1.8);
         const timerEl = root.querySelector('#timer-display');
-        if (timerEl && WM.state.timer.running) {
-          WM.state.timer.remaining = Math.max(0, WM.state.timer.remaining + Math.round(delta * 1.8));
-          timerEl.textContent = formatTime(WM.state.timer.remaining);
-        }
+        if (timerEl) timerEl.textContent = Core.formatTime(next);
       } else if (app === 'music') {
         WM.state.music.progress = Math.max(0, Math.min(100, WM.state.music.progress + delta * 0.6));
         const bar = root.querySelector('#music-progress');
         if (bar) bar.style.width = WM.state.music.progress + '%';
       } else if (app === 'tasks' || app === 'messages' || app === 'settings') {
-        // Scroll simulation
         root.scrollTop = Math.max(0, root.scrollTop - delta * 2.4);
       } else if (app === 'home') {
-        // Real smartwatch behavior: crown on Home switches pages
         if (Math.abs(delta) > 18) {
           const dir = delta > 0 ? 1 : -1;
           const newPage = Math.max(0, Math.min(homePages.length - 1, homePage + dir));
@@ -464,74 +490,78 @@
     }
 
     // ==================== SIDE BUTTON ====================
+    let sideButtonCtrl = null;
+
     function initSideButton() {
-      // Subtle pusher at 9 o'clock - short press = home, long press = app switcher (same behavior, less visually prominent)
       const pusher = document.getElementById('side-pusher');
       if (!pusher) return;
-      let pressTimer = null;
 
-      pusher.addEventListener('pointerdown', () => {
-        pressTimer = setTimeout(() => {
+      sideButtonCtrl = Core.createSideButtonController({
+        longMs: 620,
+        onLongPress() {
           showAppSwitcher();
-        }, 620);
-        pusher.style.transform = 'translateY(-50%) translateX(-1px)';
-      });
-      pusher.addEventListener('pointerup', () => {
-        pusher.style.transform = 'translateY(-50%)';
-        if (pressTimer) {
-          clearTimeout(pressTimer);
+        },
+        onShortPress() {
           if (WM.state.currentApp !== 'home') {
             navigate('home');
           } else {
             const screen = document.getElementById('screen');
+            if (!screen) return;
             screen.style.transition = 'transform 120ms';
             screen.style.transform = 'scale(0.985)';
             setTimeout(() => { screen.style.transform = 'scale(1)'; }, 180);
           }
         }
       });
+
+      pusher.addEventListener('pointerdown', (e) => {
+        e.preventDefault();
+        sideButtonCtrl.pointerDown();
+        pusher.style.transform = 'translateY(-50%) translateX(-1px)';
+      });
+      pusher.addEventListener('pointerup', () => {
+        pusher.style.transform = 'translateY(-50%)';
+        sideButtonCtrl.pointerUp();
+      });
       pusher.addEventListener('pointerleave', () => {
         pusher.style.transform = 'translateY(-50%)';
-        clearTimeout(pressTimer);
+        sideButtonCtrl.pointerLeave();
+      });
+      pusher.addEventListener('pointercancel', () => {
+        pusher.style.transform = 'translateY(-50%)';
+        sideButtonCtrl.pointerLeave();
       });
     }
 
     function showAppSwitcher() {
       const root = document.getElementById('screen-root');
+      if (!root) return;
       const apps = Object.keys(Apps);
+      root.dataset.app = 'switcher';
       root.innerHTML = `
-        <div class="p-3 h-full overflow-auto bg-[#ffffff]">
-          <div class="text-sm uppercase tracking-widest text-[#5f6166] px-1 mb-2">APP SWITCHER</div>
+        <div class="p-3 h-full overflow-auto" style="background:var(--wm-bg)">
+          <div class="text-sm uppercase tracking-widest px-1 mb-2" style="color:var(--wm-ink-soft)">APP SWITCHER</div>
           <div class="grid grid-cols-4 gap-2">
             ${apps.map(name => `
               <div onclick="navigate('${name}');" 
-                   class="aspect-square flex flex-col items-center justify-center rounded-2xl bg-[#f7f7f5] hover:bg-[#f1f1f3] active:bg-[#e6e6e6] cursor-pointer text-center p-1.5">
+                   class="aspect-square flex flex-col items-center justify-center rounded-2xl cursor-pointer text-center p-1.5"
+                   style="background:var(--wm-surface-2);border:1px solid var(--wm-border)">
                 <i class="fa-solid ${Apps[name].icon} text-lg mb-1 wm-purple"></i>
-                <div class="text-[9px] leading-none" style="color:#5f6166">${name}</div>
+                <div class="text-[9px] leading-none" style="color:var(--wm-ink-soft)">${name}</div>
               </div>
             `).join('')}
           </div>
           <div class="text-center mt-4">
-            <button onclick="navigate('home')" class="text-sm px-4 py-1 rounded-full bg-[#f7f7f5]" style="color:#000">Close</button>
+            <button onclick="navigate('home')" class="text-sm px-4 py-1 rounded-full" style="background:var(--wm-surface-2);color:var(--wm-ink)">Close</button>
           </div>
         </div>`;
     }
 
     // ==================== APP DEFINITIONS ====================
-    function formatTime(sec) {
-      const m = Math.floor(sec / 60);
-      const s = sec % 60;
-      return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
-    }
+    const formatTime = (sec) => Core.formatTime(sec);
 
-    // HOME - Multi-page like real smartwatches (not cramming everything on one screen)
     let homePage = 0;
-    const homePages = [
-      // Page 0 - Primary / Frequent
-      ['clock', 'timer', 'health', 'messages', 'tasks', 'wallet', 'music', 'activity'],
-      // Page 1 - Secondary
-      ['notifications', 'team', 'add-contact', 'new-msg', 'confirm-tx', 'settings']
-    ];
+    const homePages = Core.HOME_PAGES;
 
     function renderHome(root) {
       const timeStr = `${String(WM.state.time.h).padStart(2,'0')}:${String(WM.state.time.m).padStart(2,'0')}`;
@@ -539,21 +569,18 @@
       const totalPages = homePages.length;
 
       root.innerHTML = `
-        <div class="h-full flex flex-col relative" style="padding-top: 28px; background:#ffffff;">
-          <!-- Status bar -->
+        <div class="h-full flex flex-col relative" style="padding-top: 28px; background:var(--wm-bg);">
           <div class="status-bar px-3 text-sm" style="position:absolute;top:0;left:0;right:0;z-index:40">
-            <div style="color:#000">${timeStr}</div>
-            <div class="flex items-center gap-1" style="color:#5f6166"><i class="fa-solid fa-battery-three-quarters"></i> ${WM.state.battery}%</div>
+            <div style="color:var(--wm-ink)">${timeStr}</div>
+            <div class="flex items-center gap-1" style="color:var(--wm-ink-soft)"><i class="fa-solid fa-battery-three-quarters"></i> ${WM.state.battery}%</div>
           </div>
 
           <div class="screen-content flex-1 flex flex-col">
-            <!-- Big time + date -->
             <div class="text-center pt-2 pb-3">
-              <div class="text-6xl font-semibold tracking-tighter display-font" style="color:#000">${timeStr}</div>
-              <div class="text-sm" style="color:#5f6166; margin-top:-2px">Monday, 3 Feb</div>
+              <div class="text-6xl font-semibold tracking-tighter display-font" style="color:var(--wm-ink)">${timeStr}</div>
+              <div class="text-sm" style="color:var(--wm-ink-soft); margin-top:-2px">Monday, 3 Feb</div>
             </div>
 
-            <!-- App grid -->
             <div class="app-grid flex-1" id="home-grid">
               ${appsOnPage.map(n => `
                 <div onclick="navigate('${n}')" class="app-icon">
@@ -563,19 +590,17 @@
               `).join('')}
             </div>
 
-            <!-- Bottom Dock -->
-            <div class="mt-1 flex justify-around items-center bg-[#f7f7f5] rounded-2xl py-1.5 px-2 border border-[#e6e6e6]">
-              <div onclick="navigate('clock')" class="text-center px-3 py-0.5 cursor-pointer"><i class="fa-solid fa-clock text-lg" style="color:#000"></i></div>
-              <div onclick="navigate('messages')" class="text-center px-3 py-0.5 cursor-pointer"><i class="fa-solid fa-comments text-lg" style="color:#000"></i></div>
-              <div onclick="navigate('health')" class="text-center px-3 py-0.5 cursor-pointer"><i class="fa-solid fa-heart-pulse text-lg" style="color:#000"></i></div>
-              <div onclick="navigate('timer')" class="text-center px-3 py-0.5 cursor-pointer"><i class="fa-solid fa-hourglass-half text-lg" style="color:#000"></i></div>
+            <div class="mt-1 flex justify-around items-center rounded-2xl py-1.5 px-2" style="background:var(--wm-surface-2);border:1px solid var(--wm-border)">
+              <div onclick="navigate('clock')" class="text-center px-3 py-0.5 cursor-pointer"><i class="fa-solid fa-clock text-lg" style="color:var(--wm-ink)"></i></div>
+              <div onclick="navigate('messages')" class="text-center px-3 py-0.5 cursor-pointer"><i class="fa-solid fa-comments text-lg" style="color:var(--wm-ink)"></i></div>
+              <div onclick="navigate('health')" class="text-center px-3 py-0.5 cursor-pointer"><i class="fa-solid fa-heart-pulse text-lg" style="color:var(--wm-ink)"></i></div>
+              <div onclick="navigate('timer')" class="text-center px-3 py-0.5 cursor-pointer"><i class="fa-solid fa-hourglass-half text-lg" style="color:var(--wm-ink)"></i></div>
             </div>
           </div>
 
-          <!-- Page dots -->
           <div class="page-dots">
             ${Array.from({length: totalPages}).map((_, i) => 
-              `<div class="page-dot ${i === homePage ? 'active' : ''}" onclick="switchHomePage(${i})" style="background:${i === homePage ? '#ff3d8b' : '#e6e6e6'}"></div>`
+              `<div class="page-dot ${i === homePage ? 'active' : ''}" onclick="switchHomePage(${i})" style="background:${i === homePage ? 'var(--wm-magenta)' : 'var(--wm-border)'}"></div>`
             ).join('')}
           </div>
         </div>
@@ -590,74 +615,69 @@
       }
     }
 
-    // HOME registration
     registerApp('home', (root) => {
       renderHome(root);
     }, 'fa-home');
 
-    // CLOCK
     registerApp('clock', (root) => {
       root.innerHTML = `
-        <div class="h-full flex flex-col items-center justify-center bg-[#ffffff]">
+        <div class="h-full flex flex-col items-center justify-center" style="background:var(--wm-bg)">
           <div class="relative w-52 h-52">
             <svg width="208" height="208" class="rotate-[-90deg]">
-              <circle cx="104" cy="104" r="92" fill="none" stroke="#e6e6e6" stroke-width="18"/>
+              <circle cx="104" cy="104" r="92" fill="none" stroke="var(--wm-border)" stroke-width="18"/>
               <circle cx="104" cy="104" r="92" fill="none" stroke="var(--wm-gold)" stroke-width="18"
                       stroke-dasharray="${(WM.state.time.m / 60) * 578} 578"/>
             </svg>
             <div class="absolute inset-0 flex items-center justify-center">
               <div class="text-center">
-                <div class="text-[42px] font-semibold tabular-nums tracking-[-1.5px] display-font" data-live-time>
+                <div class="text-[42px] font-semibold tabular-nums tracking-[-1.5px] display-font" data-live-time style="color:var(--wm-ink)">
                   ${String(WM.state.time.h).padStart(2,'0')}:${String(WM.state.time.m).padStart(2,'0')}
                 </div>
-                <div class="text-sm text-[#5f6166] tracking-[2px]">LUXE • 02</div>
+                <div class="text-sm tracking-[2px]" style="color:var(--wm-ink-soft)">LUXE • 02</div>
               </div>
             </div>
           </div>
-          <div onclick="navigate('settings')" class="mt-4 text-sm flex items-center gap-1.5 cursor-pointer text-[#ff3d8b]">
+          <div onclick="navigate('settings')" class="mt-4 text-sm flex items-center gap-1.5 cursor-pointer" style="color:var(--wm-magenta)">
             <i class="fa-solid fa-cog"></i> <span>CHANGE FACE</span>
           </div>
         </div>`;
     }, 'fa-clock');
 
-    // TIMER
     registerApp('timer', (root) => {
       const t = WM.state.timer;
+      const displaySec = Core.timerDisplaySeconds(t);
       root.innerHTML = `
-        <div class="h-full flex flex-col bg-[#ffffff]">
-          <div class="status-bar"><div class="px-3" style="color:#000">TIMER</div><div class="px-3 text-sm" style="color:#5f6166">PRESET ${t.preset/60}m</div></div>
+        <div class="h-full flex flex-col" style="background:var(--wm-bg)">
+          <div class="status-bar"><div class="px-3" style="color:var(--wm-ink)">TIMER</div><div class="px-3 text-sm" style="color:var(--wm-ink-soft)">PRESET ${t.preset/60}m</div></div>
           <div class="flex-1 flex flex-col items-center justify-center">
-            <div id="timer-display" class="text-6xl font-semibold tabular-nums tracking-[-2.5px] display-font" style="color:#000">${formatTime(t.remaining || t.preset)}</div>
+            <div id="timer-display" class="text-6xl font-semibold tabular-nums tracking-[-2.5px] display-font" style="color:var(--wm-ink)">${formatTime(displaySec)}</div>
             <div class="flex gap-3 mt-6">
-              <button onclick="toggleTimer(this)" class="lux-button px-8">${t.running ? 'PAUSE' : 'START'}</button>
+              <button onclick="toggleTimer()" class="lux-button px-8">${t.running ? 'PAUSE' : 'START'}</button>
               <button onclick="resetTimer()" class="lux-button secondary px-6">RESET</button>
             </div>
           </div>
           <div class="p-3 grid grid-cols-4 gap-2 text-sm">
             ${[60,180,300,600].map((s,i) => {
               const pastels = ['#dceeb1','#c5b0f4','#c8e6cd','#f3c9b6'];
-              return `<div onclick="setTimerPreset(${s}, this)" class="text-center py-1.5 rounded-xl cursor-pointer" style="background:${pastels[i]};color:#000">${s/60}m</div>`;
+              return `<div onclick="setTimerPreset(${s})" class="text-center py-1.5 rounded-xl cursor-pointer" style="background:${pastels[i]};color:#000">${s/60}m</div>`;
             }).join('')}
           </div>
         </div>`;
       if (t.running) startTimerLoop(root);
     }, 'fa-hourglass-half');
 
-    function setTimerPreset(sec, el) {
-      WM.state.timer = { remaining: sec, running: false, preset: sec };
+    function setTimerPreset(sec) {
+      Core.setTimerPreset(WM.state, sec);
       saveState();
       navigate('timer');
     }
-    function toggleTimer(btn) {
-      const t = WM.state.timer;
-      t.running = !t.running;
-      if (t.running && t.remaining === 0) t.remaining = t.preset;
+    function toggleTimer() {
+      Core.toggleTimer(WM.state);
       saveState();
       navigate('timer');
     }
     function resetTimer() {
-      WM.state.timer.running = false;
-      WM.state.timer.remaining = WM.state.timer.preset;
+      Core.resetTimer(WM.state);
       saveState();
       navigate('timer');
     }
@@ -666,103 +686,101 @@
       if (timerInterval) clearInterval(timerInterval);
       timerInterval = setInterval(() => {
         if (!WM.state.timer.running) { clearInterval(timerInterval); return; }
-        WM.state.timer.remaining = Math.max(0, WM.state.timer.remaining - 1);
+        const still = Core.tickTimer(WM.state);
         const disp = root.querySelector('#timer-display');
         if (disp) disp.textContent = formatTime(WM.state.timer.remaining);
-        if (WM.state.timer.remaining <= 0) {
-          WM.state.timer.running = false;
+        if (!still) {
           clearInterval(timerInterval);
           showToast('Timer complete — well done');
+          saveState();
+        } else {
           saveState();
         }
       }, 1000);
     }
 
-    // TASKS
     registerApp('tasks', (root) => {
       root.innerHTML = `
-        <div class="h-full flex flex-col text-sm bg-[#ffffff]">
-          <div class="app-header"><div>Tasks</div><div class="text-sm text-[#5f6166]">${WM.state.tasks.length} today</div></div>
+        <div class="h-full flex flex-col text-sm" style="background:var(--wm-bg)">
+          <div class="app-header"><div>Tasks</div><div class="text-sm" style="color:var(--wm-ink-soft)">${WM.state.tasks.length} today</div></div>
           <div class="flex-1 overflow-auto px-1 pb-2" style="scrollbar-width: none;">
-            ${WM.state.tasks.map((t, i) => `
+            ${WM.state.tasks.map((t) => `
               <div class="list-item cursor-pointer" onclick="toggleTask(${t.id}, this)">
-                <div class="w-4 h-4 rounded border flex-shrink-0 flex items-center justify-center ${t.done ? 'bg-[#ff3d8b] border-[#ff3d8b]' : 'border-[#e6e6e6]'}">
+                <div class="w-4 h-4 rounded border flex-shrink-0 flex items-center justify-center ${t.done ? '' : ''}"
+                     style="${t.done ? 'background:var(--wm-magenta);border-color:var(--wm-magenta)' : 'border-color:var(--wm-border)'}">
                   ${t.done ? '<i class="fa-solid fa-check text-[9px]"></i>' : ''}
                 </div>
-                <div class="flex-1 text-sm ${t.done ? 'line-through opacity-60' : ''}" style="color:#000">${t.text}</div>
-                <div class="text-sm text-[#5f6166]">${t.due}</div>
+                <div class="flex-1 text-sm ${t.done ? 'line-through opacity-60' : ''}" style="color:var(--wm-ink)">${t.text}</div>
+                <div class="text-sm" style="color:var(--wm-ink-soft)">${t.due}</div>
               </div>
             `).join('')}
           </div>
-          <div class="p-3 border-t border-[#e6e6e6]">
-            <input id="new-task" placeholder="New task..." class="w-full bg-[#f7f7f5] border border-[#e6e6e6] rounded-xl px-3 py-2 text-sm placeholder:text-[#5f6166]" style="color:#000"
+          <div class="p-3" style="border-top:1px solid var(--wm-border)">
+            <input id="new-task" placeholder="New task..." class="w-full rounded-xl px-3 py-2 text-sm"
+                   style="background:var(--wm-surface-2);border:1px solid var(--wm-border);color:var(--wm-ink)"
                    onkeydown="if(event.key==='Enter') addTask(this)">
           </div>
         </div>`;
     }, 'fa-list-check');
 
     function toggleTask(id, el) {
-      const t = WM.state.tasks.find(x => x.id === id);
+      const t = Core.toggleTask(WM.state, id);
       if (!t) return;
-      t.done = !t.done;
       saveState();
-      // Quick visual
       const check = el.querySelector('.w-4');
       if (t.done) {
-        check.classList.add('bg-[#ff3d8b]', 'border-[#ff3d8b]');
-        check.classList.remove('border-[#e6e6e6]');
+        check.style.background = 'var(--wm-magenta)';
+        check.style.borderColor = 'var(--wm-magenta)';
         check.innerHTML = '<i class="fa-solid fa-check text-[9px]"></i>';
         el.querySelector('div.flex-1').classList.add('line-through', 'opacity-60');
       } else {
-        check.classList.remove('bg-[#ff3d8b]', 'border-[#ff3d8b]');
-        check.classList.add('border-[#e6e6e6]');
+        check.style.background = 'transparent';
+        check.style.borderColor = 'var(--wm-border)';
         check.innerHTML = '';
         el.querySelector('div.flex-1').classList.remove('line-through', 'opacity-60');
       }
     }
     function addTask(input) {
-      if (!input.value.trim()) return;
-      WM.state.tasks.unshift({ id: Date.now(), text: input.value.trim(), done: false, due: 'Today' });
+      if (!Core.addTask(WM.state, input.value)) return;
       saveState();
       navigate('tasks');
     }
 
-    // MESSAGES
     registerApp('messages', (root) => {
       root.innerHTML = `
-        <div class="h-full flex flex-col bg-[#ffffff]">
-          <div class="app-header"><div>Messages</div><div onclick="navigate('new-msg')" class="text-[#ff3d8b] text-sm cursor-pointer">NEW</div></div>
+        <div class="h-full flex flex-col" style="background:var(--wm-bg)">
+          <div class="app-header"><div>Messages</div><div onclick="navigate('new-msg')" class="text-sm cursor-pointer" style="color:var(--wm-magenta)">NEW</div></div>
           <div class="flex-1 overflow-auto px-2 space-y-px text-sm">
             ${WM.state.messages.map(m => `
-              <div class="p-2.5 rounded-2xl ${m.me ? 'ml-6' : 'bg-[#f7f7f5] mr-6'}" style="${m.me ? 'background:#c5b0f4' : ''}">
-                <div class="flex justify-between text-sm" style="color:#5f6166;opacity:0.85"><div>${m.from}</div><div>${m.time}</div></div>
-                <div class="mt-0.5" style="color:#000">${m.text}</div>
+              <div class="p-2.5 rounded-2xl ${m.me ? 'ml-6' : 'mr-6'}" style="${m.me ? 'background:var(--wm-lilac)' : 'background:var(--wm-surface-2)'}">
+                <div class="flex justify-between text-sm" style="color:var(--wm-ink-soft);opacity:0.85"><div>${m.from}</div><div>${m.time}</div></div>
+                <div class="mt-0.5" style="color:var(--wm-ink)">${m.text}</div>
               </div>
             `).join('')}
           </div>
-          <div class="p-2 border-t border-[#e6e6e6] flex gap-2">
-            <input id="msg-input" placeholder="Reply..." class="flex-1 bg-[#f7f7f5] rounded-2xl px-3 py-1.5 text-sm" style="color:#000"
+          <div class="p-2 flex gap-2" style="border-top:1px solid var(--wm-border)">
+            <input id="msg-input" placeholder="Reply..." class="flex-1 rounded-2xl px-3 py-1.5 text-sm"
+                   style="background:var(--wm-surface-2);color:var(--wm-ink)"
                    onkeydown="if(event.key==='Enter') sendMessage(this)">
-            <button onclick="sendMessage()" class="px-4 rounded-2xl bg-[#ff3d8b] text-sm font-medium" style="color:#fff">Send</button>
+            <button onclick="sendMessage()" class="px-4 rounded-2xl text-sm font-medium" style="background:var(--wm-magenta);color:#fff">Send</button>
           </div>
         </div>`;
     }, 'fa-comments');
 
     function sendMessage(inputEl) {
       const input = inputEl || document.getElementById('msg-input');
-      if (!input || !input.value.trim()) return;
-      WM.state.messages.push({ id: Date.now(), from: 'You', text: input.value.trim(), time: 'now', me: true });
+      if (!input) return;
+      if (!Core.sendMessage(WM.state, input.value)) return;
       saveState();
       navigate('messages');
     }
 
-    // WALLET
     registerApp('wallet', (root) => {
       root.innerHTML = `
-        <div class="h-full flex flex-col p-3 bg-[#ffffff]">
-          <div class="text-sm text-[#5f6166]">WALLET</div>
-          <div class="mt-1 text-3xl font-semibold display-font" style="color:#000">$${WM.state.wallet.balance}</div>
-          <div class="mt-4 text-sm" style="color:#5f6166">Cards • ${WM.state.wallet.cards}</div>
+        <div class="h-full flex flex-col p-3" style="background:var(--wm-bg)">
+          <div class="text-sm" style="color:var(--wm-ink-soft)">WALLET</div>
+          <div class="mt-1 text-3xl font-semibold display-font" style="color:var(--wm-ink)">$${Number(WM.state.wallet.balance).toFixed(2)}</div>
+          <div class="mt-4 text-sm" style="color:var(--wm-ink-soft)">Cards • ${WM.state.wallet.cards}</div>
           <div class="mt-auto grid grid-cols-2 gap-2">
             <div onclick="simulateNFC()" class="lux-button flex items-center justify-center gap-2 text-sm py-3"><i class="fa-solid fa-wifi"></i> TAP TO PAY</div>
             <div onclick="navigate('confirm-tx')" class="lux-button secondary flex items-center justify-center gap-2 text-sm py-3">SEND</div>
@@ -771,63 +789,65 @@
     }, 'fa-wallet');
 
     function simulateNFC() {
+      // Debit once immediately (durable), then show confirmation UI
+      const bal = Core.nfcPay(WM.state);
+      if (bal == null) return;
+      saveState();
       const root = document.getElementById('screen-root');
-      root.innerHTML = `<div class="h-full flex flex-col items-center justify-center bg-[#ffffff]">
-        <div class="w-20 h-20 rounded-full border-[6px] border-[#ff3d8b] flex items-center justify-center animate-pulse">
-          <i class="fa-solid fa-wifi text-3xl text-[#ff3d8b]"></i>
+      root.innerHTML = `<div class="h-full flex flex-col items-center justify-center" style="background:var(--wm-bg)">
+        <div class="w-20 h-20 rounded-full border-[6px] flex items-center justify-center animate-pulse" style="border-color:var(--wm-magenta)">
+          <i class="fa-solid fa-wifi text-3xl" style="color:var(--wm-magenta)"></i>
         </div>
-        <div class="mt-4 text-sm" style="color:#000">Payment approved</div>
-        <div class="text-sm text-[#5f6166] mt-0.5">- $42.00 • Coffee Lab</div>
-        <button onclick="navigate('wallet')" class="mt-8 text-sm px-5 py-2 rounded-full bg-[#f7f7f5]" style="color:#000">Done</button>
+        <div class="mt-4 text-sm" style="color:var(--wm-ink)">Payment approved</div>
+        <div class="text-sm mt-0.5" style="color:var(--wm-ink-soft)">- $${Core.NFC_AMOUNT.toFixed(2)} • Coffee Lab</div>
+        <div class="text-sm mt-2" style="color:var(--wm-ink)">Balance $${Number(WM.state.wallet.balance).toFixed(2)}</div>
+        <button onclick="navigate('wallet')" class="mt-8 text-sm px-5 py-2 rounded-full" style="background:var(--wm-surface-2);color:var(--wm-ink)">Done</button>
       </div>`;
-      setTimeout(() => { WM.state.wallet.balance -= 42; saveState(); }, 1800);
     }
 
-    // HEALTH (with fake chart)
     registerApp('health', (root) => {
       root.innerHTML = `
-        <div class="h-full p-3 flex flex-col bg-[#ffffff]">
-          <div class="text-sm mb-1" style="color:#000">TODAY • ${WM.state.health.steps.toLocaleString()} STEPS</div>
+        <div class="h-full p-3 flex flex-col" style="background:var(--wm-bg)">
+          <div class="text-sm mb-1" style="color:var(--wm-ink)">TODAY • ${WM.state.health.steps.toLocaleString()} STEPS</div>
           <div class="flex justify-between text-sm mb-1">
-            <div style="color:#ff3d8b">MOVE ${WM.state.health.move}%</div>
-            <div style="color:#c5a26f">EX ${WM.state.health.exercise}%</div>
+            <div style="color:var(--wm-magenta)">MOVE ${WM.state.health.move}%</div>
+            <div style="color:var(--wm-gold)">EX ${WM.state.health.exercise}%</div>
             <div style="color:#1ea64a">STAND ${WM.state.health.stand}h</div>
           </div>
           <div class="flex-1 flex items-center justify-center">
             <svg width="148" height="148">
-              <circle cx="74" cy="74" r="62" fill="none" stroke="#e6e6e6" stroke-width="18"/>
-              <circle cx="74" cy="74" r="62" fill="none" stroke="#ff3d8b" stroke-width="18" 
+              <circle cx="74" cy="74" r="62" fill="none" stroke="var(--wm-border)" stroke-width="18"/>
+              <circle cx="74" cy="74" r="62" fill="none" stroke="var(--wm-magenta)" stroke-width="18" 
                       stroke-dasharray="${WM.state.health.move * 3.89} 389" transform="rotate(-90 74 74)"/>
-              <circle cx="74" cy="74" r="42" fill="none" stroke="#e6e6e6" stroke-width="14"/>
-              <circle cx="74" cy="74" r="42" fill="none" stroke="#c5a26f" stroke-width="14" 
+              <circle cx="74" cy="74" r="42" fill="none" stroke="var(--wm-border)" stroke-width="14"/>
+              <circle cx="74" cy="74" r="42" fill="none" stroke="var(--wm-gold)" stroke-width="14" 
                       stroke-dasharray="${WM.state.health.exercise * 2.64} 264" transform="rotate(-90 74 74)"/>
             </svg>
           </div>
-          <div onclick="navigate('settings')" class="text-center text-sm text-[#ff3d8b] cursor-pointer">VIEW TRENDS →</div>
+          <div onclick="navigate('settings')" class="text-center text-sm cursor-pointer" style="color:var(--wm-magenta)">VIEW TRENDS →</div>
         </div>`;
     }, 'fa-heart-pulse');
 
-    // MUSIC
     registerApp('music', (root) => {
       const m = WM.state.music;
       root.innerHTML = `
-        <div class="h-full flex flex-col p-3 bg-[#ffffff]">
-          <div class="text-sm" style="color:#5f6166">NOW PLAYING</div>
-          <div class="mt-2 text-lg font-medium leading-none" style="color:#000">${m.track}</div>
-          <div class="text-sm text-[#5f6166]">Hania Rani • 2024</div>
+        <div class="h-full flex flex-col p-3" style="background:var(--wm-bg)">
+          <div class="text-sm" style="color:var(--wm-ink-soft)">NOW PLAYING</div>
+          <div class="mt-2 text-lg font-medium leading-none" style="color:var(--wm-ink)">${m.track}</div>
+          <div class="text-sm" style="color:var(--wm-ink-soft)">Hania Rani • 2024</div>
           <div class="mt-5">
-            <div class="h-0.5 bg-[#f7f7f5] rounded">
-              <div id="music-progress" class="h-0.5 bg-[#ff3d8b] rounded" style="width:${m.progress}%"></div>
+            <div class="h-0.5 rounded" style="background:var(--wm-surface-2)">
+              <div id="music-progress" class="h-0.5 rounded" style="width:${m.progress}%;background:var(--wm-magenta)"></div>
             </div>
           </div>
-          <div class="flex justify-between text-sm text-[#5f6166] mt-0.5"><div>1:41</div><div>4:03</div></div>
+          <div class="flex justify-between text-sm mt-0.5" style="color:var(--wm-ink-soft)"><div>1:41</div><div>4:03</div></div>
           <div class="mt-auto flex items-center justify-between px-2">
-            <i onclick="toggleMusic(this)" class="fa-solid ${m.playing ? 'fa-pause' : 'fa-play'} text-xl cursor-pointer" style="color:#000"></i>
+            <i onclick="toggleMusic(this)" class="fa-solid ${m.playing ? 'fa-pause' : 'fa-play'} text-xl cursor-pointer" style="color:var(--wm-ink)"></i>
             <div class="flex-1 mx-4">
               <input type="range" min="0" max="100" value="${m.volume}" 
-                     oninput="WM.state.music.volume = +this.value; saveState()" class="w-full accent-[#c5a26f]">
+                     oninput="WM.state.music.volume = +this.value; saveState()" class="w-full" style="accent-color:var(--wm-gold)">
             </div>
-            <i class="fa-solid fa-volume-up" style="color:#5f6166"></i>
+            <i class="fa-solid fa-volume-up" style="color:var(--wm-ink-soft)"></i>
           </div>
         </div>`;
     }, 'fa-music');
@@ -839,114 +859,158 @@
       saveState();
     }
 
-    // SETTINGS
     registerApp('settings', (root) => {
       root.innerHTML = `
-        <div class="h-full flex flex-col text-sm bg-[#ffffff]">
+        <div class="h-full flex flex-col text-sm" style="background:var(--wm-bg)">
           <div class="app-header">Settings</div>
           <div class="px-2 flex-1 overflow-auto text-sm space-y-1">
-            <div class="list-item justify-between" onclick="cycleTheme()"><div>Theme</div><div class="text-[#ff3d8b]">${WM.state.theme.toUpperCase()}</div></div>
+            <div class="list-item justify-between" onclick="cycleTheme()"><div>Theme</div><div style="color:var(--wm-magenta)">${WM.state.theme.toUpperCase()}</div></div>
             <div class="list-item justify-between"><div>Always On Display</div><div style="color:#1ea64a">ON</div></div>
             <div class="list-item justify-between" onclick="WM.state.battery = Math.max(12, WM.state.battery-8); saveState(); navigate('settings')">
-              <div>Battery Saver</div><div style="color:#000">${WM.state.battery}%</div>
+              <div>Battery Saver</div><div style="color:var(--wm-ink)">${WM.state.battery}%</div>
             </div>
-            <div class="list-item justify-between"><div>Reduce Motion</div><div class="text-[#5f6166]">OFF</div></div>
+            <div class="list-item justify-between"><div>Reduce Motion</div><div style="color:var(--wm-ink-soft)">OFF</div></div>
             <div class="list-item justify-between"><div>Crown Haptics</div><div style="color:#1ea64a">ON</div></div>
           </div>
-          <div class="p-3 text-center text-sm text-[#5f6166]">Watch Me OS 1.0 • Build 2026.06</div>
+          <div class="p-3 text-center text-sm" style="color:var(--wm-ink-soft)">Watch Me OS 1.0 • Build 2026.06</div>
         </div>`;
     }, 'fa-cog');
 
-    // NEW MESSAGE (Figma card inspired)
     registerApp('new-msg', (root) => {
       root.innerHTML = `
-        <div class="p-3 h-full flex flex-col bg-[#ffffff]">
-          <div class="text-sm mb-1" style="color:#000">NEW MESSAGE</div>
-          <input placeholder="To: " class="bg-[#f7f7f5] rounded px-3 py-1 text-sm mb-2" value="Sarah Chen" style="color:#000">
-          <textarea class="flex-1 bg-[#f7f7f5] rounded-xl p-3 text-sm resize-none" placeholder="Type message..." style="color:#000"></textarea>
+        <div class="p-3 h-full flex flex-col" style="background:var(--wm-bg)">
+          <div class="text-sm mb-1" style="color:var(--wm-ink)">NEW MESSAGE</div>
+          <input id="new-msg-to" placeholder="To: " class="rounded px-3 py-1 text-sm mb-2" value="Sarah Chen"
+                 style="background:var(--wm-surface-2);color:var(--wm-ink);border:1px solid var(--wm-border)">
+          <textarea id="new-msg-body" class="flex-1 rounded-xl p-3 text-sm resize-none" placeholder="Type message..."
+                    style="background:var(--wm-surface-2);color:var(--wm-ink);border:1px solid var(--wm-border)"></textarea>
           <div class="flex gap-2 mt-2">
-            <button onclick="navigate('messages')" class="flex-1 py-2 rounded-2xl bg-[#f7f7f5] text-sm" style="color:#000">CANCEL</button>
-            <button onclick="sendQuickMessage(this)" class="flex-1 py-2 rounded-2xl lux-button text-sm">SEND</button>
+            <button onclick="navigate('messages')" class="flex-1 py-2 rounded-2xl text-sm" style="background:var(--wm-surface-2);color:var(--wm-ink)">CANCEL</button>
+            <button onclick="sendQuickMessage()" class="flex-1 py-2 rounded-2xl lux-button text-sm">SEND</button>
           </div>
         </div>`;
     }, 'fa-paper-plane');
 
-    function sendQuickMessage(btn) {
-      WM.state.messages.push({id: Date.now(), from:'You', text:'Quick reply sent', time:'now', me:true});
+    function sendQuickMessage() {
+      const body = document.getElementById('new-msg-body');
+      const text = body ? body.value : '';
+      if (!Core.sendMessage(WM.state, text)) {
+        showToast('Type a message first');
+        return;
+      }
       saveState();
       showToast('Message sent');
       navigate('messages');
     }
 
-    // CONFIRM TX stub
     registerApp('confirm-tx', (root) => {
-      root.innerHTML = `<div class="h-full flex flex-col items-center justify-center p-4 text-center bg-[#ffffff]">
-        <div class="text-2xl font-semibold display-font" style="color:#000">-$180</div>
-        <div class="text-sm mt-1" style="color:#5f6166">to Atelier Reserve</div>
-        <button onclick="confirmTx(this)" class="mt-8 lux-button px-10">CONFIRM WITH CROWN</button>
-        <div class="text-sm text-[#5f6166] mt-3">Drag crown to authorize</div>
+      root.innerHTML = `<div class="h-full flex flex-col items-center justify-center p-4 text-center" style="background:var(--wm-bg)">
+        <div class="text-2xl font-semibold display-font" style="color:var(--wm-ink)">-$${Core.CONFIRM_TX_AMOUNT}</div>
+        <div class="text-sm mt-1" style="color:var(--wm-ink-soft)">to Atelier Reserve</div>
+        <button id="confirm-tx-btn" onclick="confirmTx(this)" class="mt-8 lux-button px-10">CONFIRM WITH CROWN</button>
+        <div class="text-sm mt-3" style="color:var(--wm-ink-soft)">Tap to authorize once</div>
       </div>`;
     }, 'fa-credit-card');
 
     function confirmTx(btn) {
+      if (btn.dataset.done === '1') return;
+      btn.dataset.done = '1';
+      const bal = Core.confirmTransaction(WM.state);
+      if (bal == null) return;
+      saveState();
       btn.textContent = 'AUTHORIZED ✓';
       btn.style.background = '#16a34a';
-      setTimeout(() => { WM.state.wallet.balance -= 180; saveState(); navigate('wallet'); }, 900);
+      btn.style.color = '#fff';
+      setTimeout(() => { navigate('wallet'); }, 900);
     }
 
-    // ==================== NOTIFICATIONS & DEMO ====================
     function postDemoNotification() {
       WM.state.notifications.unshift({ id: Date.now(), title: 'New activity ring closed', type: 'health' });
+      saveState();
       showToast('Notification posted');
       if (WM.state.currentApp === 'notifications') renderApp('notifications');
     }
 
     registerApp('notifications', (root) => {
       root.innerHTML = `
-        <div class="p-3 bg-[#ffffff] h-full">
-          <div class="text-sm mb-2" style="color:#000">NOTIFICATIONS</div>
+        <div class="p-3 h-full" style="background:var(--wm-bg)">
+          <div class="text-sm mb-2" style="color:var(--wm-ink)">NOTIFICATIONS</div>
           ${WM.state.notifications.length ? WM.state.notifications.map(n => `
-            <div class="list-item text-sm" style="color:#000">${n.title}</div>
-          `).join('') : `<div class="text-center py-8 text-sm text-[#5f6166]">All caught up</div>`}
+            <div class="list-item text-sm" style="color:var(--wm-ink)">${n.title}</div>
+          `).join('') : `<div class="text-center py-8 text-sm" style="color:var(--wm-ink-soft)">All caught up</div>`}
         </div>`;
     }, 'fa-bell');
+
+    registerApp('activity', (r) => {
+      r.innerHTML = `<div class="p-4 text-sm h-full" style="background:var(--wm-bg);color:var(--wm-ink)">Activity rings live in Health app. <span onclick="navigate('health')" class="underline cursor-pointer" style="color:var(--wm-magenta)">Open Health →</span></div>`;
+    }, 'fa-chart-line');
+
+    registerApp('team', (r) => {
+      const contacts = WM.state.contacts || [];
+      r.innerHTML = `<div class="p-4 h-full overflow-auto" style="background:var(--wm-bg)">
+        <div class="text-sm mb-2" style="color:var(--wm-ink)">TEAM</div>
+        <div class="flex -space-x-2 mb-3">${['#dceeb1','#c5b0f4','#c8e6cd','#f3c9b6'].map(c=>`<div class="w-7 h-7 rounded-full" style="background:${c};border:1px solid var(--wm-border)"></div>`).join('')}</div>
+        <div class="text-sm mb-2" style="color:var(--wm-ink-soft)">4 members online${contacts.length ? ` · ${contacts.length} added` : ''}</div>
+        ${contacts.map(c => `<div class="list-item text-sm" style="color:var(--wm-ink)">${c.name}</div>`).join('')}
+        <button onclick="navigate('add-contact')" class="mt-3 lux-button text-sm px-4 py-2">Add contact</button>
+      </div>`;
+    }, 'fa-users');
+
+    registerApp('add-contact', (r) => {
+      r.innerHTML = `<div class="p-4 h-full flex flex-col text-sm" style="background:var(--wm-bg);color:var(--wm-ink)">
+        <div class="font-semibold mb-3">Add Contact</div>
+        <div class="w-14 h-14 rounded-full mx-auto mb-3" style="background:var(--wm-surface-2);border:1px solid var(--wm-border)"></div>
+        <input id="contact-name" placeholder="Name" class="w-full rounded-xl px-3 py-2 mb-2"
+               style="background:var(--wm-surface-2);border:1px solid var(--wm-border);color:var(--wm-ink)"
+               onkeydown="if(event.key==='Enter') submitContact()">
+        <button onclick="submitContact()" class="lux-button w-full py-2 mt-auto">ADD TO TEAM</button>
+      </div>`;
+    }, 'fa-user-plus');
+
+    function submitContact() {
+      const input = document.getElementById('contact-name');
+      const name = input ? input.value : '';
+      const c = Core.addContact(WM.state, name);
+      if (!c) {
+        showToast('Enter a name');
+        return;
+      }
+      saveState();
+      showToast(`Added ${c.name}`);
+      navigate('team');
+    }
 
     // ==================== BOOT & INIT ====================
     function bootWatch() {
       loadState();
-      
-      // Initial theme
-      const th = WM.state.theme || 'dark';
-      if (th !== 'dark') document.documentElement.setAttribute('data-theme', th);
-      document.getElementById('theme-label').textContent = th.toUpperCase();
+      applyThemeToDom(WM.state.theme);
 
-      // Crystal reflection mouse follow
+      // Optional crystal reflection — only if hardware chrome exists (legacy-safe)
       const crystal = document.getElementById('crystal');
       const refl = document.getElementById('reflection');
-      crystal.addEventListener('mousemove', (e) => {
-        const r = crystal.getBoundingClientRect();
-        const x = ((e.clientX - r.left) / r.width) * 100;
-        const y = ((e.clientY - r.top) / r.height) * 100;
-        refl.style.background = `radial-gradient(circle at ${x}% ${y}%, rgba(255,255,255,0.38) 3%, transparent 26%, transparent 58%, rgba(255,255,255,0.05) 76%)`;
-      });
-      crystal.addEventListener('mouseleave', () => {
-        refl.style.background = `linear-gradient(135deg, rgba(255,255,255,0.32) 4%, transparent 22%, transparent 52%, rgba(255,255,255,0.06) 72%, transparent 88%)`;
-      });
+      if (crystal && refl) {
+        crystal.addEventListener('mousemove', (e) => {
+          const r = crystal.getBoundingClientRect();
+          const x = ((e.clientX - r.left) / r.width) * 100;
+          const y = ((e.clientY - r.top) / r.height) * 100;
+          refl.style.background = `radial-gradient(circle at ${x}% ${y}%, rgba(255,255,255,0.38) 3%, transparent 26%, transparent 58%, rgba(255,255,255,0.05) 76%)`;
+        });
+        crystal.addEventListener('mouseleave', () => {
+          refl.style.background = `linear-gradient(135deg, rgba(255,255,255,0.32) 4%, transparent 22%, transparent 52%, rgba(255,255,255,0.06) 72%, transparent 88%)`;
+        });
+      }
 
       initCrown();
       initSideButton();
 
-      // Boot to home or last app
       updateTime();
-      setInterval(updateTime, 30000); // every 30s
+      setInterval(updateTime, 30000);
 
-      // Start on home
       setTimeout(() => {
         navigate(WM.state.currentApp || 'home');
         showToast('Watch Me OS ready — crown is live');
       }, 180);
 
-      // Expose powerful test API (enhanced with gyro + detent from parallel agent)
       window.WM.test = {
         crown: (d = 80) => applyCrownEffect(d),
         navigate: (a) => navigate(a),
@@ -954,26 +1018,33 @@
         persist: () => { saveState(); return 'saved'; },
         reset: resetAll,
         state: () => WM.state,
-        enableGyro: () => {
-          if (window.DeviceOrientationEvent) {
-            window.addEventListener('deviceorientation', (ev) => {
-              if (ev.gamma) applyCrownEffect(ev.gamma * 0.8);
-            }, { once: true });
-            alert('Gyro enabled — tilt device to drive crown (permission may be required on iOS)');
-          }
+        core: Core,
+        sideButton: () => sideButtonCtrl,
+        setPreset: (s) => setTimerPreset(s),
+        toggleTimer: () => toggleTimer(),
+        resetTimer: () => resetTimer(),
+        sendMessage: (t) => {
+          Core.sendMessage(WM.state, t);
+          saveState();
+          return WM.state.messages[WM.state.messages.length - 1];
+        },
+        nfc: () => { simulateNFC(); return WM.state.wallet.balance; },
+        confirm: () => {
+          Core.confirmTransaction(WM.state);
+          saveState();
+          return WM.state.wallet.balance;
         }
       };
 
-      // Keyboard support
       document.addEventListener('keydown', (e) => {
-        if (e.key === '/' && document.activeElement.tagName === 'BODY') {
+        if (Core.isTypingTarget(document.activeElement)) return;
+        if (e.key === '/' ) {
           e.preventDefault();
           navigate('messages');
         }
         if (e.key.toLowerCase() === 'h') navigate('home');
       });
 
-      // Luxury crown detent audio (from parallel agent best practice)
       try {
         const AudioCtx = window.AudioContext || window.webkitAudioContext;
         WM.audio = new AudioCtx();
@@ -990,12 +1061,11 @@
         };
       } catch (_) { WM.playDetent = () => {}; }
 
-      // Visible dev harness (expanded)
       const harness = document.createElement('div');
       harness.className = 'dev-harness';
       harness.innerHTML = `
         <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">
-          <strong style="color:#ff3d8b">WM TEST</strong>
+          <strong style="color:var(--wm-magenta)">WM TEST</strong>
           <button onclick="WM.test.crown(90)">Crown +90</button>
           <button onclick="WM.test.navigate('timer')">Timer</button>
           <button onclick="WM.test.navigate('health')">Health</button>
@@ -1005,22 +1075,16 @@
           <span style="margin-left:auto;opacity:.6">drag crown • long side-btn</span>
         </div>`;
       const container = document.getElementById('watch-container');
-      if (container) container.parentNode.insertBefore(harness, container.nextSibling);
+      if (container && container.parentNode) container.parentNode.insertBefore(harness, container.nextSibling);
 
-      console.log('%c[Watch Me OS] Boot complete. Figma colors + square hardware ready.', 'color:#ff3d8b');
+      console.log('%c[Watch Me OS] Boot complete. Core helpers + square hardware ready.', 'color:#ff3d8b');
     }
 
     function resetAll() {
-      localStorage.removeItem('wm_state_v1');
+      localStorage.removeItem(Core.STORAGE_KEY);
       location.reload();
     }
 
-    // Register a few more for switcher completeness
-    registerApp('activity', (r) => { r.innerHTML = `<div class="p-4 text-sm bg-[#ffffff] h-full" style="color:#000">Activity rings live in Health app. <span onclick="navigate('health')" class="underline cursor-pointer" style="color:#ff3d8b">Open Health →</span></div>`; }, 'fa-chart-line');
-    registerApp('team', (r) => { r.innerHTML = `<div class="p-4 bg-[#ffffff] h-full"><div class="text-sm mb-2" style="color:#000">TEAM</div><div class="flex -space-x-2">${[ '#dceeb1','#c5b0f4','#c8e6cd','#f3c9b6' ].map(c=>`<div class="w-7 h-7 rounded-full" style="background:${c};border:1px solid #e6e6e6"></div>`).join('')}</div><div class="text-sm mt-2" style="color:#5f6166">4 members online</div></div>`; }, 'fa-users');
-    registerApp('add-contact', (r) => { r.innerHTML = `<div class="p-4 text-sm bg-[#ffffff] h-full" style="color:#000">Add contact form stub. <button onclick="navigate('messages')" class="underline" style="color:#ff3d8b">Done</button></div>`; }, 'fa-user-plus');
-
-    // Auto boot
     window.onload = bootWatch;
   </script>
 </body>

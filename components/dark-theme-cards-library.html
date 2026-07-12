@@ -19,16 +19,11 @@
     .scale-control { accent-color: #7640ef; }
     .card-label { font-size: 12px; font-weight: 600; letter-spacing: -.2px; }
     .figma-tag { font-size: 9px; padding: 1px 6px; border-radius: 999px; background: rgba(255,255,255,.08); color: #888; }
-    .masonry { column-count: 5; column-gap: 18px; }
-    @media (max-width: 1280px) { .masonry { column-count: 4; } }
-    @media (max-width: 1024px) { .masonry { column-count: 3; } }
-    @media (max-width: 640px) { .masonry { column-count: 2; } }
     .gallery-item { break-inside: avoid; margin-bottom: 22px; }
   </style>
 </head>
 <body class="bg-zinc-950 text-white theme-dark">
   <div class="max-w-screen-2xl mx-auto px-8 pt-8 pb-12">
-    <!-- Hero Header -->
     <div class="flex items-end justify-between mb-8">
       <div>
         <div class="uppercase tracking-[3px] text-xs text-white/50 mb-1">WATCH ME • 2026</div>
@@ -41,10 +36,8 @@
       </div>
     </div>
 
-    <!-- Controls -->
     <div class="sticky top-0 z-50 bg-zinc-950/95 backdrop-blur-lg py-4 border-b border-white/10 mb-8 -mx-1 px-1">
       <div class="flex flex-wrap gap-x-5 gap-y-3 items-center">
-        <!-- Theme Switcher -->
         <div>
           <div class="text-[10px] uppercase tracking-widest text-white/40 mb-1">THEME</div>
           <div class="flex rounded-3xl overflow-hidden border border-white/10">
@@ -54,7 +47,6 @@
           </div>
         </div>
 
-        <!-- Scale -->
         <div class="min-w-[260px]">
           <div class="flex justify-between items-baseline mb-1">
             <div class="text-[10px] uppercase tracking-widest text-white/40">SCALE</div>
@@ -63,7 +55,6 @@
           <input type="range" min="0.75" max="2.5" step="0.05" value="1" class="scale-control w-full accent-[#7640ef]" oninput="updateScale(this.value)">
         </div>
 
-        <!-- Search -->
         <div class="flex-1 min-w-[210px]">
           <div class="text-[10px] uppercase tracking-widest text-white/40 mb-1">SEARCH</div>
           <input id="search" type="text" placeholder="Filter by name, tag, or Figma node..." class="w-full bg-zinc-900 border border-white/10 rounded-2xl px-4 py-2 text-sm placeholder:text-white/30 focus:outline-none focus:border-[#7640ef]/60" oninput="filterCards()">
@@ -76,7 +67,6 @@
       </div>
     </div>
 
-    <!-- Gallery -->
     <div id="gallery" class="library-grid"></div>
 
     <div class="mt-12 text-center text-xs text-white/40">
@@ -86,36 +76,41 @@
   </div>
 
   <script>
-    // Card registry: id, name, figma, html (inner rich demo), tags
+    // Card registry: demo maps to real files under components/cards/
+    // html is INNER content only (single .watch-card wrapper applied at render — no nested double frames)
     const CARDS = [
-      { id:1, name:"New Message", figma:"0:2", tags:"message compose", html: `<div class="watch-card p-3 flex flex-col items-center justify-center relative" data-theme="dark"><div class="w-16 h-16 rounded-full flex items-center justify-center" style="background:#7640ef"><div class="w-7 h-7 bg-white rounded-xl flex items-center justify-center">💬</div></div><div class="mt-2 text-sm font-bold">New Message</div><div class="text-xs text-white/60">Oliver Adams</div><div onclick="event.target.closest('.watch-card').querySelector('button').click()" class="absolute bottom-3 text-[10px] px-3 py-px rounded bg-[#7640ef] text-white">SEND</div></div>` },
-      { id:2, name:"Voice Message", figma:"0:18", tags:"voice mic recorder", html: `<div class="watch-card flex flex-col items-center justify-center"><div class="text-center text-sm font-bold">Leave<br>voice message</div><div class="mt-4 w-14 h-14 rounded-full border-[5px] border-[#7d3ef3] flex items-center justify-center"><div class="w-6 h-6 bg-[#16171a] rounded-full"></div></div><div class="mt-3 text-xs text-white/50">Tap &amp; hold</div></div>` },
-      { id:3, name:"Timer", figma:"0:34", tags:"timer countdown focus", html: `<div class="watch-card p-3"><div class="text-xs text-white/50 text-center">TIMER</div><div class="text-center font-mono text-4xl font-semibold mt-3">14:33</div><div onclick="this.textContent='RUNNING'" class="mt-4 mx-auto w-5/6 h-7 flex items-center justify-center text-xs rounded bg-[#7640ef]">START</div></div>` },
-      { id:4, name:"Wallet", figma:"0:289", tags:"finance cards crypto", html: `<div class="watch-card p-3"><div class="text-xs text-white/50">BALANCE</div><div class="text-2xl font-semibold">$12,051</div><div class="mt-3 space-y-1"><div class="h-9 bg-white rounded p-1 text-[#1b1d21] text-xs">••••5752</div><div class="h-7 bg-white/90 rounded p-1 -mt-0.5 text-xs text-[#1b1d21]">••••9191</div></div></div>` },
-      { id:5, name:"Overall Progress", figma:"0:58", tags:"progress health ring", html: `<div class="watch-card p-3 flex flex-col"><div class="text-xs text-white/50">20:00</div><div class="flex-1 flex items-center justify-center"><div class="relative w-20 h-20"><svg viewBox="0 0 80 80" class="w-20 h-20 -rotate-90"><circle cx="40" cy="40" r="32" fill="none" stroke="#272a31" stroke-width="9"/><circle cx="40" cy="40" r="32" fill="none" stroke="#7640ef" stroke-width="9" stroke-dasharray="201" stroke-dashoffset="95"/></svg><div class="absolute inset-0 flex items-center justify-center text-2xl font-bold">40%</div></div></div></div>` },
-      { id:6, name:"Clock", figma:"0:72", tags:"time analog", html: `<div class="watch-card flex flex-col items-center justify-center"><div class="relative w-20 h-20 rounded-full border-[5px] border-white/10"><div class="absolute top-1/2 left-1/2 w-0.5 h-6 bg-white origin-bottom -translate-x-1/2 -translate-y-full" style="transform:rotate(135deg)"></div><div class="absolute top-1/2 left-1/2 w-[2px] h-8 bg-[#7640ef] origin-bottom -translate-x-1/2 -translate-y-full" style="transform:rotate(45deg)"></div></div><div class="mt-2 text-xs">09:41</div></div>` },
-      { id:7, name:"Confirm Transaction", figma:"0:90", tags:"payment confirm", html: `<div class="watch-card flex flex-col items-center justify-center"><div class="w-16 h-16 rounded-full flex items-center justify-center" style="background:#7640ef"><i class="fa-solid fa-check text-3xl"></i></div><div class="mt-3 text-xs">$1,250 • CONFIRMED</div></div>` },
-      { id:8, name:"Call", figma:"0:109", tags:"call telephony", html: `<div class="watch-card p-3 flex flex-col"><div class="flex-1 flex flex-col items-center justify-center"><div class="w-12 h-12 rounded-full bg-[#753fed]"></div><div class="mt-2 font-medium text-sm">Barbara Payne</div><div class="text-xs text-white/50">59:00</div></div><div class="flex justify-around text-xs"><div>🔇</div><div class="text-[#ff4a8c]">📞</div><div>🔊</div></div></div>` },
-      { id:9, name:"Tasks", figma:"0:138", tags:"todo checklist", html: `<div class="watch-card p-3"><div class="text-xs font-medium">Tasks</div><div class="mt-2 space-y-1 text-xs"><div class="flex gap-1.5"><input type="checkbox" checked> <span class="line-through opacity-50">Call grandma</span></div><div class="flex gap-1.5"><input type="checkbox"> Drink water</div></div></div>` },
-      { id:10, name:"Message", figma:"0:161", tags:"notification message", html: `<div class="watch-card p-3"><div class="text-xs text-white/50">MESSAGE</div><div class="mt-2 text-xs bg-[#272a31] rounded p-2 leading-snug">Congratulations, Pavel just purchased the Skeo kit...</div><div class="mt-2 text-center text-xs py-1 bg-[#7640ef] rounded">DELETE</div></div>` },
-      { id:11, name:"Notifications", figma:"0:176", tags:"alerts grid", html: `<div class="watch-card p-3"><div class="text-sm font-medium mb-2">Notifications</div><div class="grid grid-cols-2 gap-2"><div class="h-9 bg-[#16171a] rounded flex items-center justify-center">📅</div><div class="h-9 bg-[#16171a] rounded flex items-center justify-center">🔔</div><div class="h-9 bg-[#16171a] rounded flex items-center justify-center">✉️</div><div class="h-9 bg-[#16171a] rounded flex items-center justify-center">👥</div></div></div>` },
-      { id:12, name:"Activity", figma:"0:206", tags:"fitness rings steps", html: `<div class="watch-card p-3 flex flex-col items-center"><div class="text-sm font-medium">Activity</div><div class="relative w-20 h-20 my-2"><svg class="w-20 h-20 -rotate-90"><circle cx="40" cy="40" r="32" fill="none" stroke="#272a31" stroke-width="9"/><circle cx="40" cy="40" r="32" fill="none" stroke="#ffaa5c" stroke-width="9" stroke-dasharray="201" stroke-dashoffset="65"/><circle cx="40" cy="40" r="23" fill="none" stroke="#7640ef" stroke-width="6" stroke-dasharray="144" stroke-dashoffset="38"/></svg></div><div class="text-xs text-white/50">1240 / 10000 steps</div></div>` },
-      { id:13, name:"Team", figma:"0:228", tags:"avatars contacts", html: `<div class="watch-card p-3"><div class="text-sm font-medium">Team</div><div class="flex justify-center mt-4 relative w-24 h-24"><div class="absolute w-8 h-8 bg-white/90 rounded-full top-0 left-1/2 -translate-x-1/2"></div><div class="absolute w-8 h-8 bg-white/80 rounded-full right-0 top-1/2 -translate-y-1/2"></div><div class="absolute w-8 h-8 bg-white/70 rounded-full left-0 top-1/2 -translate-y-1/2"></div><div class="absolute w-7 h-7 bg-white/60 rounded-full bottom-0 left-1/2 -translate-x-1/2"></div></div></div>` },
-      { id:14, name:"Card", figma:"0:251", tags:"nfc payment", html: `<div class="watch-card p-3 flex flex-col items-center"><div class="text-xs text-center">Hold Near Reader</div><div class="mt-4 w-[138px] bg-white text-[#1b1d21] rounded-xl p-2 text-xs"><div class="flex gap-1"><div class="w-6 h-2 bg-black rounded"></div><div class="w-2 h-2 bg-[#7640ef] rounded"></div></div><div class="mt-1.5 font-medium tracking-widest">•••• 5752</div></div></div>` },
-      { id:15, name:"Messages", figma:"0:347", tags:"chat threaded", html: `<div class="watch-card p-3"><div class="text-xs">Barbara Payne</div><div class="mt-2 text-[10px] bg-[#7640ef] px-2 py-1 rounded-2xl inline-block">Hello! How are you?</div><div class="mt-1 text-[10px] bg-[#ff4a8c] px-2 py-1 rounded-2xl inline-block ml-auto block w-fit">What did you say?</div></div>` },
-      { id:16, name:"Add Contact", figma:"0:381", tags:"form contact", html: `<div class="watch-card p-3 flex flex-col items-center"><div class="w-14 h-14 bg-[#272a31] rounded-full mt-4"></div><div class="mt-2 text-sm font-medium">Kira Valakas</div><div onclick="this.innerHTML='✓ ADDED'" class="mt-auto mb-4 w-full text-center text-xs py-1 bg-[#7640ef] rounded">ADD CONTACT</div></div>` },
-      { id:17, name:"Home Widgets", figma:"—", tags:"composite home", html: `<div class="watch-card p-1.5 text-xs"><div class="font-semibold px-1.5">Today</div><div class="flex gap-1 mt-1"><div class="flex-1 bg-[#16171a] rounded p-1">7.2k steps</div><div class="flex-1 bg-[#16171a] rounded p-1">25m focus</div></div><div class="mt-1 px-1.5 py-1 bg-[#16171a] rounded">Quick msg → Oliver</div></div>` }
+      { id:1, name:"New Message", figma:"0:2", demo:"01-new-message.html", tags:"message compose", html: `<div class="p-3 flex flex-col items-center justify-center relative h-full w-full"><div class="w-16 h-16 rounded-full flex items-center justify-center" style="background:#7640ef"><div class="w-7 h-7 bg-white rounded-xl flex items-center justify-center">💬</div></div><div class="mt-2 text-sm font-bold">New Message</div><div class="text-xs text-white/60">Oliver Adams</div><div class="absolute bottom-3 text-[10px] px-3 py-px rounded bg-[#7640ef] text-white">SEND</div></div>` },
+      { id:2, name:"Voice Message", figma:"0:18", demo:"02-voice-message.html", tags:"voice mic recorder", html: `<div class="flex flex-col items-center justify-center h-full w-full"><div class="text-center text-sm font-bold">Leave<br>voice message</div><div class="mt-4 w-14 h-14 rounded-full border-[5px] border-[#7d3ef3] flex items-center justify-center"><div class="w-6 h-6 bg-[#16171a] rounded-full"></div></div><div class="mt-3 text-xs text-white/50">Tap &amp; hold</div></div>` },
+      { id:3, name:"Timer", figma:"0:34", demo:"03-timer.html", tags:"timer countdown focus", html: `<div class="p-3 h-full w-full"><div class="text-xs text-white/50 text-center">TIMER</div><div class="text-center font-mono text-4xl font-semibold mt-3">14:33</div><div onclick="this.textContent='RUNNING'" class="mt-4 mx-auto w-5/6 h-7 flex items-center justify-center text-xs rounded bg-[#7640ef]">START</div></div>` },
+      { id:4, name:"Wallet", figma:"0:289", demo:"04-wallet.html", tags:"finance cards crypto", html: `<div class="p-3 h-full w-full"><div class="text-xs text-white/50">BALANCE</div><div class="text-2xl font-semibold">$12,051</div><div class="mt-3 space-y-1"><div class="h-9 bg-white rounded p-1 text-[#1b1d21] text-xs">••••5752</div><div class="h-7 bg-white/90 rounded p-1 -mt-0.5 text-xs text-[#1b1d21]">••••9191</div></div></div>` },
+      { id:5, name:"Overall Progress", figma:"0:58", demo:"05-overall-progress.html", tags:"progress health ring", html: `<div class="p-3 flex flex-col h-full w-full"><div class="text-xs text-white/50">20:00</div><div class="flex-1 flex items-center justify-center"><div class="relative w-20 h-20"><svg viewBox="0 0 80 80" class="w-20 h-20 -rotate-90"><circle cx="40" cy="40" r="32" fill="none" stroke="#272a31" stroke-width="9"/><circle cx="40" cy="40" r="32" fill="none" stroke="#7640ef" stroke-width="9" stroke-dasharray="201" stroke-dashoffset="95"/></svg><div class="absolute inset-0 flex items-center justify-center text-2xl font-bold">40%</div></div></div></div>` },
+      { id:6, name:"Clock", figma:"0:72", demo:"06-clock.html", tags:"time analog", html: `<div class="flex flex-col items-center justify-center h-full w-full"><div class="relative w-20 h-20 rounded-full border-[5px] border-white/10"><div class="absolute top-1/2 left-1/2 w-0.5 h-6 bg-white origin-bottom -translate-x-1/2 -translate-y-full" style="transform:rotate(135deg)"></div><div class="absolute top-1/2 left-1/2 w-[2px] h-8 bg-[#7640ef] origin-bottom -translate-x-1/2 -translate-y-full" style="transform:rotate(45deg)"></div></div><div class="mt-2 text-xs">09:41</div></div>` },
+      { id:7, name:"Confirm Transaction", figma:"0:90", demo:"07-confirm-transaction.html", tags:"payment confirm", html: `<div class="flex flex-col items-center justify-center h-full w-full"><div class="w-16 h-16 rounded-full flex items-center justify-center" style="background:#7640ef"><i class="fa-solid fa-check text-3xl"></i></div><div class="mt-3 text-xs">$1,250 • CONFIRMED</div></div>` },
+      { id:8, name:"Call", figma:"0:109", demo:"08-call.html", tags:"call telephony", html: `<div class="p-3 flex flex-col h-full w-full"><div class="flex-1 flex flex-col items-center justify-center"><div class="w-12 h-12 rounded-full bg-[#753fed]"></div><div class="mt-2 font-medium text-sm">Barbara Payne</div><div class="text-xs text-white/50">59:00</div></div><div class="flex justify-around text-xs"><div>🔇</div><div class="text-[#ff4a8c]">📞</div><div>🔊</div></div></div>` },
+      { id:9, name:"Tasks", figma:"0:138", demo:"09-tasks.html", tags:"todo checklist", html: `<div class="p-3 h-full w-full"><div class="text-xs font-medium">Tasks</div><div class="mt-2 space-y-1 text-xs"><div class="flex gap-1.5"><input type="checkbox" checked> <span class="line-through opacity-50">Call grandma</span></div><div class="flex gap-1.5"><input type="checkbox"> Drink water</div></div></div>` },
+      { id:10, name:"Message", figma:"0:161", demo:"10-message.html", tags:"notification message", html: `<div class="p-3 h-full w-full"><div class="text-xs text-white/50">MESSAGE</div><div class="mt-2 text-xs bg-[#272a31] rounded p-2 leading-snug">Congratulations, Pavel just purchased the Skeo kit...</div><div class="mt-2 text-center text-xs py-1 bg-[#7640ef] rounded">DELETE</div></div>` },
+      { id:11, name:"Notifications", figma:"0:176", demo:"11-notifications.html", tags:"alerts grid", html: `<div class="p-3 h-full w-full"><div class="text-sm font-medium mb-2">Notifications</div><div class="grid grid-cols-2 gap-2"><div class="h-9 bg-[#16171a] rounded flex items-center justify-center">📅</div><div class="h-9 bg-[#16171a] rounded flex items-center justify-center">🔔</div><div class="h-9 bg-[#16171a] rounded flex items-center justify-center">✉️</div><div class="h-9 bg-[#16171a] rounded flex items-center justify-center">👥</div></div></div>` },
+      { id:12, name:"Activity", figma:"0:206", demo:"12-activity.html", tags:"fitness rings steps", html: `<div class="p-3 flex flex-col items-center h-full w-full"><div class="text-sm font-medium">Activity</div><div class="relative w-20 h-20 my-2"><svg class="w-20 h-20 -rotate-90"><circle cx="40" cy="40" r="32" fill="none" stroke="#272a31" stroke-width="9"/><circle cx="40" cy="40" r="32" fill="none" stroke="#ffaa5c" stroke-width="9" stroke-dasharray="201" stroke-dashoffset="65"/><circle cx="40" cy="40" r="23" fill="none" stroke="#7640ef" stroke-width="6" stroke-dasharray="144" stroke-dashoffset="38"/></svg></div><div class="text-xs text-white/50">1240 / 10000 steps</div></div>` },
+      { id:13, name:"Team", figma:"0:228", demo:"13-team.html", tags:"avatars contacts", html: `<div class="p-3 h-full w-full"><div class="text-sm font-medium">Team</div><div class="flex justify-center mt-4 relative w-24 h-24"><div class="absolute w-8 h-8 bg-white/90 rounded-full top-0 left-1/2 -translate-x-1/2"></div><div class="absolute w-8 h-8 bg-white/80 rounded-full right-0 top-1/2 -translate-y-1/2"></div><div class="absolute w-8 h-8 bg-white/70 rounded-full left-0 top-1/2 -translate-y-1/2"></div><div class="absolute w-7 h-7 bg-white/60 rounded-full bottom-0 left-1/2 -translate-x-1/2"></div></div></div>` },
+      { id:14, name:"Card", figma:"0:251", demo:"14-card.html", tags:"nfc payment", html: `<div class="p-3 flex flex-col items-center h-full w-full"><div class="text-xs text-center">Hold Near Reader</div><div class="mt-4 w-[138px] bg-white text-[#1b1d21] rounded-xl p-2 text-xs"><div class="flex gap-1"><div class="w-6 h-2 bg-black rounded"></div><div class="w-2 h-2 bg-[#7640ef] rounded"></div><div class="mt-1.5 font-medium tracking-widest">•••• 5752</div></div></div>` },
+      { id:15, name:"Messages", figma:"0:347", demo:"15-messages.html", tags:"chat threaded", html: `<div class="p-3 h-full w-full"><div class="text-xs">Barbara Payne</div><div class="mt-2 text-[10px] bg-[#7640ef] px-2 py-1 rounded-2xl inline-block">Hello! How are you?</div><div class="mt-1 text-[10px] bg-[#ff4a8c] px-2 py-1 rounded-2xl inline-block ml-auto block w-fit">What did you say?</div></div>` },
+      { id:16, name:"Add Contact", figma:"0:381", demo:"16-add-contact.html", tags:"form contact", html: `<div class="p-3 flex flex-col items-center h-full w-full"><div class="w-14 h-14 bg-[#272a31] rounded-full mt-4"></div><div class="mt-2 text-sm font-medium">Kira Valakas</div><div onclick="this.innerHTML='✓ ADDED'" class="mt-auto mb-4 w-full text-center text-xs py-1 bg-[#7640ef] rounded">ADD CONTACT</div></div>` },
+      { id:17, name:"Home Widgets", figma:"—", demo:"home-widget-cluster.html", tags:"composite home", html: `<div class="p-1.5 text-xs h-full w-full"><div class="font-semibold px-1.5">Today</div><div class="flex gap-1 mt-1"><div class="flex-1 bg-[#16171a] rounded p-1">7.2k steps</div><div class="flex-1 bg-[#16171a] rounded p-1">25m focus</div></div><div class="mt-1 px-1.5 py-1 bg-[#16171a] rounded">Quick msg → Oliver</div></div>` }
     ];
+
+    function demoHref(card) {
+      return 'cards/' + card.demo;
+    }
 
     function renderGallery() {
       const container = document.getElementById('gallery');
       container.innerHTML = '';
       CARDS.forEach(card => {
         const el = document.createElement('div');
-        el.className = `gallery-item card-item`;
+        el.className = 'gallery-item card-item';
         el.innerHTML = `
-          <div class="watch-card-wrapper" data-id="${card.id}">
-            <div class="watch-card" style="transform:scale(var(--s,1)); transform-origin:top left;">
+          <div class="watch-card-wrapper" data-id="${card.id}" style="width:184px;height:224px;transform:scale(var(--s,1));transform-origin:top left;">
+            <div class="watch-card" style="width:184px;height:224px;">
               ${card.html}
             </div>
           </div>
@@ -127,7 +122,7 @@
             <div class="flex gap-1">
               <button onclick="copyCardHTML(${card.id}, this)" class="text-[10px] px-2.5 py-px bg-zinc-800 hover:bg-zinc-700 rounded-2xl">HTML</button>
               <button onclick="copyCardReact(${card.id}, this)" class="text-[10px] px-2.5 py-px bg-white text-black hover:bg-zinc-100 rounded-2xl">React</button>
-              <a href="cards/${String(card.id).padStart(2,'0')}-${card.name.toLowerCase().replace(/ /g,'-')}.html" class="text-[10px] px-2.5 py-px bg-zinc-800 hover:bg-zinc-700 rounded-2xl" target="_blank">DEMO</a>
+              <a href="${demoHref(card)}" class="text-[10px] px-2.5 py-px bg-zinc-800 hover:bg-zinc-700 rounded-2xl" target="_blank">DEMO</a>
             </div>
           </div>`;
         container.appendChild(el);
@@ -148,10 +143,9 @@
       const activeBtn = document.querySelector(`[data-theme-btn="${mode}"]`);
       if (activeBtn) activeBtn.classList.add('active', '!bg-white', '!text-black');
       
-      // Apply to all watch cards in gallery
       document.querySelectorAll('.watch-card').forEach(c => {
         c.style.background = (mode === 'light') ? '#f8f8f8' : (mode === 'gold' ? '#1f1a14' : '#1b1d21');
-        c.style.color = (mode === 'light' || mode === 'gold') ? '#111' : '#fff';
+        c.style.color = (mode === 'light') ? '#111' : (mode === 'gold' ? '#f5e8c7' : '#fff');
       });
     }
 
@@ -193,20 +187,17 @@
 
     function initLibrary() {
       renderGallery();
-      // Default scale
       document.documentElement.style.setProperty('--s', '1');
-      // Activate first theme button
       const firstTheme = document.querySelector('[data-theme-btn="dark"]');
       if (firstTheme) firstTheme.classList.add('active', '!bg-white', '!text-black');
       
-      // Keyboard
       document.addEventListener('keydown', e => {
         if (e.key === '/' && document.activeElement.tagName === 'BODY') {
           e.preventDefault(); document.getElementById('search').focus();
         }
       });
       
-      console.log('%c[Watch Me] Stunning visual library initialized — 17 cards, full theme + scale + search', 'color:#10b981');
+      console.log('%c[Watch Me] Visual library — 17 cards, DEMO paths resolve to cards/*', 'color:#10b981');
     }
     window.addEventListener('load', initLibrary);
   </script>
