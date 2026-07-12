@@ -2,6 +2,12 @@
 
 All notable changes to this project.
 
+## [1.0.3] — 2026-07-12 — Close kit inventory gap (Issue #1)
+
+### Docs
+- Add `docs/COMPONENT_KIT_STATUS.md` confirming `component-catalog.html` and full card set on disk.
+- Resolves outdated claim of missing catalog / incomplete 13/16 cards.
+
 ## [1.0.2] — 2026-07-12 — UX hierarchy & states (landing + OS)
 
 ### Changed — Landing (`index.html`)
